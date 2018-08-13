@@ -1,0 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+\.DS_Store
+
+
+Chess\.NExT/bin/
+Chess\.NExT/obj/
+
+Chess\.NExT\.Test/bin/
+Chess\.NExT\.Test/obj/
+
+packages/
