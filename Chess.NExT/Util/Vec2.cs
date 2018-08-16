@@ -139,17 +139,17 @@ namespace Chess.Util
 
         public static Vec2<N> operator + (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>((dynamic) vector0.x + vector1.y, (dynamic) vector0.y + vector1.y);
+            return new Vec2<N>((dynamic) vector0.x + vector1.x, (dynamic) vector0.y + vector1.y);
         }
         
         public static Vec2<long> operator + (Vec2<N> vector0, Vec2<short> vector1)
         {
-            return new Vec2<long>((dynamic)vector0.x + vector1.y, (dynamic)vector0.y + vector1.y);
+            return new Vec2<long>((dynamic)vector0.x + vector1.x, (dynamic)vector0.y + vector1.y);
         }
 
         public static Vec2<N> operator - (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>((dynamic) vector0.x - vector1.y, (dynamic) vector0.y - vector1.y);
+            return new Vec2<N>((dynamic) vector0.x - vector1.x, (dynamic) vector0.y - vector1.y);
         }
         
         public static Vec2<N> operator * (Vec2<N> vector, uint n)
