@@ -1,22 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27924.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.NExT", "Chess.NExT\Chess.NExT.csproj", "{81817DAD-2680-48C0-B66F-CDA9D0ACC737}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.NExT.Test", "Chess.NExT.Test\Chess.NExT.Test.csproj", "{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Release|macOS = Release|macOS
-		Debug|macOS = Debug|macOS
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Debug|macOS.ActiveCfg = Debug|macOS
-		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Release|macOS.ActiveCfg = Release|macOS
-		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Debug|macOS.Build.0 = Debug|macOS
-		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Release|macOS.Build.0 = Release|macOS
-		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Debug|macOS.ActiveCfg = Debug|macOS
-		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Release|macOS.ActiveCfg = Release|macOS
-		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Debug|macOS.Build.0 = Debug|macOS
-		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Release|macOS.Build.0 = Release|macOS
+		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Debug|x64.ActiveCfg = Debug|x64
+		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Debug|x64.Build.0 = Debug|x64
+		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Release|x64.ActiveCfg = Release|x64
+		{81817DAD-2680-48C0-B66F-CDA9D0ACC737}.Release|x64.Build.0 = Release|x64
+		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Debug|x64.ActiveCfg = Debug|x64
+		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Debug|x64.Build.0 = Debug|x64
+		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Release|x64.ActiveCfg = Release|x64
+		{7679078A-D9F4-402D-8CA7-A7A27E8B7E3D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2EF42394-95ED-46F0-8743-B3F9AFAF61C7}
 	EndGlobalSection
 EndGlobal

@@ -46,6 +46,7 @@ namespace Chess.Game
 
 		public Board(Board other)
 		{
+			// ReSharper disable once CoVariantArrayConversion
 			this.model = (Square[][]) other.model.DeepClone();
 			updateSquaresAfterCopy();
 		}

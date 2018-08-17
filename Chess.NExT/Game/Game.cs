@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
-using SFML.Graphics;
-using SFML.Window;
-using Window = Chess.View.Window;
-
 using Chess.Util;
+using SFML.Window;
 using static Chess.Util.Config;
 using static Chess.Game.Color;
+using Window = Chess.View.Window;
 
 
 namespace Chess.Game
@@ -69,8 +65,6 @@ namespace Chess.Game
                 }
             }
         }
-
-        ~BasicGame(){}
 
         object ICloneable.Clone()
         {

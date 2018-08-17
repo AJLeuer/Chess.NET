@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Tree;
-
 using Chess.Util;
+using Tree;
 
 namespace Chess.Game
 {
@@ -162,7 +160,7 @@ namespace Chess.Game
         
         public Tree<MoveAction> computeMoveDecisionTree()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

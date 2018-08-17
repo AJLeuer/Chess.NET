@@ -1,7 +1,5 @@
-﻿using System;
-using SFML.Window;
+﻿using Chess.View;
 using static SFML.Window.Mouse;
-using Chess.View;
 
 namespace Chess.Util
 {
@@ -10,7 +8,7 @@ namespace Chess.Util
     {
         public static bool gameActive = false;
         
-        public static Mouse.Button buttonMain = Button.Left;
+        public static Button buttonMain = Button.Left;
         
         public static Vec2<uint> mainWindowSize { get; set; } = DisplayData.getScreenResolution();
 

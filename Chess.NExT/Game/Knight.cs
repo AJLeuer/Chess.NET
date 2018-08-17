@@ -57,8 +57,8 @@ namespace Chess.Game
         }
 
         public Knight(Color color, Square square) :
-            base((color == Color.black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == Color.black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
+            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
+                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
         {
 	
         }

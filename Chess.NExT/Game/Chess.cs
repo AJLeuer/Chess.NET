@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
 using static Chess.Util.Util;
 
@@ -79,11 +80,14 @@ namespace Chess.Game
 
     public struct RankAndFile {
 	    
-		private const File firstFile = 'a';
+	    // ReSharper disable once UnusedMember.Local
+	    private const File firstFile = 'a';
 
-		private const File lastFile = 'h';
+	    // ReSharper disable once UnusedMember.Local
+	    private const File lastFile = 'h';
 
-		private const Rank firstRank = 1;
+	    // ReSharper disable once UnusedMember.Local
+	    private const Rank firstRank = 1;
 
 		private const Rank lastRank = 8;
 
@@ -99,7 +103,7 @@ namespace Chess.Game
 
 	    private static uint convertToInteger(File file)
 	    {
-		    int intValue = (int)(file - lowerCaseA);
+		    int intValue = file - lowerCaseA;
 		    return (uint)intValue;
 	    }
 	    
@@ -158,9 +162,10 @@ namespace Chess.Game
 
 	}
 
+	[SuppressMessage("ReSharper", "NotAccessedField.Local")]
 	public struct GameRecordEntry {
 	
-		struct AlgebraicNotation {
+		public struct AlgebraicNotation {
 		
 			char pieceSymbol;
 			
@@ -177,6 +182,7 @@ namespace Chess.Game
 		
 		RankAndFile startingPosition;
 
+		// ReSharper disable once UnusedMember.Local
 		GameRecordEntry(Piece piece, RankAndFile destination)
 		{
 			algrebraicNotation = new AlgebraicNotation(piece, destination);

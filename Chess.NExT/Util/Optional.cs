@@ -68,7 +68,7 @@ namespace Chess.Util
         {
             if (HasValue && other.HasValue)
             {
-                return object.Equals(value, other.value);
+                return Equals(value, other.value);
             }
             else
             {

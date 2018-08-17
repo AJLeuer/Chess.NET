@@ -1,7 +1,6 @@
-using System.Numerics;
+using Chess.Util;
 using SFML.Graphics;
 using SFML.Window;
-using Chess.Util;
 using static Chess.Util.Config;
 
 namespace Chess.View

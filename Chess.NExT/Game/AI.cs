@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-
+﻿using System.Collections.Generic;
 using Chess.Util;
 
 namespace Chess.Game

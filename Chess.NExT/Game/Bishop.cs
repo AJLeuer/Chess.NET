@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Chess.Util;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 
@@ -39,8 +38,8 @@ namespace Chess.Game
         }
 	    
         public Bishop(Color color, Square square) :
-            base((color == Color.black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == Color.black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
+            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
+                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
         {
 	
         }
@@ -62,6 +61,7 @@ namespace Chess.Game
         {
             //todo add move legality checking
             base.move(destination);
+            throw new Exception("add move legality checking");
         }
 
     }

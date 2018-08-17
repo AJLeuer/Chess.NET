@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Chess.Util;
 using SFML.Graphics;
 using static Chess.Game.Color;
-using static Chess.Game.Direction;
 
 namespace Chess.Game
 {
