@@ -41,8 +41,11 @@ namespace Chess.View
 		public Window(string title = "Chess", TrueColor backgroundColor = new TrueColor()) :
 			base(defaultVideoMode, title, Styles.Default, new ContextSettings())
 		{
-			text.Font = defaultFont;
-			text.CharacterSize = defaultTextCharacterSize;
+			text = new Text
+			{
+				Font = defaultFont,
+				CharacterSize = defaultTextCharacterSize
+			};
 			this.backgroundColor = backgroundColor;
 		}
 

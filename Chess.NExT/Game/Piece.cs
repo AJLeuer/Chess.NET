@@ -227,7 +227,10 @@ namespace Chess.Game
 		}
         
         public void updateSpritePosition () {
-            sprite.Position = position.convertToPosition();
+            if (sprite != null)
+            {
+                sprite.Position = position.convertToPosition();
+            }
         }
 
     }

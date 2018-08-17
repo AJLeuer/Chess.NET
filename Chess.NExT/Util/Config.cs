@@ -18,6 +18,6 @@ namespace Chess.Util
         
         public static readonly TrueColor windowForegroundColor = new TrueColor(0, 196, 240, 0);
         
-        public static string mainFontFilePath = "./Assets/Fonts/Menlo-Regular.ttf";
+        public static string mainFontFilePath = "./Assets/Fonts/RobotoMono-Regular.ttf";
     }
 }

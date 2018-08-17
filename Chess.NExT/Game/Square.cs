@@ -33,7 +33,10 @@ namespace Chess.Game
             {
                 if (value.HasValue == false)
                 {
-                    currentPiece.square = null;
+                    if (currentPiece != null)
+                    {
+                        currentPiece.square = null;
+                    }
                     this.currentPiece = null;
                 }
                 else
