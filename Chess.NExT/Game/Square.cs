@@ -106,7 +106,7 @@ namespace Chess.Game
 
         protected void clearCurrentPiece()
         {
-            Piece = Optional<Piece>.CreateEmpty();
+            Piece = Optional<Piece>.Empty;
         }
 
     }

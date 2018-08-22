@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Elevator.NET.Utility
 {
-    public class Pair<T> : IList<T>
+    public class Pair<T> : IList<T>, ITuple
     {
         private List<T> values;
         
@@ -124,6 +125,16 @@ namespace Elevator.NET.Utility
 
                 values[index] = value;
             }
+        }
+
+        public int Length
+        {
+            get { return 2; }
+        }
+
+        object ITuple.this[int index]
+        {
+            get { return this[index]; }
         }
     }
 }

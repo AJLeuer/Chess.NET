@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Chess.Util;
 using SFML.Window;
+
+using Chess.Util;
 using static Chess.Util.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -25,9 +26,23 @@ namespace Chess.Game
 
         protected Player currentPlayer = null;
 
-        public abstract void advanceGame(bool overrideMoveDecision = false, MoveAction overridingMove = null);
+        public void AdvanceGame()
+        {
+            AdvanceGame(Optional<MoveAction>.Empty);
+        }
+        
+        public void AdvanceGame(Optional<MoveAction> overridingMove)
+        {
+            decideMove(overridingMove);
+
+            onGameAdvanced.Invoke(this);
+        }
+
+        protected abstract void decideMove(Optional<MoveAction> overridingMove);
 
         protected List<GameRecordEntry> gameRecord;
+        
+        public GameStateAdvancedAction onGameAdvanced { get; private set; }
 
         protected BasicGame() :
             this(new Board())
@@ -145,30 +160,24 @@ namespace Chess.Game
             monitorMouse();
 
             while (gameActive) {
-                advanceGame();
+                AdvanceGame();
                 display();
                 gameLoops++;
                 Thread.Sleep(TimeSpan.FromMilliseconds(4));
             }
         }
-        
-        public override void advanceGame(bool overrideMoveDecision = false, MoveAction overridingMove = null)
+
+        protected override void decideMove(Optional<MoveAction> overridingMove)
         {
-            if ((gameLoops % 2) == 0) 
-            {
-                currentPlayer = this.player0;
-            }
-            else {
-                currentPlayer = this.player1;
-            }
+            currentPlayer = (gameLoops % 2) == 0 ? this.player0 : this.player1;
 
             MoveAction nextMove = currentPlayer.decideNextMove();
-            
+
             nextMove.commit();
-            
+
             Thread.Sleep(TimeSpan.FromSeconds(2));
         }
-    
+
         public void display ()
         {
             var stringRepresentation = board.ToString();
@@ -242,16 +251,16 @@ namespace Chess.Game
     
         public override void playGame() {
             while (gameActive) {
-                advanceGame();
+                AdvanceGame();
                 gameLoops++;
             }
         }    
-        
-        public override void advanceGame(bool overrideMoveDecision = false, MoveAction overridingMove = null)
+
+        protected override void decideMove(Optional<MoveAction> overridingMove)
         {
-            
-            if (overrideMoveDecision) {
-                overridingMove?.commit();
+                        
+            if (overridingMove.HasValue) {
+                overridingMove.Value.commit();
             }
             else {
 
@@ -261,5 +270,6 @@ namespace Chess.Game
             //and definitely don't sleep
         }
     }
-
+    
+    public delegate void GameStateAdvancedAction(BasicGame game);
 }

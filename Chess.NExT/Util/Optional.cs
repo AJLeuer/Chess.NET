@@ -36,10 +36,10 @@ namespace Chess.Util
         {
             this.value = value;
         }
-        
-        public static Optional<T> CreateEmpty()
+
+        public static Optional<T> Empty 
         {
-            return new Optional<T>(null);
+            get { return new Optional<T>(null); }
         }
 
         public static explicit operator T(Optional<T> optional)

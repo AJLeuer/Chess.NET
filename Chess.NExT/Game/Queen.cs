@@ -33,6 +33,11 @@ namespace Chess.Game
             {white, "./Assets/Bitmaps/WhiteQueen.png"}
         };
         
+        public override char asciiSymbol
+        {
+            get { return 'Q'; }
+        }
+        
         public override ushort value
         {
             get { return 9; }
@@ -48,20 +53,20 @@ namespace Chess.Game
         {
 		    
         }
-	    
+	
         public Queen(Color color) :
-            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
+            base(defaultSymbols[color], defaultImageFiles[color], color)
         {
 	
         }
 	
-        public Queen(char symbol, Square square) :
-            base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
-                 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white) 
+        public Queen(char symbol) :
+            this((symbol == defaultSymbols[black]) ? black : white)
         {
-	
+            if (defaultSymbols.ContainsValue(symbol) == false)
+            {
+                throw new ArgumentException($"{symbol} is not a valid chess piece");
+            }
         }
         
         public override Piece Clone()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
@@ -33,6 +33,11 @@ namespace Chess.Game
             {white, "./Assets/Bitmaps/WhiteKing.png"}
         };
         
+        public override char asciiSymbol
+        {
+            get { return 'K'; }
+        }
+        
         public override ushort value
         {
             get { return 40; }
@@ -50,18 +55,18 @@ namespace Chess.Game
         }
 	    
         public King(Color color) :
-            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
+            base(defaultSymbols[color], defaultImageFiles[color], color)
         {
 	
         }
 	
-        public King(char symbol, Square square) :
-            base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
-                 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white) 
+        public King(char symbol) :
+            this((symbol == defaultSymbols[black]) ? black : white)
         {
-	
+            if (defaultSymbols.ContainsValue(symbol) == false)
+            {
+                throw new ArgumentException($"{symbol} is not a valid chess piece");
+            }
         }
         
         public override Piece Clone()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Chess.Util;
 using SFML.Graphics;
@@ -17,6 +17,8 @@ namespace Chess.Game
         public ulong ID { get; } = IDs++;
 
         public char symbol { get; }
+        
+        public abstract char asciiSymbol { get; }
 
         public Color color { get; }
 

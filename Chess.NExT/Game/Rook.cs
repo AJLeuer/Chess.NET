@@ -23,6 +23,11 @@ namespace Chess.Game
             {white, "./Assets/Bitmaps/WhiteRook.png"}
         };
         
+        public override char asciiSymbol
+        {
+            get { return 'R'; }
+        }
+        
         public override ushort value
         {
             get { return 5; }
@@ -38,20 +43,20 @@ namespace Chess.Game
         {
 		    
         }
-	    
+        
         public Rook(Color color) :
-            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
+            base(defaultSymbols[color], defaultImageFiles[color], color)
         {
 	
         }
 	
         public Rook(char symbol) :
-            base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
-                 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white) 
+            this((symbol == defaultSymbols[black]) ? black : white)
         {
-	
+            if (defaultSymbols.ContainsValue(symbol) == false)
+            {
+                throw new ArgumentException($"{symbol} is not a valid chess piece");
+            }
         }
 
         public override Piece Clone()

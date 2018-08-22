@@ -2,8 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using Chess.Util;
 using static Chess.Game.Color;
+
+using File = System.Char;
+using Rank = System.UInt16;
 
 namespace Chess.Game
 {
@@ -74,6 +78,31 @@ namespace Chess.Game
 		{
 			// ReSharper disable once CoVariantArrayConversion
 			this.Squares = (Square[][]) other.Squares.DeepClone();
+		}
+		
+				
+		public Square this[File file, Rank rank]
+		{
+			get
+			{
+				return this[RankAndFile.convertToInteger(file: file)][RankAndFile.convertToInteger(rank: rank)];
+			}
+			set
+			{
+				this[RankAndFile.convertToInteger(file: file)][RankAndFile.convertToInteger(rank: rank)] = value;
+			}
+		}
+
+		public Square[] this[uint index]
+		{
+			get
+			{
+				return Squares[index];
+			}
+			set
+			{
+				Squares[index] = value;
+			}
 		}
 
 		public static implicit operator Square[][](Board board)

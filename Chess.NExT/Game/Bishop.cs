@@ -20,7 +20,12 @@ namespace Chess.Game
             {black, "./Assets/Bitmaps/BlackBishop.png"},
             {white, "./Assets/Bitmaps/WhiteBishop.png"}
         };
-        
+
+        public override char asciiSymbol
+        {
+            get { return 'B'; }
+        }
+
         public override ushort value
         {
             get { return 3; }
@@ -38,18 +43,18 @@ namespace Chess.Game
         }
 	    
         public Bishop(Color color) :
-            base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
+            base(defaultSymbols[color], defaultImageFiles[color], color)
         {
 	
         }
 	
-        public Bishop(char symbol, Square square) :
-            base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
-                 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white) 
+        public Bishop(char symbol) :
+            this((symbol == defaultSymbols[black]) ? black : white)
         {
-	
+            if (defaultSymbols.ContainsValue(symbol) == false)
+            {
+                throw new ArgumentException($"{symbol} is not a valid chess piece");
+            }
         }
         
         public override Piece Clone()

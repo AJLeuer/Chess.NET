@@ -23,6 +23,11 @@ namespace Chess.Game
 		    {black, "./Assets/Bitmaps/BlackPawn.png"},
 		    {white, "./Assets/Bitmaps/WhitePawn.png"}
 	    };
+	    
+	    public override char asciiSymbol
+	    {
+		    get { return '​'; } //zero-width space
+	    }
 
 	    public override ushort value
 	    {
@@ -75,21 +80,20 @@ namespace Chess.Game
 		    
 	    }
 
-	    
-        public Pawn(Color color) :
-			base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-				 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
-		{
+	    public Pawn(Color color) :
+		    base(defaultSymbols[color], defaultImageFiles[color], color)
+	    {
 	
-		}
+	    }
 	
-		public Pawn(char symbol, Square square) :
-			base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
-				 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-				 (symbol == defaultSymbols[black]) ? black : white) 
-		{
-	
-		}
+	    public Pawn(char symbol) :
+		    this((symbol == defaultSymbols[black]) ? black : white)
+	    {
+		    if (defaultSymbols.ContainsValue(symbol) == false)
+		    {
+			    throw new ArgumentException($"{symbol} is not a valid chess piece");
+		    }
+	    }
 	
 	    public override Piece Clone()
 	    {
