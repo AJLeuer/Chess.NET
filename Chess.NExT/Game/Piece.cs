@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Chess.Util;
 using SFML.Graphics;
@@ -32,86 +32,95 @@ namespace Chess.Game
 
         public Sprite sprite { get; private set; }
 
-        protected Square currentSquare;
+        protected Optional<Square> square;
         
-        public Square square {
+        public Square Square {
             set
             {
-                this.currentSquare = value;
-                if (currentSquare != null)
+                this.square = value;
+                
+                if (square.HasValue)
                 {
                     updateSpritePosition();
+                    
+                    if (movesMade == 0)
+                    {
+                        this.startingPosition = new Vec2<uint>(square.Value.position);
+                    } 
                 }
             }
-            get { return currentSquare; } 
+            get { return square.Value; } 
         }
         
         public Board board
         {
-            get { return square.board; }
+            get { return Square.board; }
         }
 
-        protected readonly Vec2<uint> startingPosition;
+        protected Vec2<uint> startingPosition;
 
         public RankAndFile position
         {
-            get { return square.position; }
+            get { return Square.position; }
         }
         
         public CallBack onCaptured { get; set; }
         
-        public static Piece create(char symbol, Square square) {
+        public static Piece create(char symbol) {
             Piece piece;
             if (symbol == Pawn.defaultSymbols[white]) {
-                piece = new Pawn(white, square);
+                piece = new Pawn(white);
             }
             else if (symbol == Pawn.defaultSymbols[black]) {
-                piece = new Pawn(black, square);
+                piece = new Pawn(black);
             }
             else if (symbol == Knight.defaultSymbols[white]) {
-                piece = new Knight(white, square);
+                piece = new Knight(white);
             }
             else if (symbol == Knight.defaultSymbols[black]) {
-                piece = new Knight(black, square);
+                piece = new Knight(black);
             }
             else if (symbol == Bishop.defaultSymbols[white]) {
-                piece = new Bishop(white, square);
+                piece = new Bishop(white);
             }
             else if (symbol == Bishop.defaultSymbols[black]) {
-                piece = new Bishop(black, square);
+                piece = new Bishop(black);
             }
             else if (symbol == Rook.defaultSymbols[white]) {
-                piece = new Rook(white, square);
+                piece = new Rook(white);
             }
             else if (symbol == Rook.defaultSymbols[black]) {
-                piece = new Rook(black, square);
+                piece = new Rook(black);
             }
             else if (symbol == Queen.defaultSymbols[white]) {
-                piece = new Queen(white, square);
+                piece = new Queen(white);
             }
             else if (symbol == Queen.defaultSymbols[black]) {
-                piece = new Queen(black, square);
+                piece = new Queen(black);
             }
             else if (symbol == King.defaultSymbols[white]) {
-                piece = new King(white, square);
+                piece = new King(white);
             }
             else if (symbol == King.defaultSymbols[black]) {
-                piece = new King(black, square);
+                piece = new King(black);
             }
             else {
                 piece = null;
             }
             return piece;
         }
+        
 
-        public static Piece createByCopy(Piece piece)
+        /// <summary>
+        ///    Creates a new piece by copying the piece passed
+        /// </summary>
+        /// <param name="piece">
+        ///     The piece to copy
+        /// </param>
+        /// <returns>A copy of piece</returns>
+        /// <exception cref="TypeInitializationException"></exception>
+        public static Piece create(Piece piece)
         {
-
-//            Type pieceType = piece.GetType();
-//
-//            var constructor = pieceType.GetConstructor(new[]{pieceType});
-//            return (Piece) constructor.Invoke(new[]{piece});
-
             switch (piece) 
             {
                 case Pawn pawn:
@@ -139,7 +148,7 @@ namespace Chess.Game
             }
         }
         
-        protected Piece(char symbol, string spriteImageFilePath, Color color, Square square)
+        protected Piece(char symbol, string spriteImageFilePath, Color color)
         {
             /* ID init from IDs */
             this.symbol = symbol;
@@ -148,8 +157,6 @@ namespace Chess.Game
             this.spriteImageFilePath = spriteImageFilePath;
             /* Don't initialize the actual texture/sprite data. Too
              expensive - we only init it when we need it */
-            this.square = square;
-            this.startingPosition = new Vec2<uint>(square.position);
         }
         
         protected Piece(Piece other)
@@ -160,17 +167,17 @@ namespace Chess.Game
             /* movesMade is already init to 0 */
             spriteImageFilePath = other.spriteImageFilePath;
             startingPosition = other.startingPosition;
-
+            
             /* Don't initialize the actual texture/sprite data. Too
-             expensive - we only init it when we need it */
+             expensive - we only init it when we need it (lazily) */
 
             /* Don't copy other's square references: we don't know if we're owned
-             by a new board or still held by the same, and if we are on the new square/or board,
+             by a new board or still held by the same, and if we are on the new square/board,
              they'll have to update our references */
         }
         
         ~Piece() {
-            square = null;
+            Square = null;
         }
         
         object ICloneable.Clone()
@@ -199,7 +206,7 @@ namespace Chess.Game
         }
         
         public virtual void move(Square destination) {
-            square.handleLeavingPiece();
+            Square.handleLeavingPiece();
 
             destination.receiveArrivingPiece(this);
 

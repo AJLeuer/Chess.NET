@@ -9,7 +9,7 @@ namespace Chess.Game
 
         public Board board { get; set; }
 
-        private Piece currentPiece = null;
+        private Piece piece = null;
 
         public bool isEmpty
         {
@@ -18,7 +18,7 @@ namespace Chess.Game
 
         public bool isOccupied
         {
-            get { return piece.HasValue; }
+            get { return Piece.HasValue; }
         }
 
         public RankAndFile rankAndFile
@@ -26,23 +26,23 @@ namespace Chess.Game
             get { return position; }
         }
 
-        public Optional<Piece> piece
+        public Optional<Piece> Piece
         {
-            get { return currentPiece; }
+            get { return piece; }
             set
             {
                 if (value.HasValue == false)
                 {
-                    if (currentPiece != null)
+                    if (piece != null)
                     {
-                        currentPiece.square = null;
+                        piece.Square = null;
                     }
-                    this.currentPiece = null;
+                    this.piece = null;
                 }
                 else
                 {
-                    this.currentPiece = value.Value;
-                    currentPiece.square = this;
+                    this.piece = value.Value;
+                    piece.Square = this;
                 }
             }
         }
@@ -51,26 +51,26 @@ namespace Chess.Game
         {
             position = new Vec2<uint>(other.position);
             /* Don't copy other's board pointer */
-            piece = (other.isEmpty) ? null : Piece.createByCopy(other.currentPiece);
+            Piece = (other.isEmpty) ? null : Game.Piece.create(other.piece);
         }
 
-        public Square(char file, ushort rank, Board board)
+        public Square(char file, ushort rank, Board board = null)
         {
             position = new RankAndFile(file, rank);
             this.board = board;
-            currentPiece = null;
+            piece = null;
         }
 
-        public Square(Piece piece, char file, ushort rank, Board board) :
+        public Square(Piece piece, char file, ushort rank, Board board = null) :
             this(file, rank, board)
         {
-            this.piece = piece;
+            this.Piece = piece;
         }
 
-        public Square(char pieceSymbol, char file, ushort rank, Board board) :
+        public Square(char pieceSymbol, char file, ushort rank, Board board = null) :
             this(file, rank, board)
         {
-            this.piece = Piece.create(pieceSymbol, this);
+            this.Piece = Game.Piece.create(pieceSymbol);
         }
 
         ~Square()
@@ -95,18 +95,18 @@ namespace Chess.Game
                 captureCurrentPiece();
             }
 
-            this.piece = piece;
+            this.Piece = piece;
         }
 
         protected void captureCurrentPiece()
         {
-            currentPiece?.onCapture();
+            piece?.onCapture();
             clearCurrentPiece();
         }
 
         protected void clearCurrentPiece()
         {
-            piece = null;
+            Piece = Optional<Piece>.CreateEmpty();
         }
 
     }

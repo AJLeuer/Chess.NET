@@ -78,7 +78,7 @@ namespace Chess.Game
 		public static implicit operator Vec2<short>(Direction direction) { return direction.value; }
 	}
 
-    public struct RankAndFile {
+    public struct RankAndFile : IEquatable<RankAndFile> {
 	    
 	    // ReSharper disable once UnusedMember.Local
 	    private const File firstFile = 'a';
@@ -97,7 +97,7 @@ namespace Chess.Game
 		}
  
 		private static Rank convertToRank(uint y) {
-			var rank = y + 1;
+			var rank = lastRank - y;
 			return (Rank)rank;
 		}
 
@@ -160,16 +160,51 @@ namespace Chess.Game
 			return new Vec2<uint>(x, y);
 		}
 
-	}
+	    public static Boolean operator == (RankAndFile rankAndFile0, RankAndFile rankAndFile1)
+	    {
+		    return (rankAndFile0.rank == rankAndFile1.rank) &&
+		           (rankAndFile0.file == rankAndFile1.file);
+	    }
+
+	    public static bool operator != (RankAndFile rankAndFile0, RankAndFile rankAndFile1)
+	    {
+		    return !(rankAndFile0 == rankAndFile1);
+	    }
+
+	    public override Boolean Equals(object @object)
+	    {
+		    if (@object?.GetType() == this.GetType())
+		    {
+			    return this.Equals((RankAndFile) @object);
+		    }
+		    else
+		    {
+			    throw new NotImplementedException();
+		    }
+	    }
+
+	    public bool Equals(RankAndFile other)
+	    {
+		    return this == other;
+	    }
+
+	    public override int GetHashCode()
+	    {
+		    unchecked
+		    {
+			    return (file.GetHashCode() * 397) ^ rank.GetHashCode();
+		    }
+	    }
+    }
 
 	[SuppressMessage("ReSharper", "NotAccessedField.Local")]
 	public struct GameRecordEntry {
 	
 		public struct AlgebraicNotation {
 		
-			char pieceSymbol;
+			public char pieceSymbol;
 			
-			RankAndFile destination;
+			public RankAndFile destination;
 			
 			public AlgebraicNotation(Piece piece,  RankAndFile destination)
 			{
@@ -178,12 +213,12 @@ namespace Chess.Game
 			}		
 		} 
 	
-		AlgebraicNotation algrebraicNotation;
+		public AlgebraicNotation algrebraicNotation;
 		
-		RankAndFile startingPosition;
+		public RankAndFile startingPosition;
 
 		// ReSharper disable once UnusedMember.Local
-		GameRecordEntry(Piece piece, RankAndFile destination)
+		public GameRecordEntry(Piece piece, RankAndFile destination)
 		{
 			algrebraicNotation = new AlgebraicNotation(piece, destination);
 			startingPosition = piece.position;

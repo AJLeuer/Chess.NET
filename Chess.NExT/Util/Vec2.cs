@@ -11,7 +11,7 @@ namespace System
 
 namespace Chess.Util
 {
-    public struct Vec2<N> : IIndexable<N> where N:
+    public struct Vec2<N> : IEquatable<Vec2<N>>, IIndexable<N> where N:
         struct,
         IComparable, 
         IComparable<N>, 
@@ -19,14 +19,6 @@ namespace Chess.Util
         IEquatable<N>, 
         IFormattable
     {
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (x.GetHashCode() * 397) ^ y.GetHashCode();
-            }
-        }
 
         public N x { get; set; } 
         public N y { get; set; } 
@@ -113,25 +105,40 @@ namespace Chess.Util
             }
         }
         
+        public static Boolean operator == (Vec2<N> vector0, Vec2<N> vector1)
+        {
+            return ((dynamic) vector0.x == (dynamic) vector1.x) &&
+                   ((dynamic) vector0.y == (dynamic) vector1.y);
+        }
+
+        public static bool operator != (Vec2<N> vector0, Vec2<N> vector1)
+        {
+            return !(vector0 == vector1);
+        }
+
+        public override Boolean Equals(object @object)
+        {
+            if (@object?.GetType() == this.GetType())
+            {
+                return this.Equals((Vec2<N>) @object);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public bool Equals(Vec2<N> other)
         {
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override int GetHashCode()
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is Vec2<N> && Equals((Vec2<N>) obj);
-        }
-        
-        public static bool operator == (Vec2<N> vector0, Vec2<N> vector1)
-        {
-            return vector0.x.Equals(vector1.x) && vector0.y.Equals(vector1.y);
-        }
-
-        public static bool operator !=(Vec2<N> vector0, Vec2<N> vector1)
-        {
-            return !(vector0 == vector1);
+            unchecked
+            {
+                return (x.GetHashCode() * 397) ^ y.GetHashCode();
+            }
         }
 
         public static Vec2<N> operator + (Vec2<N> vector0, Vec2<N> vector1)

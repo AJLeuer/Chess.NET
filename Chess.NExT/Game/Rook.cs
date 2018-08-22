@@ -39,17 +39,17 @@ namespace Chess.Game
 		    
         }
 	    
-        public Rook(Color color, Square square) :
+        public Rook(Color color) :
             base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
+                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
         {
 	
         }
 	
-        public Rook(char symbol, Square square) :
+        public Rook(char symbol) :
             base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
                  (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white, square) 
+                 (symbol == defaultSymbols[black]) ? black : white) 
         {
 	
         }

@@ -23,7 +23,7 @@ namespace Chess.Game
         public List<Piece> pieces { get; }
 
         /* Any other constructors should call this as a delegating constructor */
-        public Player(Color color, Board board)
+        public Player(Color color, Board board = null)
         {
             this.name = "Player " + ID;
             this.color = color;
@@ -33,9 +33,11 @@ namespace Chess.Game
         }
 
         public Player(Player other) :
-            this(other.color, new Board(other.board))
+            this(other.color)
         {
-            
+            //can't clone our own board since we don't control it
+            //the game itself is responsible for cloning the board and then assigning it to us
+            this.board = null;
         }
 
         ~Player () {}
@@ -62,17 +64,17 @@ namespace Chess.Game
 
         public abstract void onTurn();
         
-        protected List<Piece> findOwnPiecesOnBoard(Board board)
+        internal List<Piece> findOwnPiecesOnBoard(Board board)
         {
             var pieces = new List<Piece>();
-
-            foreach (Square[] file in (Square[][])board)
+    
+            foreach (Square[] file in board)
             {
                 foreach (Square square in file)
                 {
                     if (square.isOccupied)
                     {
-                        Piece piece = square.piece.Value;
+                        Piece piece = square.Piece.Value;
                         
                         if (piece.color == this.color)
                         {

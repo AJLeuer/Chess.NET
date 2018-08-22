@@ -19,7 +19,13 @@ namespace Chess.Util
             IFormattable
         {
             return new Vector2f((float)vector[0].ToDouble(NumberFormatInfo.InvariantInfo), (float)vector[1].ToDouble(NumberFormatInfo.InvariantInfo));
-        } 
+        }
+        
+        public static object AsSingleParam(this object[] arg)
+        {
+            object returnValue = arg;
+            return returnValue;
+        }
     }
     
     public static class Extensions

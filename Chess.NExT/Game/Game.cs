@@ -30,33 +30,34 @@ namespace Chess.Game
         protected List<GameRecordEntry> gameRecord;
 
         protected BasicGame() :
-            this(new Board(), new AI(white, null), new AI(black, null))
+            this(new Board())
         {
-            
+            player0 = new AI(white, this.board);
+            player1 = new AI(black, this.board);
         }
 
         protected BasicGame(BasicGame other) :
+            /* call copy constructor directly if class doesn't expect to have subclasses,
+            call Clone() method where inheritance is in play and polymorphism is needed */
             this(new Board(other.board), other.player0.Clone(), other.player1.Clone())
         {
-            
+            initializePlayers();
         }
 
-        protected BasicGame(Board board, Player player0, Player player1)
+        protected BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
             this.board = board;
             this.player0 = player0;
             this.player1 = player1;
-
-            player0.board = board;
-            player1.board = board; 
-            
             board.game = this;
+
+            initializePlayers();
 
             foreach (var file in (Square[][]) board)
             {
                 foreach (Square square in file)
                 {
-                    var piece = square.piece;
+                    var piece = square.Piece;
                     
                     if (piece.HasValue)
                     {
@@ -72,6 +73,15 @@ namespace Chess.Game
         }
 
         public abstract BasicGame Clone();
+        
+        private void initializePlayers()
+        {
+            if ((player0 != null) && (player1 != null))
+            {
+                player0.board = board;
+                player1.board = board;
+            }
+        }
 
         public abstract void playGame();
 
@@ -93,7 +103,7 @@ namespace Chess.Game
          * @return A MoveIntent object with the matching Piece found by calling this->board.findMatch(move.piece), such that the returned
          * MoveIntent could be used to make the same move but in this game
          */
-        MoveAction tranlateMoveIntent(MoveAction move)
+        MoveAction translate(MoveAction move)
         {
             Player player = findMatchingPlayer(move.player);
             Piece piece = board.findMatchingPiece(move.piece);
@@ -125,8 +135,6 @@ namespace Chess.Game
         {
             
         }
-
-        ~ChessGame () {}
 
         public override BasicGame Clone()
         {
@@ -172,7 +180,7 @@ namespace Chess.Game
             {
                 foreach (Square square in file)
                 {
-                    var piece = square.piece;
+                    var piece = square.Piece;
                     
                     if (piece.HasValue)
                     {
@@ -243,7 +251,7 @@ namespace Chess.Game
         {
             
             if (overrideMoveDecision) {
-                overridingMove.commit();
+                overridingMove?.commit();
             }
             else {
 

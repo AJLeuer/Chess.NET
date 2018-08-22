@@ -12,7 +12,7 @@ namespace Chess.Game
 	    protected static readonly List<Direction> blackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
 	    protected static readonly List<Direction> whiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
 
-	    public static readonly new Dictionary<Color, char> defaultSymbols = new Dictionary<Color, char>
+	    public new static readonly Dictionary<Color, char> defaultSymbols = new Dictionary<Color, char>
 	    {
 		    {black, '♟'}, 
 		    {white, '♙'}
@@ -76,9 +76,9 @@ namespace Chess.Game
 	    }
 
 	    
-        public Pawn(Color color, Square square) :
+        public Pawn(Color color) :
 			base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-				 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
+				 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
 		{
 	
 		}
@@ -86,14 +86,11 @@ namespace Chess.Game
 		public Pawn(char symbol, Square square) :
 			base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
 				 (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-				 (symbol == defaultSymbols[black]) ? black : white, square) 
+				 (symbol == defaultSymbols[black]) ? black : white) 
 		{
 	
 		}
-	    
-	    
-	    ~Pawn () {}
-	    
+	
 	    public override Piece Clone()
 	    {
 		    return new Pawn(this);
@@ -105,7 +102,7 @@ namespace Chess.Game
 		*/
 	    public override List<Square> findAllPossibleLegalMoveDestinations()
 		{
-			List<Square> emptySquares = board.getSpecifiedSquares((square.position == startingPosition) ? (uint)2 : (uint)1, //if this is the pawn's first move, it can move 2 squares
+			List<Square> emptySquares = board.getSpecifiedSquares((Square.position == startingPosition) ? (uint)2 : 1, //if this is the pawn's first move, it can move 2 squares
 				false, black, position, legalMovementDirectionToEmptySquares); //last argument should be ignored
 	
 			List<Square> captureSquares = new List<Square>();
@@ -117,7 +114,7 @@ namespace Chess.Game
 			{
 				if (potentialCaptureSquare.isOccupied)
 				{
-					Piece piece = potentialCaptureSquare.piece.Value;
+					Piece piece = potentialCaptureSquare.Piece.Value;
 					
 					if (piece.color != this.color) {
 						captureSquares.Add(potentialCaptureSquare);

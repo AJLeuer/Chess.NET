@@ -14,7 +14,6 @@ namespace Chess.NExT
             
             game.playGame();
 
-            Console.Write("fuck");
         }
     }
 }

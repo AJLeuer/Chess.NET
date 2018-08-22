@@ -37,9 +37,9 @@ namespace Chess.Game
 		    
         }
 	    
-        public Bishop(Color color, Square square) :
+        public Bishop(Color color) :
             base((color == black) ? defaultSymbols[black] : defaultSymbols[white],
-                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color, square)
+                 (color == black) ? defaultImageFiles[black] : defaultImageFiles[white], color)
         {
 	
         }
@@ -47,7 +47,7 @@ namespace Chess.Game
         public Bishop(char symbol, Square square) :
             base((symbol == defaultSymbols[black]) ? defaultSymbols[black] : defaultSymbols[white],
                  (symbol == defaultSymbols[black]) ? defaultImageFiles[black] : defaultImageFiles[white],
-                 (symbol == defaultSymbols[black]) ? black : white, square) 
+                 (symbol == defaultSymbols[black]) ? black : white) 
         {
 	
         }
