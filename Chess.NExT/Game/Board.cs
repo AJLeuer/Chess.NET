@@ -23,7 +23,7 @@ namespace Chess.Game
 			get { return new Vec2<uint>((uint) Squares.Length - 1, (uint) Squares[0].Length - 1); }
 		}
 		
-		protected static readonly Square[][] DefaultSquares = new Square[][]
+		public static readonly Square[][] DefaultStartingSquares = new Square[][]
 		{
 			new Square[] { new Square('♜', 'a', 8), new Square('♟', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square('♙', 'a', 2), new Square('♖', 'a', 1) },
 			
@@ -40,6 +40,25 @@ namespace Chess.Game
 			new Square[] { new Square('♞', 'g', 8), new Square('♟', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square('♙', 'g', 2), new Square('♘', 'g', 1) },
 			
 			new Square[] { new Square('♜', 'h', 8), new Square('♟', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square('♙', 'h', 2), new Square('♖', 'h', 1) }
+		};
+		
+		public static readonly Square[][] EmptySquares = new Square[][]
+		{
+			new Square[] { new Square(' ', 'a', 8), new Square(' ', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square(' ', 'a', 2), new Square(' ', 'a', 1) },
+			
+			new Square[] { new Square(' ', 'b', 8), new Square(' ', 'b', 7), new Square(' ', 'b', 6), new Square(' ', 'b', 5), new Square(' ', 'b', 4), new Square(' ', 'b', 3), new Square(' ', 'b', 2), new Square(' ', 'b', 1) },
+			
+			new Square[] { new Square(' ', 'c', 8), new Square(' ', 'c', 7), new Square(' ', 'c', 6), new Square(' ', 'c', 5), new Square(' ', 'c', 4), new Square(' ', 'c', 3), new Square(' ', 'c', 2), new Square(' ', 'c', 1) },
+			
+			new Square[] { new Square(' ', 'd', 8), new Square(' ', 'd', 7), new Square(' ', 'd', 6), new Square(' ', 'd', 5), new Square(' ', 'd', 4), new Square(' ', 'd', 3), new Square(' ', 'd', 2), new Square(' ', 'd', 1) },
+			
+			new Square[] { new Square(' ', 'e', 8), new Square(' ', 'e', 7), new Square(' ', 'e', 6), new Square(' ', 'e', 5), new Square(' ', 'e', 4), new Square(' ', 'e', 3), new Square(' ', 'e', 2), new Square(' ', 'e', 1) },
+			
+			new Square[] { new Square(' ', 'f', 8), new Square(' ', 'f', 7), new Square(' ', 'f', 6), new Square(' ', 'f', 5), new Square(' ', 'f', 4), new Square(' ', 'f', 3), new Square(' ', 'f', 2), new Square(' ', 'f', 1) },
+			
+			new Square[] { new Square(' ', 'g', 8), new Square(' ', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square(' ', 'g', 2), new Square(' ', 'g', 1) },
+			
+			new Square[] { new Square(' ', 'h', 8), new Square(' ', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square(' ', 'h', 2), new Square(' ', 'h', 1) }
 		};
 
 		protected Square[][] squares;
@@ -58,13 +77,7 @@ namespace Chess.Game
 		public BasicGame game { get; set; }
 
 		public Board() :
-			this(DefaultSquares)
-		{
-			
-		}
-
-		public Board(List<List<Square>> squares):
-			this(squares.Select(l => l.ToArray()).ToArray())
+			this(DefaultStartingSquares)
 		{
 			
 		}
@@ -104,6 +117,12 @@ namespace Chess.Game
 				Squares[index] = value;
 			}
 		}
+		
+		/// <return>The Square at the position specified by rankAndFile</return>
+		public virtual Square getSquare(RankAndFile rankAndFile)
+		{
+			return this[rankAndFile.file, rankAndFile.rank];
+		} 
 
 		public static implicit operator Square[][](Board board)
 		{
@@ -142,29 +161,6 @@ namespace Chess.Game
 		}
 
 		/**
-		 * @return The Square at the position specified by rf
-		 */
-		public virtual Square getSquare(RankAndFile rankAndFile)
-		{
-			return getSquare((Vec2<uint>) rankAndFile);
-		} 
-
-		/**
-		 * @param pos The position of the Square to return
-		 *
-		 * @return A pointer to the Square at the position specified by pos
-		 */
-		protected virtual Square getSquare(Vec2<uint> position)
-		{
-			return getSquare(position.x, position.y);
-		}
-
-		public virtual Square getSquare(uint x, uint y)
-		{
-			return Squares[x][y];
-		}
-
-		/**
 		 * @param pos This function checks whether pos is within the bounds of the Chess board
 		 *
 		 * @return true if pos exists on the board, false otherwise
@@ -197,7 +193,6 @@ namespace Chess.Game
 					if (isInsideBounds(nextPosition)) {
 
 						Square nextSquare = getSquare(nextPosition);
-
 
 						if (nextSquare.isOccupied)
 						{

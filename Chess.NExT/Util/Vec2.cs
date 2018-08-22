@@ -158,12 +158,18 @@ namespace Chess.Util
         
         public static Vec2<N> operator * (Vec2<N> vector, uint n)
         {
-            return new Vec2<N>((dynamic) vector.x * n, (dynamic) vector.y * n);
+            N x = (N) ((dynamic) vector.x * n);
+            N y = (N) ((dynamic) vector.y * n);
+            
+            return new Vec2<N>(x, y);
         }
         
         public static Vec2<N> operator / (Vec2<N> vector, N n)
         {
-            return new Vec2<N>((dynamic) vector.x / n, (dynamic) vector.y / n);
+            N x = (N) ((dynamic) vector.x / n);
+            N y = (N) ((dynamic) vector.y / n);
+            
+            return new Vec2<N>(x, y);
         }
 
     }
