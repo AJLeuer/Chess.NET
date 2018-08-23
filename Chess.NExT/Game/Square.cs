@@ -21,7 +21,7 @@ namespace Chess.Game
             get { return Piece.HasValue; }
         }
 
-        public RankAndFile rankAndFile
+        public RankAndFile boardPosition
         {
             get { return position; }
         }

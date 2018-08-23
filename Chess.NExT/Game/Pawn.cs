@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Chess.Util;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 
@@ -105,30 +106,60 @@ namespace Chess.Game
 		* no such Squares, empty
 		*/
 	    public override List<Square> findAllPossibleLegalMoveDestinations()
-		{
-			List<Square> emptySquares = board.getSpecifiedSquares((Square.position == startingPosition) ? (uint)2 : 1, //if this is the pawn's first move, it can move 2 squares
-				false, black, position, legalMovementDirectionToEmptySquares); //last argument should be ignored
-	
-			List<Square> captureSquares = new List<Square>();
-			List<Square> potentialCaptureSquares = board.getSpecifiedSquares(1, true, color.getOpposite(), 
-				position, legalCaptureDirections.ToArray());
-	
-			/* Only take the squares in capture directions if they hold pieces */
-			foreach (var potentialCaptureSquare in potentialCaptureSquares)
-			{
-				if (potentialCaptureSquare.isOccupied)
-				{
-					Piece piece = potentialCaptureSquare.Piece.Value;
-					
-					if (piece.color != this.color) {
-						captureSquares.Add(potentialCaptureSquare);
-					}
-				}
-			}
+	    {
+		    List<Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
 
-			var squares = captureSquares.Concat(emptySquares).ToList();
-			return squares;
-		}
+		    Optional<Square> emptySquareToMove = findLegalMoveDestinationForMoveToEmpty();
+
+		    if (emptySquareToMove.HasValue)
+		    {
+			    legalMoveSquares.Add(emptySquareToMove.Value);
+		    }
+
+		    return legalMoveSquares;
+	    }
+
+	    protected Optional<Square> findLegalMoveDestinationForMoveToEmpty()
+	    {
+		    			
+		    Predicate<Square> squareCheckerForMovementDirections = (Square squareToCheck) =>
+		    {
+			    return squareToCheck.isEmpty;
+		    };
+		    
+		    List<Square> availableSquares = board.SearchForSquares(squareCheckerForMovementDirections,
+			    this.position, 1, this.legalMovementDirectionToEmptySquares);
+
+		    if (availableSquares.Count > 0)
+		    {
+			    return availableSquares[0];
+		    }
+		    else
+		    {
+			    return Optional<Square>.Empty;
+		    }
+	    }
+	    
+	    protected List<Square> findAllPossibleLegalMoveDestinationsForMovesToCapture()
+	    {
+		    
+		    Predicate<Square> squareCheckerForCaptureDirections = (Square squareToCheck) =>
+		    {
+			    if (squareToCheck.isEmpty)
+			    {
+				    return false;
+			    }
+			    else /* if (squareToCheck.isOccupied) */ 
+			    {
+				    return this.color.getOpposite() == squareToCheck.Piece.Value.color;
+			    }
+		    };
+		    
+		    List<Square> captureSquares = board.SearchForSquares(squareCheckerForCaptureDirections,
+			    this.position, 1, this.legalCaptureDirections.ToArray());
+
+		    return captureSquares;
+	    }
 
 	    public override void move(RankAndFile destination)  
 	    {

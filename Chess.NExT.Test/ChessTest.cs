@@ -12,9 +12,9 @@ namespace Chess.NExT.Test
         {
             Vec2<uint> position = new Vec2<uint>(3, 3);
             
-            RankAndFile rankAndFile = position; //invokes conversion operator
+            RankAndFile boardPosition = position; //invokes conversion operator
 
-            rankAndFile.Should().BeEquivalentTo(new RankAndFile('d', 5));
+            boardPosition.Should().BeEquivalentTo(new RankAndFile('d', 5));
         }
         
         [Test]

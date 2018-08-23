@@ -71,6 +71,7 @@
     <Compile Include="KnightTest.cs" />
     <Compile Include="PlayerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VectorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chess.NExT\Chess.NExT.csproj">

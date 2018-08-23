@@ -222,7 +222,21 @@ namespace Chess.Game
         
         public virtual List<Square> findAllPossibleLegalMoveDestinations()
         {
-            List<Square> squaresLegalToMove = board.getSpecifiedSquares(true, this.color.getOpposite(), position, this.legalMovementDirections.ToArray());
+            Predicate<Square> squareChecker = (Square squareToCheck) =>
+            {
+                if (squareToCheck.isEmpty)
+                {
+                    return true;
+                }
+                else /* if (squareToCheck.isOccupied) */ 
+                {
+                    return this.color.getOpposite() == squareToCheck.Piece.Value.color;
+                }
+            };
+            
+            List<Square> squaresLegalToMove = board.SearchForSquares(
+                squareChecker, this.position, 1, this.legalMovementDirections.ToArray());
+            
 
             return squaresLegalToMove;
         }

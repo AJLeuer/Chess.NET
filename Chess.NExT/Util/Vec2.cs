@@ -1,6 +1,7 @@
 ﻿using System;
 using SFML.System;
 
+
 namespace System
 {
     interface IIndexable<N>
@@ -66,7 +67,12 @@ namespace Chess.Util
         }
 
         public Vec2<OtherNumericType> ConvertMemberType <OtherNumericType>() where OtherNumericType : 
-            struct, IComparable, IComparable<OtherNumericType>, IConvertible, IEquatable<OtherNumericType>, IFormattable
+            struct, 
+            IComparable, 
+            IComparable<OtherNumericType>, 
+            IConvertible, 
+            IEquatable<OtherNumericType>, 
+            IFormattable
         {
             return new Vec2<OtherNumericType>((OtherNumericType) (dynamic) x, (OtherNumericType) (dynamic) y);
         }
@@ -143,20 +149,21 @@ namespace Chess.Util
 
         public static Vec2<N> operator + (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>((dynamic) vector0.x + vector1.x, (dynamic) vector0.y + vector1.y);
+            return new Vec2<N>(checked((dynamic)vector0.x + (dynamic)vector1.x), checked((dynamic) vector0.y + (dynamic) vector1.y));
         }
         
         public static Vec2<long> operator + (Vec2<N> vector0, Vec2<short> vector1)
         {
-            return new Vec2<long>((dynamic)vector0.x + vector1.x, (dynamic)vector0.y + vector1.y);
+            Vec2<int> v0 = vector0.ConvertMemberType<int>();
+            return new Vec2<long>(v0.x + vector1.x, v0.y + vector1.y);
         }
 
         public static Vec2<N> operator - (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>((dynamic) vector0.x - vector1.x, (dynamic) vector0.y - vector1.y);
+            return new Vec2<N>(checked((dynamic)vector0.x - (dynamic)vector1.x), checked((dynamic) vector0.y - (dynamic) vector1.y));
         }
         
-        public static Vec2<N> operator * (Vec2<N> vector, uint n)
+        public static Vec2<N> operator * (Vec2<N> vector, N n)
         {
             N x = (N) ((dynamic) vector.x * n);
             N y = (N) ((dynamic) vector.y * n);
@@ -170,6 +177,44 @@ namespace Chess.Util
             N y = (N) ((dynamic) vector.y / n);
             
             return new Vec2<N>(x, y);
+        }
+
+        public static double Distance(Vec2<N> point0, Vec2<N> point1)
+        {
+            Vec2<double> p0 = point0.ConvertMemberType<Double>();
+            Vec2<double> p1 = point1.ConvertMemberType<Double>();
+
+            return distance(p0, p1);
+        }
+
+
+        public static double Distance<M>(Vec2<N> point0, Vec2<M> point1) where M : 
+            struct, 
+            IComparable, 
+            IComparable<M>, 
+            IConvertible, 
+            IEquatable<M>, 
+            IFormattable
+        {
+            Vec2<double> p0 = point0.ConvertMemberType<Double>();
+            Vec2<double> p1 = point1.ConvertMemberType<Double>();
+
+            return distance(p0, p1);
+        }
+
+        private static double distance(Vec2<double> point0, Vec2<double> point1)
+        {
+            double xDifference = point1.x - point0.x;
+            double yDifference = point1.y - point0.y;
+
+            xDifference = Math.Abs(xDifference);
+            yDifference = Math.Abs(yDifference);
+
+            double sum = Math.Pow(xDifference, 2) + Math.Pow(yDifference, 2);
+
+            double result = Math.Sqrt(sum);
+
+            return result;
         }
 
     }

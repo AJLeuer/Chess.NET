@@ -81,18 +81,35 @@ namespace Chess.Game
 		{
 			
 		}
-
-		public Board(Square[][] squares)
-		{
-			this.Squares = squares;
-		}
-
+		
 		public Board(Board other)
 		{
 			// ReSharper disable once CoVariantArrayConversion
 			this.Squares = (Square[][]) other.Squares.DeepClone();
 		}
+
+		public Board(Square[][] squares)
+		{
+			this.Squares = squares;
+		}
 		
+		public Board(List<List<Square>> squares):
+			this(squares.Select(l => l.ToArray()).ToArray())
+		{
+			
+		}
+
+		public Square this[RankAndFile boardPosition]
+		{
+			get
+			{
+				return this[boardPosition.file, boardPosition.rank];
+			}
+			set
+			{
+				this[boardPosition.file, boardPosition.rank] = value;
+			}
+		}
 				
 		public Square this[File file, Rank rank]
 		{
@@ -118,10 +135,10 @@ namespace Chess.Game
 			}
 		}
 		
-		/// <return>The Square at the position specified by rankAndFile</return>
-		public virtual Square getSquare(RankAndFile rankAndFile)
+		/// <return>The Square at the position specified by boardPosition</return>
+		public virtual Square getSquare(RankAndFile boardPosition)
 		{
-			return this[rankAndFile.file, rankAndFile.rank];
+			return this[boardPosition.file, boardPosition.rank];
 		} 
 
 		public static implicit operator Square[][](Board board)
@@ -176,138 +193,75 @@ namespace Chess.Game
 			}
 		}
 
-		public List<Square> getSpecifiedSquares(bool includeFirstPieceOfColorEncountered, Color colorToInclude,
-			Vec2<uint> startingSquarePosition, params Direction[] directions)
+		public List<Square> SearchForSquares(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition,
+			ushort distance = 1, params Direction[] directions)
 		{
-			var squares = new List<Square>();
-
-			for (var i = 0; i < directions.Length; i++) {
-
-				Vec2<short> offset = directions[i]; //directions convert to vectors like (0, 1)
-
-				for (Vec2<long> next = (startingSquarePosition + offset) ; ; next += offset)
-				{
-
-					Vec2<uint> nextPosition = next.ConvertMemberType<uint>();
-					
-					if (isInsideBounds(nextPosition)) {
-
-						Square nextSquare = getSquare(nextPosition);
-
-						if (nextSquare.isOccupied)
-						{
-							Piece nextPiece = nextSquare.Piece.Value;
-
-							if ((includeFirstPieceOfColorEncountered) &&
-							    (nextPiece.color == colorToInclude)) 
-							{
-								squares.Add(nextSquare);
-							}
-							break;
-						}
-						else {
-							squares.Add(nextSquare);
-						}
-
-					}
-
-					else /* if (isInsideBoardBounds(next) == false) */ { //we've gone outside the bounds of the board. we can can safely break out of this loop and avoid more pointless searching, since we know there's nothing in this direction
-						break;
-					}
-				}
-			}
-
-			return squares;
-		}
-
-
-		public List<Square> getSpecifiedSquares(uint maxSearchDistance, bool includeFirstPieceOfColorEncountered,
-			Color colorToInclude, Vec2<uint> startingSquarePosition, params Direction[] directions)
-		{
-			var squares = new List<Square>();
-
-			for (var i = 0; i < directions.Length; i++) {
-
-				Vec2<short> offset = directions[i];  //directions convert to vectors like (0, 1)
-
-				var next = startingSquarePosition + offset;
-				var endpoint = startingSquarePosition + (offset * maxSearchDistance);
-
-				for ( ; ; next += offset)
-				{
-
-					Vec2<uint> nextPosition = next.ConvertMemberType<uint>();
-
-					if (isInsideBounds(nextPosition)) {
-
-						Square nextSquare = getSquare(nextPosition);
-
-						if (nextSquare.isOccupied) 
-						{ 
-							Piece nextPiece = nextSquare.Piece.Value;
-							
-							if ((includeFirstPieceOfColorEncountered) &&
-							    (nextPiece.color == colorToInclude)) 
-							{
-								squares.Add(nextSquare);
-							}
-							/* Else this is our stopping point */
-							break;
-						}
-						else {
-							squares.Add(nextSquare);
-						}
-
-						if (next == endpoint) {
-							break;
-						}
-					}
-
-					else /* if (isInsideBoardBounds(next) == false) */ { //we've gone outside the bounds of the board. we can can safely break out of this loop and avoid more pointless searching, since we know there's nothing in this direction
-						break;
-					}
-				}
-			}
-
-			return squares;
-		}
-
-
-		/**
-		 * @return A vector of Squares that match the given criteria
-		 *
-		 * @param startingSquarePosition The position of the first square processed
-		 * @param searchRadius Specifies the range of other squares to include
-		 */
-		public List<Square> getSpecifiedSquares(Vec2<uint> startingSquarePosition, int searchRadius)
-		{
-			var squares = new List<Square>();
+			var squares = new List<Square> {};
 			
-			for (Vec2<long> index = new Vec2<long>((startingSquarePosition.x - searchRadius),(startingSquarePosition.y - searchRadius));
-				index.x <= (startingSquarePosition.x + searchRadius); index.x++) 
+			foreach (var direction in directions)
 			{
-
-				for (index.y = (startingSquarePosition.y - searchRadius);
-					index.y <= (startingSquarePosition.y + searchRadius); index.y++)
-				{
-					var currentIndex = index.ConvertMemberType<uint>();
-						
-					if (isInsideBounds(currentIndex)) 
-					{
-						Square square = getSquare(currentIndex);
-						squares.Add(square);
-					}
-
-				}
-
+				List<Square> squaresInCurrentDirection = searchForSquaresInGivenDirection(squareMatcher, 
+					startingSquarePosition, (short) distance, direction);
+				
+				squares.AddRange(squaresInCurrentDirection);
 			}
 
 			return squares;
 		}
 
+		private List<Square> searchForSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
+		{
+			var squares = new List<Square> {};
+
+			for (short distance = 1; distance <= maximumDistance; distance++)
+			{
+				Vec2<long> position = startingSquarePosition + ((Vec2<short>) direction * distance);
+				Vec2<uint> boardPosition = position.ConvertMemberType<uint>();
+				
+				Optional<Square> square = checkForMatchingSquare(squareMatcher, boardPosition);
+			
+				if (square.HasValue)
+				{
+					squares.Add(square.Value);
+
+					if (square.Value.isOccupied)
+					{
+						break;
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			return squares;
+		}
+
+		private Optional<Square> checkForMatchingSquare(Predicate<Square> squareMatcher, Vec2<uint> position)
+		{
+			if (isInsideBounds(position))
+			{
+				Square square = this[position];
+
+				if (squareMatcher(square))
+				{
+					return square;
+				}
+				else
+				{
+					return Optional<Square>.Empty;
+				}
+			}
+			else
+			{
+				return Optional<Square>.Empty;
+			}
+		}
+		
 		public Square findMatchingSquare(Square square)
 		{
-			Square ownSquare = getSquare(square.rankAndFile);
+			Square ownSquare = getSquare(square.boardPosition);
 			return ownSquare;
 		}
 

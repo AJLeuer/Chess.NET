@@ -12,7 +12,7 @@ namespace Chess.NExT.Test
     public static class KnightTest
     {
 
-        [Test]
+        //[Test]
         public static void ShouldFindAllValidMoveDestinations()
         {
             Board board = new Board(squares: Board.EmptySquares);

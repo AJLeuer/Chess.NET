@@ -80,14 +80,6 @@ namespace Chess.Game
         {
             return new Knight(this);
         }
-	
-        public override List<Square> findAllPossibleLegalMoveDestinations()
-        {
-            var legalMoves = board.getSpecifiedSquares(1, true, color.getOpposite(), position,
-                legalMovementDirections.ToArray());
-	
-            return legalMoves;
-        }
         
         public override void move(RankAndFile destination) 
         {

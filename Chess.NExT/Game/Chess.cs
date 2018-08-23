@@ -134,9 +134,9 @@ namespace Chess.Game
 			return new RankAndFile(position);
 		}
 	    
-	    public static implicit operator Vec2<uint>(RankAndFile rankAndFile)  
+	    public static implicit operator Vec2<uint>(RankAndFile boardPosition)  
 	    {
-		    return rankAndFile.convertToPosition();
+		    return boardPosition.convertToPosition();
 	    }
 
 		public Vec2<uint> convertToPosition ()  {
@@ -160,15 +160,15 @@ namespace Chess.Game
 			return new Vec2<uint>(x, y);
 		}
 
-	    public static Boolean operator == (RankAndFile rankAndFile0, RankAndFile rankAndFile1)
+	    public static Boolean operator == (RankAndFile boardPosition0, RankAndFile boardPosition1)
 	    {
-		    return (rankAndFile0.rank == rankAndFile1.rank) &&
-		           (rankAndFile0.file == rankAndFile1.file);
+		    return (boardPosition0.rank == boardPosition1.rank) &&
+		           (boardPosition0.file == boardPosition1.file);
 	    }
 
-	    public static bool operator != (RankAndFile rankAndFile0, RankAndFile rankAndFile1)
+	    public static bool operator != (RankAndFile boardPosition0, RankAndFile boardPosition1)
 	    {
-		    return !(rankAndFile0 == rankAndFile1);
+		    return !(boardPosition0 == boardPosition1);
 	    }
 
 	    public override Boolean Equals(object @object)
@@ -284,7 +284,7 @@ namespace Chess.Game
 		{
 			short startingValue = board.evaluate(player);
 
-			short valueAfterMove = board.evaluateAfterHypotheticalMove(player, piece, destination.rankAndFile);
+			short valueAfterMove = board.evaluateAfterHypotheticalMove(player, piece, destination.boardPosition);
 
 			value = (short)(valueAfterMove - startingValue);
 		}
