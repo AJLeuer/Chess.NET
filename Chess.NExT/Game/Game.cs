@@ -68,7 +68,7 @@ namespace Chess.Game
 
             initializePlayers();
 
-            foreach (var file in (Square[][]) board)
+            foreach (var file in board)
             {
                 foreach (Square square in file)
                 {
@@ -185,7 +185,7 @@ namespace Chess.Game
             Vec2<uint> windowSize = window.Size;
             var middle = windowSize / 2;
 
-            foreach (var file in (Square[][]) board)
+            foreach (var file in board)
             {
                 foreach (Square square in file)
                 {

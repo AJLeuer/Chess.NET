@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 using Chess.Game;
@@ -8,11 +9,9 @@ using Rank = System.UInt16;
 
 namespace Chess.NExT.Test
 {
-    [TestFixture]
     public static class KnightTest
     {
-
-        //[Test]
+        [Test]
         public static void ShouldFindAllValidMoveDestinations()
         {
             Board board = new Board(squares: Board.EmptySquares);
@@ -24,10 +23,9 @@ namespace Chess.NExT.Test
             square.Piece = knight;
 
             List<Square> possibleMoves = knight.findAllPossibleLegalMoveDestinations();
-
-
-            possibleMoves.Should().BeEquivalentTo(board['f'][2], board['d'][2], board['c'][3],
-                board['c'][5], board['d'][6], board['f'][6], board['g'][5] /*, board['g'][3] */);
+            
+            possibleMoves.Should().BeEquivalentTo(board['f', 2], board['d', 2], board['c', 3],
+                board['c', 5], board['d', 6], board['f', 6], board['g', 5] , board['g', 3]);
 
         }
         

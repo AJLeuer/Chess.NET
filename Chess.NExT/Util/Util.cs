@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using C5;
 using SFML.System;
 
 namespace Chess.Util
@@ -25,6 +27,21 @@ namespace Chess.Util
         {
             object returnValue = arg;
             return returnValue;
+        }
+        
+                
+        public static ArrayList< ArrayList<T> > CreateFrom2DArray<T>(T[][] arrays)
+        {
+            var arrayLists = new ArrayList< ArrayList<T> >();
+            
+            foreach (T[] array in arrays)
+            {
+                var arrayList = new ArrayList<T>();
+                arrayList.AddAll(array);
+                arrayLists.Add(arrayList);
+            }
+
+            return arrayLists;
         }
     }
     
@@ -56,7 +73,7 @@ namespace Chess.Util
             return cloneArrays;
         }
 
-        public static T selectElementAtRandom<T>(this IList<T> container)
+        public static T selectElementAtRandom<T>(this System.Collections.Generic.IList<T> container)
         {
             var randomizer = new Random();
 

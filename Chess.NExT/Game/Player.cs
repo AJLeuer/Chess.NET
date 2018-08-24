@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using C5;
 using Chess.Util;
 using Tree;
 
@@ -68,7 +69,7 @@ namespace Chess.Game
         {
             var pieces = new List<Piece>();
     
-            foreach (Square[] file in board)
+            foreach (var file in board)
             {
                 foreach (Square square in file)
                 {

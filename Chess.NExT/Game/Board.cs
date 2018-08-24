@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using C5;
 
 using Chess.Util;
+using static Chess.Util.Util;
 using static Chess.Game.Color;
 
 using File = System.Char;
@@ -11,63 +13,63 @@ using Rank = System.UInt16;
 
 namespace Chess.Game
 {
-	public class Board : ICloneable, IEnumerable
+	
+	public class Board : ICloneable, IEnumerable< ArrayList<Square> >
 	{
-
 		protected static ulong IDs = 0;
 
 		protected ulong ID { get; } = IDs++;
 		
 		public virtual Vec2<uint> maxPosition
 		{
-			get { return new Vec2<uint>((uint) Squares.Length - 1, (uint) Squares[0].Length - 1); }
+			get { return new Vec2<uint>((uint) Squares.Count - 1, (uint) Squares[0].Count - 1); }
 		}
-		
-		public static readonly Square[][] DefaultStartingSquares = new Square[][]
+
+		public static readonly ArrayList< ArrayList<Square> > DefaultStartingSquares = new ArrayList< ArrayList<Square> >
 		{
-			new Square[] { new Square('♜', 'a', 8), new Square('♟', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square('♙', 'a', 2), new Square('♖', 'a', 1) },
+			new ArrayList<Square> { new Square('♜', 'a', 8), new Square('♟', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square('♙', 'a', 2), new Square('♖', 'a', 1) },
 			
-			new Square[] { new Square('♞', 'b', 8), new Square('♟', 'b', 7), new Square(' ', 'b', 6), new Square(' ', 'b', 5), new Square(' ', 'b', 4), new Square(' ', 'b', 3), new Square('♙', 'b', 2), new Square('♘', 'b', 1) },
+			new ArrayList<Square> { new Square('♞', 'b', 8), new Square('♟', 'b', 7), new Square(' ', 'b', 6), new Square(' ', 'b', 5), new Square(' ', 'b', 4), new Square(' ', 'b', 3), new Square('♙', 'b', 2), new Square('♘', 'b', 1) },
 			
-			new Square[] { new Square('♝', 'c', 8), new Square('♟', 'c', 7), new Square(' ', 'c', 6), new Square(' ', 'c', 5), new Square(' ', 'c', 4), new Square(' ', 'c', 3), new Square('♙', 'c', 2), new Square('♗', 'c', 1) },
+			new ArrayList<Square> { new Square('♝', 'c', 8), new Square('♟', 'c', 7), new Square(' ', 'c', 6), new Square(' ', 'c', 5), new Square(' ', 'c', 4), new Square(' ', 'c', 3), new Square('♙', 'c', 2), new Square('♗', 'c', 1) },
 			
-			new Square[] { new Square('♛', 'd', 8), new Square('♟', 'd', 7), new Square(' ', 'd', 6), new Square(' ', 'd', 5), new Square(' ', 'd', 4), new Square(' ', 'd', 3), new Square('♙', 'd', 2), new Square('♕', 'd', 1) },
+			new ArrayList<Square> { new Square('♛', 'd', 8), new Square('♟', 'd', 7), new Square(' ', 'd', 6), new Square(' ', 'd', 5), new Square(' ', 'd', 4), new Square(' ', 'd', 3), new Square('♙', 'd', 2), new Square('♕', 'd', 1) },
 			
-			new Square[] { new Square('♚', 'e', 8), new Square('♟', 'e', 7), new Square(' ', 'e', 6), new Square(' ', 'e', 5), new Square(' ', 'e', 4), new Square(' ', 'e', 3), new Square('♙', 'e', 2), new Square('♔', 'e', 1) },
+			new ArrayList<Square> { new Square('♚', 'e', 8), new Square('♟', 'e', 7), new Square(' ', 'e', 6), new Square(' ', 'e', 5), new Square(' ', 'e', 4), new Square(' ', 'e', 3), new Square('♙', 'e', 2), new Square('♔', 'e', 1) },
 			
-			new Square[] { new Square('♝', 'f', 8), new Square('♟', 'f', 7), new Square(' ', 'f', 6), new Square(' ', 'f', 5), new Square(' ', 'f', 4), new Square(' ', 'f', 3), new Square('♙', 'f', 2), new Square('♗', 'f', 1) },
+			new ArrayList<Square> { new Square('♝', 'f', 8), new Square('♟', 'f', 7), new Square(' ', 'f', 6), new Square(' ', 'f', 5), new Square(' ', 'f', 4), new Square(' ', 'f', 3), new Square('♙', 'f', 2), new Square('♗', 'f', 1) },
 			
-			new Square[] { new Square('♞', 'g', 8), new Square('♟', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square('♙', 'g', 2), new Square('♘', 'g', 1) },
+			new ArrayList<Square> { new Square('♞', 'g', 8), new Square('♟', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square('♙', 'g', 2), new Square('♘', 'g', 1) },
 			
-			new Square[] { new Square('♜', 'h', 8), new Square('♟', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square('♙', 'h', 2), new Square('♖', 'h', 1) }
+			new ArrayList<Square> { new Square('♜', 'h', 8), new Square('♟', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square('♙', 'h', 2), new Square('♖', 'h', 1) }
 		};
 		
-		public static readonly Square[][] EmptySquares = new Square[][]
+		public static readonly ArrayList< ArrayList<Square> > EmptySquares = new ArrayList< ArrayList<Square> >
 		{
-			new Square[] { new Square(' ', 'a', 8), new Square(' ', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square(' ', 'a', 2), new Square(' ', 'a', 1) },
+			new ArrayList<Square> { new Square(' ', 'a', 8), new Square(' ', 'a', 7), new Square(' ', 'a', 6), new Square(' ', 'a', 5), new Square(' ', 'a', 4), new Square(' ', 'a', 3), new Square(' ', 'a', 2), new Square(' ', 'a', 1) },
 			
-			new Square[] { new Square(' ', 'b', 8), new Square(' ', 'b', 7), new Square(' ', 'b', 6), new Square(' ', 'b', 5), new Square(' ', 'b', 4), new Square(' ', 'b', 3), new Square(' ', 'b', 2), new Square(' ', 'b', 1) },
+			new ArrayList<Square> { new Square(' ', 'b', 8), new Square(' ', 'b', 7), new Square(' ', 'b', 6), new Square(' ', 'b', 5), new Square(' ', 'b', 4), new Square(' ', 'b', 3), new Square(' ', 'b', 2), new Square(' ', 'b', 1) },
 			
-			new Square[] { new Square(' ', 'c', 8), new Square(' ', 'c', 7), new Square(' ', 'c', 6), new Square(' ', 'c', 5), new Square(' ', 'c', 4), new Square(' ', 'c', 3), new Square(' ', 'c', 2), new Square(' ', 'c', 1) },
+			new ArrayList<Square> { new Square(' ', 'c', 8), new Square(' ', 'c', 7), new Square(' ', 'c', 6), new Square(' ', 'c', 5), new Square(' ', 'c', 4), new Square(' ', 'c', 3), new Square(' ', 'c', 2), new Square(' ', 'c', 1) },
 			
-			new Square[] { new Square(' ', 'd', 8), new Square(' ', 'd', 7), new Square(' ', 'd', 6), new Square(' ', 'd', 5), new Square(' ', 'd', 4), new Square(' ', 'd', 3), new Square(' ', 'd', 2), new Square(' ', 'd', 1) },
+			new ArrayList<Square> { new Square(' ', 'd', 8), new Square(' ', 'd', 7), new Square(' ', 'd', 6), new Square(' ', 'd', 5), new Square(' ', 'd', 4), new Square(' ', 'd', 3), new Square(' ', 'd', 2), new Square(' ', 'd', 1) },
 			
-			new Square[] { new Square(' ', 'e', 8), new Square(' ', 'e', 7), new Square(' ', 'e', 6), new Square(' ', 'e', 5), new Square(' ', 'e', 4), new Square(' ', 'e', 3), new Square(' ', 'e', 2), new Square(' ', 'e', 1) },
+			new ArrayList<Square> { new Square(' ', 'e', 8), new Square(' ', 'e', 7), new Square(' ', 'e', 6), new Square(' ', 'e', 5), new Square(' ', 'e', 4), new Square(' ', 'e', 3), new Square(' ', 'e', 2), new Square(' ', 'e', 1) },
 			
-			new Square[] { new Square(' ', 'f', 8), new Square(' ', 'f', 7), new Square(' ', 'f', 6), new Square(' ', 'f', 5), new Square(' ', 'f', 4), new Square(' ', 'f', 3), new Square(' ', 'f', 2), new Square(' ', 'f', 1) },
+			new ArrayList<Square> { new Square(' ', 'f', 8), new Square(' ', 'f', 7), new Square(' ', 'f', 6), new Square(' ', 'f', 5), new Square(' ', 'f', 4), new Square(' ', 'f', 3), new Square(' ', 'f', 2), new Square(' ', 'f', 1) },
 			
-			new Square[] { new Square(' ', 'g', 8), new Square(' ', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square(' ', 'g', 2), new Square(' ', 'g', 1) },
+			new ArrayList<Square> { new Square(' ', 'g', 8), new Square(' ', 'g', 7), new Square(' ', 'g', 6), new Square(' ', 'g', 5), new Square(' ', 'g', 4), new Square(' ', 'g', 3), new Square(' ', 'g', 2), new Square(' ', 'g', 1) },
 			
-			new Square[] { new Square(' ', 'h', 8), new Square(' ', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square(' ', 'h', 2), new Square(' ', 'h', 1) }
+			new ArrayList<Square> { new Square(' ', 'h', 8), new Square(' ', 'h', 7), new Square(' ', 'h', 6), new Square(' ', 'h', 5), new Square(' ', 'h', 4), new Square(' ', 'h', 3), new Square(' ', 'h', 2), new Square(' ', 'h', 1) }
 		};
 
-		protected Square[][] squares;
+		protected ArrayList< ArrayList<Square> > squares;
 
-		public Square[][] Squares
+		public ArrayList< ArrayList<Square> > Squares
 		{
 			get { return squares; }
 
-			internal set
+			protected set
 			{
 				squares = value;
 				takeOwnershipOfSquares();
@@ -84,19 +86,15 @@ namespace Chess.Game
 		
 		public Board(Board other)
 		{
-			// ReSharper disable once CoVariantArrayConversion
-			this.Squares = (Square[][]) other.Squares.DeepClone();
+			Square[][] otherSquaresArray = other.Squares.Select( (ArrayList<Square> file) => file.ToArray()).ToArray();
+			Square[][] otherSquaresClone =  (Square[][]) otherSquaresArray.DeepClone();
+
+			this.Squares = CreateFrom2DArray(otherSquaresClone);
 		}
 
-		public Board(Square[][] squares)
+		public Board(ArrayList< ArrayList<Square> > squares)
 		{
 			this.Squares = squares;
-		}
-		
-		public Board(List<List<Square>> squares):
-			this(squares.Select(l => l.ToArray()).ToArray())
-		{
-			
 		}
 
 		public Square this[RankAndFile boardPosition]
@@ -115,23 +113,23 @@ namespace Chess.Game
 		{
 			get
 			{
-				return this[RankAndFile.convertToInteger(file: file)][RankAndFile.convertToInteger(rank: rank)];
+				return this[RankAndFile.convertToInteger(file: file)][(int) RankAndFile.convertToInteger(rank: rank)];
 			}
 			set
 			{
-				this[RankAndFile.convertToInteger(file: file)][RankAndFile.convertToInteger(rank: rank)] = value;
+				this[RankAndFile.convertToInteger(file: file)][(int) RankAndFile.convertToInteger(rank: rank)] = value;
 			}
 		}
 
-		public Square[] this[uint index]
+		protected ArrayList<Square> this[uint index]
 		{
 			get
 			{
-				return Squares[index];
+				return Squares[(int)index];
 			}
 			set
 			{
-				Squares[index] = value;
+				Squares[(int)index] = value;
 			}
 		}
 		
@@ -141,12 +139,17 @@ namespace Chess.Game
 			return this[boardPosition.file, boardPosition.rank];
 		} 
 
-		public static implicit operator Square[][](Board board)
+//		public static implicit operator Square[][](Board board)
+//		{
+//			return board.Squares;
+//		}
+		
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return board.Squares;
+			return Squares.GetEnumerator();
 		}
 		
-		public virtual IEnumerator GetEnumerator()
+		public virtual IEnumerator<ArrayList<Square>> GetEnumerator()
 		{
 			return Squares.GetEnumerator();
 		}
@@ -184,9 +187,9 @@ namespace Chess.Game
 		 */
 		public virtual bool isInsideBounds(Vec2<uint> position)
 		{
-			if (position.x < Squares.Length)
+			if (position.x < Squares.Count)
 			{
-				return position.y < Squares[position.x].Length;
+				return position.y < Squares[(int)position.x].Count;
 			}
 			else {
 				return false;
