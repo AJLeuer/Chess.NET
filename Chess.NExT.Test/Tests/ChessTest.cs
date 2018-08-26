@@ -3,7 +3,7 @@ using Chess.Util;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Chess.NExT.Test
+namespace Chess.NExT.Test.Tests
 {
     public static class ChessTest
     {

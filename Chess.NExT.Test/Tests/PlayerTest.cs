@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using C5;
-using NUnit.Framework;
-using Moq;
-
 using Chess.Game;
-using Chess.Util;
+using Chess.NExT.Test.Util;
 using FluentAssertions;
+using Moq;
+using NUnit.Framework;
 
-namespace Chess.NExT.Test
+namespace Chess.NExT.Test.Tests
 {
     public static class PlayerTest
     {
@@ -38,8 +37,7 @@ namespace Chess.NExT.Test
             List<Piece> pieces = player.findOwnPiecesOnBoard(mockBoard);
 
             //checks that pawnF2, pawnG2, and knightG1 (and nothing else) are in pieces, but in no particular order
-            CollectionAssert.AreEquivalent(new Piece[] {knightG1, pawnF2, pawnG2}, pieces);
-            pieces.Should().BeEquivalentTo(pawnG2, pawnF2, knightG1);
+            AdditionalCollectionAssertions.Contains(actual: pieces, knightG1, pawnF2, pawnG2);
         }
     }
 }

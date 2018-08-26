@@ -235,7 +235,7 @@ namespace Chess.Game
             };
             
             List<Square> squaresLegalToMove = board.SearchForSquares(
-                squareChecker, this.position, 1, this.legalMovementDirections.ToArray());
+                squareChecker, this.position, directions: this.legalMovementDirections.ToArray());
             
 
             return squaresLegalToMove;

@@ -185,11 +185,11 @@ namespace Chess.Game
 		 *
 		 * @return true if pos exists on the board, false otherwise
 		 */
-		public virtual bool isInsideBounds(Vec2<uint> position)
+		public virtual bool IsInsideBounds(Vec2<int> position)
 		{
-			if (position.x < Squares.Count)
+			if ((position.x >= 0) && (position.x < Squares.Count))
 			{
-				return position.y < Squares[(int)position.x].Count;
+				return ((position.y >= 0) && (position.y < Squares[position.x].Count));
 			}
 			else {
 				return false;
@@ -219,7 +219,8 @@ namespace Chess.Game
 			for (short distance = 1; distance <= maximumDistance; distance++)
 			{
 				Vec2<long> position = startingSquarePosition + ((Vec2<short>) direction * distance);
-				Vec2<uint> boardPosition = position.ConvertMemberType<uint>();
+				//todo: can't convert to uint here if we have negative coord
+				Vec2<int> boardPosition = position.ConvertMemberType<int>();
 				
 				Optional<Square> square = checkForMatchingSquare(squareMatcher, boardPosition);
 			
@@ -241,11 +242,11 @@ namespace Chess.Game
 			return squares;
 		}
 
-		private Optional<Square> checkForMatchingSquare(Predicate<Square> squareMatcher, Vec2<uint> position)
+		private Optional<Square> checkForMatchingSquare(Predicate<Square> squareMatcher, Vec2<int> position)
 		{
-			if (isInsideBounds(position))
+			if (IsInsideBounds(position))
 			{
-				Square square = this[position];
+				Square square = this[position.ConvertMemberType<uint>()];
 
 				if (squareMatcher(square))
 				{

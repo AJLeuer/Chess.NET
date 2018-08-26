@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-
+﻿using System.Collections.Generic;
 using Chess.Game;
 using FluentAssertions;
+using NUnit.Framework;
 using File = System.Char;
 using Rank = System.UInt16;
 
-namespace Chess.NExT.Test
+namespace Chess.NExT.Test.Tests
 {
     public static class KnightTest
     {
