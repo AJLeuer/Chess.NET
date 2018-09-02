@@ -138,11 +138,6 @@ namespace Chess.Game
 		{
 			return this[boardPosition.file, boardPosition.rank];
 		} 
-
-//		public static implicit operator Square[][](Board board)
-//		{
-//			return board.Squares;
-//		}
 		
 		IEnumerator IEnumerable.GetEnumerator()
 		{
@@ -180,11 +175,10 @@ namespace Chess.Game
 			}	
 		}
 
-		/**
-		 * @param pos This function checks whether pos is within the bounds of the Chess board
-		 *
-		 * @return true if pos exists on the board, false otherwise
-		 */
+		
+		/// <param name="position">This function checks whether <paramref name="position"/> is within the bounds of the Chess board</param>
+		///
+		/// <return>true if position exists on the board, false otherwise</return>
 		public virtual bool IsInsideBounds(Vec2<int> position)
 		{
 			if ((position.x >= 0) && (position.x < Squares.Count))
@@ -269,25 +263,23 @@ namespace Chess.Game
 			return ownSquare;
 		}
 
-		/**
-		 * Finds the Piece on this board that matches the given argument. There are two requirements for a match:
-		 * first that the two pieces are at the same position on their respective boards (and they may belong to different boards),
-		 * second is that they are of the same type. Note that this function does not verify that they are the same object (and indeed
-		 * the very purpose of this function is such that in most cases the argument and the return value should point to different objects
-		 * entirely).
-		 *
-		 * @param piece The piece to match
-		 */
+		/// <summary>Finds the Piece on this board that matches the given argument. There are three requirements for a match:
+		///first that the two pieces are at the same position on their respective boards (and they may belong to different boards),
+		///second is that they are of the same type, the third that they are the same color. Note that this function does
+		/// not verify that they are the same object (and indeed the very purpose of this function is such that in most
+		/// cases the argument and the return value should point to different objects entirely)</summary>
+		///
+		/// <param name="piece">The piece to match</param>
 		public Piece findMatchingPiece(Piece piece)
 		{
-			
 			Square square = findMatchingSquare(piece.Square);
 
-			if (square.Piece.HasValue) 
+			if (square.Piece.HasValue)
 			{
-
-				if (square.Piece.GetType() == piece.GetType()) {
-					return square.Piece.Value;
+				Piece potentialMatchingPiece = square.Piece.Value;
+				
+				if ((potentialMatchingPiece.GetType() == piece.GetType()) && (potentialMatchingPiece.color == piece.color)) {
+					return potentialMatchingPiece;
 				}
 			}
 
@@ -295,14 +287,10 @@ namespace Chess.Game
 		}
 
 
-		/**
-		 * Calculates a numeric value based on the current state of the chess board (including the existence and configuration of pieces)m
-		 * from the perspective of the player playing the Chess::Color color. In other words, if e.g. the player playing white requests the current
-		 * value of the board, it will be calculated by subtracting the sum of the extant black pieces from the sum of the remaining white ones.
-		 *
-		 * @param playerColor The color of the player from whose perspective the value of the game state is calculated
-		 */
-		public virtual short evaluate(Player player)
+		/// <summary>Calculates the value of the current state of the board from the perspective of Player player</summary>
+		///
+		/// <param name="player">The player from whose perspective the value of the game state is calculated</param>
+		public virtual short CalculateRelativeValue(Player player)
 		{	
 			short blackSum = 0;
 			short whiteSum = 0;
@@ -315,7 +303,7 @@ namespace Chess.Game
 					{
 						Piece piece = square.Piece.Value;
 						
-						if (piece.color == black)
+						if (piece.color == Color.black)
 						{
 							blackSum += (short)piece.value;
 						}
@@ -337,13 +325,11 @@ namespace Chess.Game
 			}
 		}
 
-		/**
-		 * Same as running evaluate() after moving piece to the specified RankAndFile. Does not actually change the state of the board.
-		 *
-		 * @param callingPlayersColor The color of the player from whose perspective the value of the game state is calculated
-		 * @param piece The Piece that would move
-		 * @param moveTo Where piece would move
-		 */
+		/// <summary>Same as running CalculateRelativeValue() after moving piece to the specified RankAndFile. Does not actually change the state of the board.</summary>
+		///
+		/// <param name="callingPlayersColor">The color of the player from whose perspective the value of the game state is calculated</param>
+		/// <param name="piece">The Piece that would move</param>
+		/// <param name="destination">Where piece would move</param>
 		public short evaluateAfterHypotheticalMove(Player player, Piece piece, RankAndFile destination)
 		{
 			
@@ -353,7 +339,7 @@ namespace Chess.Game
 
 			testPiece.move(destination);
 
-			return testBoard.evaluate(player);
+			return testBoard.CalculateRelativeValue(player);
 		}
 	}
 

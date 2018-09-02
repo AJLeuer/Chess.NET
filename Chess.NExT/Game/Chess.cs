@@ -282,7 +282,7 @@ namespace Chess.Game
 
 		protected void calculateValue()
 		{
-			short startingValue = board.evaluate(player);
+			short startingValue = board.CalculateRelativeValue(player);
 
 			short valueAfterMove = board.evaluateAfterHypotheticalMove(player, piece, destination.boardPosition);
 

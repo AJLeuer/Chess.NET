@@ -93,8 +93,8 @@ namespace Chess.Game
         {
             if ((player0 != null) && (player1 != null))
             {
-                player0.board = board;
-                player1.board = board;
+                player0.Board = board;
+                player1.Board = board;
             }
         }
 

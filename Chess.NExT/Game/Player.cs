@@ -17,20 +17,29 @@ namespace Chess.Game
 
         public string name { get; }
     
-        public Color color { get; }
+        public virtual Color color { get; }
 
-        public Board board { get; set; }
+        private Board board;
+        
+        public Board Board {
+            get { return board; }
 
-        public List<Piece> pieces { get; }
+            set
+            {
+                this.board = value;
+                this.pieces = findOwnPiecesOnBoard(board);
+                initializePieces();
+            }
+        }
+
+        public List<Piece> pieces { get; private set; }
 
         /* Any other constructors should call this as a delegating constructor */
         public Player(Color color, Board board = null)
         {
             this.name = "Player " + ID;
             this.color = color;
-            this.board = board;
-            pieces = findOwnPiecesOnBoard(board);
-            initializePieces();
+            this.Board = board;
         }
 
         public Player(Player other) :
@@ -38,7 +47,7 @@ namespace Chess.Game
         {
             //can't clone our own board since we don't control it
             //the game itself is responsible for cloning the board and then assigning it to us
-            this.board = null;
+            this.Board = null;
         }
 
         ~Player () {}
@@ -68,18 +77,21 @@ namespace Chess.Game
         internal List<Piece> findOwnPiecesOnBoard(Board board)
         {
             var pieces = new List<Piece>();
-    
-            foreach (var file in board)
+
+            if (board != null)
             {
-                foreach (Square square in file)
+                foreach (var file in board)
                 {
-                    if (square.isOccupied)
+                    foreach (Square square in file)
                     {
-                        Piece piece = square.Piece.Value;
-                        
-                        if (piece.color == this.color)
+                        if (square.isOccupied)
                         {
-                            pieces.Add(piece);
+                            Piece piece = square.Piece.Value;
+
+                            if (piece.color == this.color)
+                            {
+                                pieces.Add(piece);
+                            }
                         }
                     }
                 }
