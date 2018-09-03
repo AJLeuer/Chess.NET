@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using C5;
 using SFML.System;
 
@@ -49,7 +50,8 @@ namespace Chess.Util
     {
         public static ICloneable[] DeepClone(this ICloneable[] array)
         {
-            ICloneable[] cloneArray = new ICloneable[array.Length];
+            ConstructorInfo constructor = array.GetType().GetConstructors()[0];
+            ICloneable[] cloneArray = (ICloneable[]) constructor.Invoke(new object[]{array.Length});
 
             for (uint i = 0; i < array.Length; i++)
             {
@@ -62,7 +64,8 @@ namespace Chess.Util
         
         public static ICloneable[][] DeepClone(this ICloneable[][] arrays)
         {
-            ICloneable[][] cloneArrays = new ICloneable[arrays.Length][];
+            ConstructorInfo constructor = arrays.GetType().GetConstructors()[0];
+            ICloneable[][] cloneArrays = (ICloneable[][]) constructor.Invoke(new object[] {arrays.Length}); 
 
             for (uint i = 0; i < arrays.Length; i++)
             {

@@ -51,7 +51,7 @@ namespace Chess.Game
         {
             position = new Vec2<uint>(other.position);
             /* Don't copy other's board pointer */
-            Piece = (other.isEmpty) ? null : Game.Piece.create(other.piece);
+            Piece = (other.isEmpty) ? Optional<Piece>.Empty : Game.Piece.create(other.piece);
         }
 
         public Square(char file, ushort rank, Board board = null)

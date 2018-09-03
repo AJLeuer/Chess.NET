@@ -56,7 +56,7 @@ namespace Chess.Game
             call Clone() method where inheritance is in play and polymorphism is needed */
             this(new Board(other.board), other.player0.Clone(), other.player1.Clone())
         {
-            initializePlayers();
+            
         }
 
         protected BasicGame(Board board, Player player0 = null, Player player1 = null)
@@ -67,19 +67,6 @@ namespace Chess.Game
             board.game = this;
 
             initializePlayers();
-
-            foreach (var file in board)
-            {
-                foreach (Square square in file)
-                {
-                    var piece = square.Piece;
-                    
-                    if (piece.HasValue)
-                    {
-                        piece.Value.initializeSpriteTexture();
-                    }
-                }
-            }
         }
 
         object ICloneable.Clone()
@@ -89,12 +76,28 @@ namespace Chess.Game
 
         public abstract BasicGame Clone();
         
-        private void initializePlayers()
+        protected void initializePlayers()
         {
             if ((player0 != null) && (player1 != null))
             {
                 player0.Board = board;
                 player1.Board = board;
+            }
+        }
+        
+        protected void initializeSpriteTextures()
+        {
+            foreach (var file in board)
+            {
+                foreach (Square square in file)
+                {
+                    var piece = square.Piece;
+
+                    if (piece.HasValue)
+                    {
+                        piece.Value.initializeSpriteTexture();
+                    }
+                }
             }
         }
 
@@ -136,19 +139,19 @@ namespace Chess.Game
         public ChessGame() :
             base()
         {
-            
+            initializeSpriteTextures();
         }
 
         public ChessGame(BasicGame other) :
             base(other)
         {
-            
+            initializeSpriteTextures();
         }
 
         public ChessGame(Board board, Player player0, Player player1) :
             base(board, player0, player1)
         {
-            
+            initializeSpriteTextures();
         }
 
         public override BasicGame Clone()

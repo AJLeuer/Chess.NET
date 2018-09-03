@@ -66,5 +66,18 @@ namespace Chess.NExT.Test.Tests
             board.CalculateRelativeValue(blackPlayer).Should().Be(5);
             board.CalculateRelativeValue(whitePlayer).Should().Be(-5);
         }
+
+        [Test]
+        public void ShouldCorrectlyIdentifyMatchingPieceOnAnotherBoard()
+        {
+            Board board = new Board();
+
+            Board boardCopy = new Board(board);
+
+            Queen queen = (Queen) board['d', 8].Piece.Value;
+            Queen duplicateQueen = (Queen) boardCopy['d', 8].Piece.Value;
+
+            board.findMatchingPiece(duplicateQueen).Should().Be(queen);
+        }
     }
 }
