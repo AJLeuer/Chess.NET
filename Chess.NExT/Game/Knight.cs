@@ -7,13 +7,13 @@ namespace Chess.Game
     public class Knight : Piece
     {
         
-        public static readonly new Dictionary<Color, char> defaultSymbols = new Dictionary<Color, char>
+        public new static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>
         {
             {black, '♞'}, 
             {white, '♘'}
         };
 
-        public static readonly new Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
+        public new static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
         {
             {black, "./Assets/Bitmaps/BlackKnight.png"},
             {white, "./Assets/Bitmaps/WhiteKnight.png"}

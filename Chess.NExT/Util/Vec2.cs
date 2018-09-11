@@ -4,7 +4,7 @@ using SFML.System;
 
 namespace System
 {
-    interface IIndexable<N>
+    public interface IIndexable<N>
     {
         N this[uint index] {get; set;}
     }
@@ -196,8 +196,8 @@ namespace Chess.Util
             IEquatable<M>, 
             IFormattable
         {
-            Vec2<double> p0 = point0.ConvertMemberType<Double>();
-            Vec2<double> p1 = point1.ConvertMemberType<Double>();
+            Vec2<double> p0 = point0.ConvertMemberType<double>();
+            Vec2<double> p1 = point1.ConvertMemberType<double>();
 
             return distance(p0, p1);
         }

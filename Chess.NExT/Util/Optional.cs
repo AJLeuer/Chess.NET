@@ -71,9 +71,9 @@ namespace Chess.Util
 
         public override bool Equals(object obj)
         {
-            if (obj is Optional<T>)
+            if (obj is Optional<T> optional)
             {
-                return this.Equals((Optional<T>) obj);
+                return this.Equals(optional);
             }
             else
             {

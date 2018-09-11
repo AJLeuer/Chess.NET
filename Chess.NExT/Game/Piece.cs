@@ -8,9 +8,9 @@ namespace Chess.Game
 {
     public abstract class Piece : ICloneable
     {
-        public static readonly Dictionary<Color, char> defaultSymbols;
+        public static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>();
 
-        public static readonly Dictionary<Color, String> defaultImageFiles;
+        public static readonly Dictionary<Color, string> defaultImageFiles = new Dictionary<Color, string>();
    
         protected static ulong IDs = 0;
         

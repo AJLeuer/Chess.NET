@@ -88,14 +88,14 @@ namespace Chess.Game
             clearCurrentPiece();
         }
 
-        public void receiveArrivingPiece(Piece piece)
+        public void receiveArrivingPiece(Piece arrivingPiece)
         {
             if (this.isOccupied)
             {
                 captureCurrentPiece();
             }
 
-            this.Piece = piece;
+            this.Piece = arrivingPiece;
         }
 
         protected void captureCurrentPiece()

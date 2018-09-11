@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using C5;
 using Chess.Util;
 using Tree;
 
@@ -50,8 +49,6 @@ namespace Chess.Game
             this.Board = null;
         }
 
-        ~Player () {}
-
         public static Player createByCopy(Player player)
         {
             switch (player)
@@ -74,13 +71,13 @@ namespace Chess.Game
 
         public abstract void onTurn();
         
-        internal List<Piece> findOwnPiecesOnBoard(Board board)
+        internal List<Piece> findOwnPiecesOnBoard(Board boardSearched)
         {
-            var pieces = new List<Piece>();
+            var matchingColorPieces = new List<Piece>();
 
-            if (board != null)
+            if (boardSearched != null)
             {
-                foreach (var file in board)
+                foreach (var file in boardSearched)
                 {
                     foreach (Square square in file)
                     {
@@ -90,14 +87,14 @@ namespace Chess.Game
 
                             if (piece.color == this.color)
                             {
-                                pieces.Add(piece);
+                                matchingColorPieces.Add(piece);
                             }
                         }
                     }
                 }
             }
 
-            return pieces;
+            return matchingColorPieces;
         }
 
         protected void initializePieces()

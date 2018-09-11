@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace Chess.Util
+﻿namespace Chess.Util
 {
     public struct TrueColor
     {
         
         //array <byte, 4> RGBA;
-        private Byte[] RGBA;
+        private byte[] RGBA;
 
-        public Byte R
+        public byte R
         {
             get { return RGBA[0]; }
             
@@ -16,7 +14,7 @@ namespace Chess.Util
             
         }
         
-        public Byte G
+        public byte G
         {
             get { return RGBA[1]; }
             
@@ -24,7 +22,7 @@ namespace Chess.Util
             
         }
         
-        public Byte B
+        public byte B
         {
             get { return RGBA[2]; }
             
@@ -32,7 +30,7 @@ namespace Chess.Util
             
         }
         
-        public Byte A
+        public byte A
         {
             get { return RGBA[3]; }
             
@@ -42,15 +40,15 @@ namespace Chess.Util
 
         public TrueColor (byte R, byte G, byte B, byte A)
         {
-            RGBA = new Byte[] {R, G, B, A};
+            RGBA = new byte[] {R, G, B, A};
         }
         
-        public static implicit operator TrueColor(Byte[] bytes)
+        public static implicit operator TrueColor(byte[] bytes)
         {
             return new TrueColor(bytes[0], bytes[1], bytes[2], bytes[3]);
         }
 
-        public static implicit operator Byte[](TrueColor color)
+        public static implicit operator byte[](TrueColor color)
         {
             return color.RGBA;
         }

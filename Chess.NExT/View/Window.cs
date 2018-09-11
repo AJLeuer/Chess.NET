@@ -13,11 +13,9 @@ namespace Chess.View
 
 		protected static readonly Font defaultFont;
 
-		protected  uint defaultTextCharacterSize = 60;
-
 		protected static VideoMode createDefaultVideoMode()
 		{
-			Vec2<uint> baseWindowSize = new Vec2<uint>{x = mainWindowSize.x, y = mainWindowSize.y};
+			Vec2<uint> baseWindowSize = new Vec2<uint>{x = MainWindowSize.x, y = MainWindowSize.y};
 			
 			float dpiScale = DisplayData.getDisplayScalingFactor();
 			
@@ -30,7 +28,7 @@ namespace Chess.View
 		static Window()
 		{
 			defaultVideoMode = createDefaultVideoMode();
-			defaultFont = new Font(mainFontFilePath);
+			defaultFont = new Font(MainFontFilePath);
 		}
 
 		public Text text { get; private set; }
@@ -46,10 +44,6 @@ namespace Chess.View
 				CharacterSize = defaultTextCharacterSize
 			};
 			this.backgroundColor = backgroundColor;
-		}
-
-		~Window()
-		{
 		}
 
 		public void display()
@@ -74,7 +68,7 @@ namespace Chess.View
 
 			text.Position = adjustedPos;
 
-			base.Draw(text);
+			Draw(text);
 		}
 	}
 

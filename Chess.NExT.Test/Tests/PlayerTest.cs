@@ -2,7 +2,6 @@
 using C5;
 using Chess.Game;
 using Chess.NExT.Test.Util;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 

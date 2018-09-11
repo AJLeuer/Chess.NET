@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Chess.Util;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
@@ -13,13 +12,13 @@ namespace Chess.Game
 	    protected static readonly List<Direction> blackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
 	    protected static readonly List<Direction> whiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
 
-	    public new static readonly Dictionary<Color, char> defaultSymbols = new Dictionary<Color, char>
+	    public new static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>
 	    {
 		    {black, '♟'}, 
 		    {white, '♙'}
 	    };
 
-	    public static readonly new Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
+	    public new static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
 	    {
 		    {black, "./Assets/Bitmaps/BlackPawn.png"},
 		    {white, "./Assets/Bitmaps/WhitePawn.png"}

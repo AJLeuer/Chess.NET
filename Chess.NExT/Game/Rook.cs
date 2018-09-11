@@ -11,13 +11,13 @@ namespace Chess.Game
         
         protected static readonly List<Direction> defaultLegalMovementDirections = new List<Direction> {up, down, left, right};
         
-        public static readonly new Dictionary<Color, char> defaultSymbols = new Dictionary<Color, char>
+        public new static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>
         {
             {black, '♜'}, 
             {white, '♖'}
         };
 
-        public static readonly new Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
+        public new static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
         {
             {black, "./Assets/Bitmaps/BlackRook.png"},
             {white, "./Assets/Bitmaps/WhiteRook.png"}

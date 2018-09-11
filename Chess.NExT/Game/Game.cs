@@ -25,24 +25,10 @@ namespace Chess.Game
         protected Player player1;
 
         protected Player currentPlayer = null;
-
-        public void AdvanceGame()
-        {
-            AdvanceGame(Optional<MoveAction>.Empty);
-        }
         
-        public void AdvanceGame(Optional<MoveAction> overridingMove)
-        {
-            decideMove(overridingMove);
-
-            onGameAdvanced.Invoke(this);
-        }
-
-        protected abstract void decideMove(Optional<MoveAction> overridingMove);
-
         protected List<GameRecordEntry> gameRecord;
         
-        public GameStateAdvancedAction onGameAdvanced { get; private set; }
+        public GameStateAdvancedAction onGameAdvanced { get; }
 
         protected BasicGame() :
             this(new Board())
@@ -85,35 +71,59 @@ namespace Chess.Game
             }
         }
         
-        protected void initializeSpriteTextures()
+        public void PlayGame ()
         {
-            foreach (var file in board)
-            {
-                foreach (Square square in file)
-                {
-                    var piece = square.Piece;
+            GameActive = true;
+            
+            doPreGameSetupActions();
 
-                    if (piece.HasValue)
-                    {
-                        piece.Value.initializeSpriteTexture();
-                    }
-                }
+            while (GameActive) {
+                AdvanceGame();
+                handleOutput();
+                gameLoops++;
+                sleep();
             }
         }
 
-        public abstract void playGame();
+        protected abstract void doPreGameSetupActions();
+
+        public void AdvanceGame()
+        {
+            AdvanceGame(Optional<MoveAction>.Empty);
+        }
+        
+        public void AdvanceGame(Optional<MoveAction> overridingMove)
+        {
+            decideMove(overridingMove);
+
+            onGameAdvanced.Invoke(this);
+        }
+
+        protected abstract void decideMove(Optional<MoveAction> overridingMove);
+        
+        /// <summary>
+        /// Display or record any output intended for the user, where the type of output is defined by the implementation
+        /// (i.e. it could be graphical, console-based, written to a log file, etc.)
+        /// </summary>
+        protected abstract void handleOutput();
+        
+        
+        protected virtual void sleep()
+        {
+            Thread.Sleep(TimeSpan.FromMilliseconds(4));
+        }
 
         /**
          * @return The Player with the same color as the Player passed in as an argument
          */
-        Player findMatchingPlayer(Player player) {
+        private Player findMatchingPlayer(Player player) {
             return (player.color == player0.color) ? player0 : player1;
         }
 
         /**
          * @return The Player with the color opposite the Player passed in as an argument
          */
-        Player findOpponentPlayer(Player player) {
+        private Player findOpponentPlayer(Player player) {
             return (player.color != player0.color) ? player0 : player1;
         }
 
@@ -121,7 +131,7 @@ namespace Chess.Game
          * @return A MoveIntent object with the matching Piece found by calling this->board.findMatch(move.piece), such that the returned
          * MoveIntent could be used to make the same move but in this game
          */
-        MoveAction translate(MoveAction move)
+        private MoveAction translate(MoveAction move)
         {
             Player player = findMatchingPlayer(move.player);
             Piece piece = board.findMatchingPiece(move.piece);
@@ -159,15 +169,30 @@ namespace Chess.Game
             return new ChessGame(board, player0, player1);
         }
 
-        public override void playGame () {
-            monitorMouse();
+        private void initializeSpriteTextures()
+        {
+            foreach (var file in board)
+            {
+                foreach (Square square in file)
+                {
+                    var piece = square.Piece;
 
-            while (gameActive) {
-                AdvanceGame();
-                display();
-                gameLoops++;
-                Thread.Sleep(TimeSpan.FromMilliseconds(4));
+                    if (piece.HasValue)
+                    {
+                        piece.Value.initializeSpriteTexture();
+                    }
+                }
             }
+        }
+
+        protected override void doPreGameSetupActions()
+        {
+            monitorMouse();
+        }
+
+        protected override void handleOutput()
+        {
+            display2DGame();   
         }
 
         protected override void decideMove(Optional<MoveAction> overridingMove)
@@ -181,7 +206,7 @@ namespace Chess.Game
             Thread.Sleep(TimeSpan.FromSeconds(2));
         }
 
-        public void display ()
+        public void display2DGame()
         {
             var stringRepresentation = board.ToString();
 
@@ -201,19 +226,17 @@ namespace Chess.Game
                 }
             }
 
-            window.displayText(stringRepresentation, windowForegroundColor, middle);
+            window.displayText(stringRepresentation, WindowForegroundColor, middle);
 
             window.display();
-
         }
-    
-        public void monitorMouse () {
+
+        private void monitorMouse () {
             var mouseMonitor = new ThreadStart(() => 
             {
-                while (gameActive) {
-                    if (Mouse.IsButtonPressed(buttonMain)) {
-
-                        Vec2<int> mousePosition = Mouse.GetPosition();
+                while (GameActive) {
+                    if (Mouse.IsButtonPressed(ButtonMain)) {
+                        Mouse.GetPosition();
                     }
                     Thread.Sleep(TimeSpan.FromMilliseconds(1));
                 }
@@ -245,19 +268,12 @@ namespace Chess.Game
             
         }
 
-        ~SimulatedGame() {}
-
         public override BasicGame Clone()
         {
             return new SimulatedGame(board, player0, player1);
         }
-    
-        public override void playGame() {
-            while (gameActive) {
-                AdvanceGame();
-                gameLoops++;
-            }
-        }    
+        
+        protected override void doPreGameSetupActions(){}
 
         protected override void decideMove(Optional<MoveAction> overridingMove)
         {
@@ -272,6 +288,10 @@ namespace Chess.Game
             }
             //and definitely don't sleep
         }
+        
+        protected override void handleOutput(){}
+        
+        protected override void sleep() {}
     }
     
     public delegate void GameStateAdvancedAction(BasicGame game);

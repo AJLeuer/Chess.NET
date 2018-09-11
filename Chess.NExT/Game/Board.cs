@@ -87,6 +87,7 @@ namespace Chess.Game
 		public Board(Board other)
 		{
 			Square[][] otherSquaresArray = other.Squares.Select( (ArrayList<Square> file) => file.ToArray()).ToArray();
+			// ReSharper disable once CoVariantArrayConversion
 			Square[][] otherSquaresClone =  (Square[][]) otherSquaresArray.DeepClone();
 
 			this.Squares = CreateFrom2DArray(otherSquaresClone);
@@ -193,22 +194,22 @@ namespace Chess.Game
 		public List<Square> SearchForSquares(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition,
 			ushort distance = 1, params Direction[] directions)
 		{
-			var squares = new List<Square> {};
+			var matchingSquares = new List<Square>();
 			
 			foreach (var direction in directions)
 			{
-				List<Square> squaresInCurrentDirection = searchForSquaresInGivenDirection(squareMatcher, 
+				var squaresInCurrentDirection = searchForSquaresInGivenDirection(squareMatcher, 
 					startingSquarePosition, (short) distance, direction);
 				
-				squares.AddRange(squaresInCurrentDirection);
+				matchingSquares.AddRange(squaresInCurrentDirection);
 			}
 
-			return squares;
+			return matchingSquares;
 		}
 
-		private List<Square> searchForSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
+		private IEnumerable<Square> searchForSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
 		{
-			var squares = new List<Square> {};
+			var matchingSquares = new List<Square>();
 
 			for (short distance = 1; distance <= maximumDistance; distance++)
 			{
@@ -220,7 +221,7 @@ namespace Chess.Game
 			
 				if (square.HasValue)
 				{
-					squares.Add(square.Value);
+					matchingSquares.Add(square.Value);
 
 					if (square.Value.isOccupied)
 					{
@@ -233,7 +234,7 @@ namespace Chess.Game
 				}
 			}
 			
-			return squares;
+			return matchingSquares;
 		}
 
 		private Optional<Square> checkForMatchingSquare(Predicate<Square> squareMatcher, Vec2<int> position)
@@ -303,7 +304,7 @@ namespace Chess.Game
 					{
 						Piece piece = square.Piece.Value;
 						
-						if (piece.color == Color.black)
+						if (piece.color == black)
 						{
 							blackSum += (short)piece.value;
 						}
@@ -327,7 +328,7 @@ namespace Chess.Game
 
 		/// <summary>Same as running CalculateRelativeValue() after moving piece to the specified RankAndFile. Does not actually change the state of the board.</summary>
 		///
-		/// <param name="callingPlayersColor">The color of the player from whose perspective the value of the game state is calculated</param>
+		/// <param name="player">The player from whose perspective the value of the game state is calculated</param>
 		/// <param name="piece">The Piece that would move</param>
 		/// <param name="destination">Where piece would move</param>
 		public short evaluateAfterHypotheticalMove(Player player, Piece piece, RankAndFile destination)

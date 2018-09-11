@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -94,7 +93,7 @@ namespace Chess.Util
                 return list;
             }
             
-            var highestValueSubset = new List<T> {};
+            var highestValueSubset = new List<T>();
             
             list.Sort();
             list.Reverse();

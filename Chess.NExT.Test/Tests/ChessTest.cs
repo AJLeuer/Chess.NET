@@ -33,8 +33,9 @@ namespace Chess.NExT.Test.Tests
             RankAndFile a8 = new RankAndFile('a', 8);
             
             Vec2<uint> position = a8; //invokes conversion operator
-
-            ((RankAndFile) position).Should().BeEquivalentTo(a8);
+            RankAndFile reverseConvertedPosition = position; //invokes conversion operator
+            
+            reverseConvertedPosition.Should().BeEquivalentTo(a8);
         }
     }
 }

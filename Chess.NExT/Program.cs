@@ -1,6 +1,4 @@
-﻿using System;
-using Chess.Game;
-using SFML.System;
+﻿using Chess.Game;
 
 namespace Chess.NExT
 {
@@ -10,7 +8,7 @@ namespace Chess.NExT
         {
             BasicGame game = new ChessGame();
             
-            game.playGame();
+            game.PlayGame();
         }
     }
 }
