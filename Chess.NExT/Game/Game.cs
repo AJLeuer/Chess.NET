@@ -13,7 +13,7 @@ namespace Chess.Game
 {
     public abstract class BasicGame : ICloneable
     {
-        protected ulong gameLoops = 0;
+        protected ulong iterations = 0;
 
         /* Note: Must be initialized first */
         public Board board { get; protected set; }
@@ -27,8 +27,8 @@ namespace Chess.Game
         protected Player currentPlayer = null;
         
         protected List<GameRecordEntry> gameRecord;
-        
-        public GameStateAdvancedAction onGameAdvanced { get; }
+
+        public GameStateAdvancedAction onGameAdvanced { get; } = () => { };
 
         protected BasicGame() :
             this(new Board())
@@ -75,28 +75,38 @@ namespace Chess.Game
         {
             GameActive = true;
             
-            doPreGameSetupActions();
+            setup();
 
-            while (GameActive) {
-                AdvanceGame();
-                handleOutput();
-                gameLoops++;
-                sleep();
+            ThreadStart gameLoop = () =>
+            {
+                while (GameActive)
+                {
+                    advance();
+                    iterations++;
+                }
+            };
+            
+            var gameThread = new Thread(gameLoop);
+            gameThread.Start();
+
+            while (GameActive) 
+            {
+                display();
             }
         }
 
-        protected abstract void doPreGameSetupActions();
+        protected abstract void setup();
 
-        public void AdvanceGame()
+        public void advance()
         {
-            AdvanceGame(Optional<MoveAction>.Empty);
+            advance(Optional<MoveAction>.Empty);
         }
         
-        public void AdvanceGame(Optional<MoveAction> overridingMove)
+        public void advance(Optional<MoveAction> overridingMove)
         {
             decideMove(overridingMove);
 
-            onGameAdvanced.Invoke(this);
+            onGameAdvanced.Invoke();
         }
 
         protected abstract void decideMove(Optional<MoveAction> overridingMove);
@@ -105,13 +115,7 @@ namespace Chess.Game
         /// Display or record any output intended for the user, where the type of output is defined by the implementation
         /// (i.e. it could be graphical, console-based, written to a log file, etc.)
         /// </summary>
-        protected abstract void handleOutput();
-        
-        
-        protected virtual void sleep()
-        {
-            Thread.Sleep(TimeSpan.FromMilliseconds(4));
-        }
+        protected abstract void display();
 
         /**
          * @return The Player with the same color as the Player passed in as an argument
@@ -171,48 +175,33 @@ namespace Chess.Game
 
         private void initializeSpriteTextures()
         {
-            foreach (var file in board)
-            {
-                foreach (Square square in file)
-                {
-                    var piece = square.Piece;
-
-                    if (piece.HasValue)
-                    {
-                        piece.Value.initializeSpriteTexture();
-                    }
-                }
-            }
+            board.initializeSpriteTextures();
         }
 
-        protected override void doPreGameSetupActions()
+        protected override void setup()
         {
             monitorMouse();
         }
 
-        protected override void handleOutput()
+        protected override void display()
         {
-            display2DGame();   
+            window.Clear();
+            displayChessBoard();
+            Thread.Sleep(TimeSpan.FromMilliseconds(2));
         }
 
         protected override void decideMove(Optional<MoveAction> overridingMove)
         {
-            currentPlayer = (gameLoops % 2) == 0 ? this.player0 : this.player1;
+            currentPlayer = (iterations % 2) == 0 ? this.player0 : this.player1;
 
             MoveAction nextMove = currentPlayer.decideNextMove();
 
             nextMove.commit();
 
-            Thread.Sleep(TimeSpan.FromSeconds(2));
         }
 
-        public void display2DGame()
+        public void displayChessBoard()
         {
-            var stringRepresentation = board.ToString();
-
-            Vec2<uint> windowSize = window.Size;
-            var middle = windowSize / 2;
-
             foreach (var file in board)
             {
                 foreach (Square square in file)
@@ -225,10 +214,6 @@ namespace Chess.Game
                     }
                 }
             }
-
-            window.displayText(stringRepresentation, WindowForegroundColor, middle);
-
-            window.display();
         }
 
         private void monitorMouse () {
@@ -273,7 +258,7 @@ namespace Chess.Game
             return new SimulatedGame(board, player0, player1);
         }
         
-        protected override void doPreGameSetupActions(){}
+        protected override void setup(){}
 
         protected override void decideMove(Optional<MoveAction> overridingMove)
         {
@@ -289,10 +274,9 @@ namespace Chess.Game
             //and definitely don't sleep
         }
         
-        protected override void handleOutput(){}
-        
-        protected override void sleep() {}
+        protected override void display(){}
+
     }
     
-    public delegate void GameStateAdvancedAction(BasicGame game);
+    public delegate void GameStateAdvancedAction();
 }

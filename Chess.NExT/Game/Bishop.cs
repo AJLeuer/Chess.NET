@@ -66,7 +66,7 @@ namespace Chess.Game
         {
             //todo add move legality checking
             base.move(destination);
-            throw new Exception("add move legality checking");
+            Console.WriteLine("Warning: add move legality checking");
         }
 
     }

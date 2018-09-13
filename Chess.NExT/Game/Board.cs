@@ -14,7 +14,7 @@ using Rank = System.UInt16;
 namespace Chess.Game
 {
 	
-	public class Board : ICloneable, IEnumerable< ArrayList<Square> >
+	public class Board : ICloneable , IEnumerable< ArrayList<Square> >
 	{
 		protected static ulong IDs = 0;
 
@@ -134,7 +134,7 @@ namespace Chess.Game
 			}
 		}
 		
-		/// <return>The Square at the position specified by boardPosition</return>
+		///<return>The Square at the position specified by boardPosition</return>
 		public virtual Square getSquare(RankAndFile boardPosition)
 		{
 			return this[boardPosition.file, boardPosition.rank];
@@ -158,6 +158,22 @@ namespace Chess.Game
 		public Board Clone()
 		{
 			return new Board(this);
+		}
+		
+		internal void initializeSpriteTextures()
+		{
+			foreach (var file in this)
+			{
+				foreach (Square square in file)
+				{
+					var piece = square.Piece;
+
+					if (piece.HasValue)
+					{
+						piece.Value.initializeSpriteTexture();
+					}
+				}
+			}
 		}
 		
 		protected void takeOwnershipOfSquares()

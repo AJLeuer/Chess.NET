@@ -1,4 +1,6 @@
-﻿namespace Chess.Util
+﻿using SFML.Graphics;
+
+namespace Chess.Util
 {
     public struct TrueColor
     {
@@ -53,13 +55,14 @@
             return color.RGBA;
         }
 
-        public ColorType ConvertToOtherColorType<ColorType>() where ColorType : new()
+        public Color ConvertToSFMLColorType()
         {
-            var color = new ColorType();
-            color.GetType().GetFields()[0] = (dynamic) R;
-            color.GetType().GetFields()[1] = (dynamic) G;
-            color.GetType().GetFields()[2] = (dynamic) B;
-            color.GetType().GetFields()[3] = (dynamic) A;
+            var color = new Color();
+            
+            color.R = this.R;
+            color.G = this.G;
+            color.B = this.B;
+            color.A = this.A;
 
             return color;
         }

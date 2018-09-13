@@ -49,7 +49,7 @@ namespace Chess.Game
             this.Board = null;
         }
 
-        public static Player createByCopy(Player player)
+        public static Player CreateByCopy(Player player)
         {
             switch (player)
             {

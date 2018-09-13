@@ -44,6 +44,7 @@ namespace Chess.View
 				CharacterSize = defaultTextCharacterSize
 			};
 			this.backgroundColor = backgroundColor;
+			this.SetVisible(true);
 		}
 
 		public void display()
@@ -58,7 +59,7 @@ namespace Chess.View
 
 		public void displayText(string chars, TrueColor color, Vec2<uint> where) {
 			text.DisplayedString = chars;
-			text.FillColor = color.ConvertToOtherColorType<Color>();
+			text.FillColor = color.ConvertToSFMLColorType();
 
 			var textSize = text.GetLocalBounds();
 
