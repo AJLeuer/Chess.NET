@@ -23,17 +23,17 @@ namespace Chess.Game
             {white, "./Assets/Bitmaps/WhiteRook.png"}
         };
         
-        public override char asciiSymbol
+        public override char ASCIISymbol
         {
             get { return 'R'; }
         }
         
-        public override ushort value
+        public override ushort Value
         {
             get { return 5; }
         }
         
-        public override List<Direction> legalMovementDirections
+        public override List<Direction> LegalMovementDirections
         {
             get { return defaultLegalMovementDirections; }
         }

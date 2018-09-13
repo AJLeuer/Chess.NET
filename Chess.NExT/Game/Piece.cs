@@ -18,13 +18,13 @@ namespace Chess.Game
 
         public char symbol { get; }
         
-        public abstract char asciiSymbol { get; }
+        public abstract char ASCIISymbol { get; }
 
         public Color color { get; }
 
-        public abstract ushort value { get; }
+        public abstract ushort Value { get; }
         
-        public abstract List<Direction> legalMovementDirections { get; }
+        public abstract List<Direction> LegalMovementDirections { get; }
 
         public uint movesMade { get; protected set; } = 0;
 
@@ -235,7 +235,7 @@ namespace Chess.Game
             };
             
             List<Square> squaresLegalToMove = board.SearchForSquares(
-                squareChecker, this.position, directions: this.legalMovementDirections.ToArray());
+                squareChecker, this.position, directions: this.LegalMovementDirections.ToArray());
             
 
             return squaresLegalToMove;

@@ -24,12 +24,12 @@ namespace Chess.Game
 		    {white, "./Assets/Bitmaps/WhitePawn.png"}
 	    };
 	    
-	    public override char asciiSymbol
+	    public override char ASCIISymbol
 	    {
 		    get { return '​'; } //zero-width space
 	    }
 
-	    public override ushort value
+	    public override ushort Value
 	    {
 		    get { return 1; }
 	    }
@@ -49,28 +49,35 @@ namespace Chess.Game
 		    }
 	    }
 
-	    protected ref readonly List<Direction> legalCaptureDirections
+	    protected List<Direction> legalCaptureDirections
 	    {
 		    get
 		    {
 			    if (this.color == black)
 			    {
-				    return ref blackLegalCaptureDirections;
+				    return blackLegalCaptureDirections;
 			    }
 			    else /* if (this.color == white) */
 			    {
-				    return ref whiteLegalCaptureDirections;
+				    return whiteLegalCaptureDirections;
 			    }
 		    }
 	    }
-	    
-	    public override List<Direction> legalMovementDirections
+
+	    protected Optional<List<Direction>> legalMovementDirections = Optional<List<Direction>>.Empty;
+
+	    public override List<Direction> LegalMovementDirections
 	    {
 		    get
 		    {
-			    List<Direction> directions = new List<Direction>{legalMovementDirectionToEmptySquares};
-			    directions.AddRange(legalCaptureDirections);
-			    return directions;
+			    if (legalMovementDirections.HasValue == false)
+			    {
+				    List<Direction> directions = new List<Direction> {legalMovementDirectionToEmptySquares};
+				    directions.AddRange(legalCaptureDirections);
+				    legalMovementDirections = directions;
+			    }
+				
+			    return legalMovementDirections.Value;
 		    }
 	    }
 

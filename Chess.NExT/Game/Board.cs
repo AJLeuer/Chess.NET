@@ -314,11 +314,11 @@ namespace Chess.Game
 						
 						if (piece.color == black)
 						{
-							blackSum += (short)piece.value;
+							blackSum += (short)piece.Value;
 						}
 						else /* if (piece.color == white) */
 						{
-							whiteSum += (short)piece.value;
+							whiteSum += (short)piece.Value;
 						}
 					}
 				}

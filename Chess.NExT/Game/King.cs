@@ -32,17 +32,17 @@ namespace Chess.Game
             {white, "./Assets/Bitmaps/WhiteKing.png"}
         };
         
-        public override char asciiSymbol
+        public override char ASCIISymbol
         {
             get { return 'K'; }
         }
         
-        public override ushort value
+        public override ushort Value
         {
             get { return 40; }
         }
         
-        public override List<Direction> legalMovementDirections
+        public override List<Direction> LegalMovementDirections
         {
             get { return defaultLegalMovementDirections; }
         }
