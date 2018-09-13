@@ -77,7 +77,7 @@ namespace Chess.Game
 
             if (boardSearched != null)
             {
-                foreach (var file in boardSearched)
+                foreach (var file in boardSearched.Squares)
                 {
                     foreach (Square square in file)
                     {

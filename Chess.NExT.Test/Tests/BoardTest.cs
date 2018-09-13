@@ -36,12 +36,12 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public void ShouldCorrectlyCalculateTotalValueOfPiecesOfGivenColorOnBoard()
         {
-            var squares = new ArrayList<ArrayList<Square>>
+            var squares = new Square[][]
             {
-                new ArrayList<Square> { new Square('♜', 'a', 8), new Square('♟', 'a', 7)},
-                new ArrayList<Square> { new Square('♚', 'e', 8), new Square('♔', 'e', 1)},
-                new ArrayList<Square> { new Square('♝', 'f', 8), new Square(' ', 'f', 6), new Square(' ', 'f', 4), new Square('♙', 'f', 2)},
-                new ArrayList<Square> { new Square('♟', 'g', 7), new Square('♙', 'g', 2), new Square('♘', 'g', 1)}
+                new Square[] { new Square('♜', 'a', 8), new Square('♟', 'a', 7)},
+                new Square[] { new Square('♚', 'e', 8), new Square('♔', 'e', 1)},
+                new Square[] { new Square('♝', 'f', 8), new Square(' ', 'f', 6), new Square(' ', 'f', 4), new Square('♙', 'f', 2)},
+                new Square[] { new Square('♟', 'g', 7), new Square('♙', 'g', 2), new Square('♘', 'g', 1)}
             };
             
             var board = new Board(squares);

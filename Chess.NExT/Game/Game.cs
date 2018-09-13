@@ -202,7 +202,7 @@ namespace Chess.Game
 
         public void displayChessBoard()
         {
-            foreach (var file in board)
+            foreach (var file in board.Squares)
             {
                 foreach (Square square in file)
                 {
