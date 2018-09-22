@@ -77,7 +77,7 @@ namespace Chess.Game
 				    legalMovementDirections = directions;
 			    }
 				
-			    return legalMovementDirections.Value;
+			    return legalMovementDirections.Object;
 		    }
 	    }
 
@@ -119,7 +119,7 @@ namespace Chess.Game
 
 		    if (emptySquareToMove.HasValue)
 		    {
-			    legalMoveSquares.Add(emptySquareToMove.Value);
+			    legalMoveSquares.Add(emptySquareToMove.Object);
 		    }
 
 		    return legalMoveSquares;
@@ -133,7 +133,7 @@ namespace Chess.Game
 			    return squareToCheck.isEmpty;
 		    };
 		    
-		    List<Square> availableSquares = board.SearchForSquares(squareCheckerForMovementDirections,
+		    List<Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
 			    this.position, 1, this.legalMovementDirectionToEmptySquares);
 
 		    if (availableSquares.Count > 0)
@@ -157,11 +157,11 @@ namespace Chess.Game
 			    }
 			    else /* if (squareToCheck.isOccupied) */ 
 			    {
-				    return this.color.getOpposite() == squareToCheck.Piece.Value.color;
+				    return this.color.getOpposite() == squareToCheck.Piece.Object.color;
 			    }
 		    };
 		    
-		    List<Square> captureSquares = board.SearchForSquares(squareCheckerForCaptureDirections,
+		    List<Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
 			    this.position, 1, this.legalCaptureDirections.ToArray());
 
 		    return captureSquares;

@@ -88,6 +88,7 @@
     <Compile Include="Game\Human.cs" />
     <Compile Include="Game\King.cs" />
     <Compile Include="Game\Knight.cs" />
+    <Compile Include="Game\Move.cs" />
     <Compile Include="Game\Pawn.cs" />
     <Compile Include="Game\Piece.cs" />
     <Compile Include="Game\Player.cs" />

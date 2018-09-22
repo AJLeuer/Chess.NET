@@ -47,23 +47,23 @@ namespace Chess.Game
                     
                     if (movesMade == 0)
                     {
-                        this.startingPosition = new Vec2<uint>(square.Value.position);
+                        this.startingPosition = new Vec2<uint>(square.Object.Position);
                     } 
                 }
             }
-            get { return square.Value; } 
+            get { return square.Object; } 
         }
         
-        public Board board
+        public Board Board
         {
-            get { return Square.board; }
+            get { return Square.Board; }
         }
 
         protected Vec2<uint> startingPosition;
 
         public RankAndFile position
         {
-            get { return Square.position; }
+            get { return Square.Position; }
         }
         
         public CallBack onCaptured { get; set; }
@@ -191,7 +191,7 @@ namespace Chess.Game
 
         public void onCapture()
         {
-            onCaptured.Invoke();
+            onCaptured?.Invoke();
         }
 	    
         /**
@@ -216,7 +216,7 @@ namespace Chess.Game
         }
         
         public virtual void move(RankAndFile destination) {
-            Square destinationSquare = board.getSquare(destination);
+            Square destinationSquare = Board[destination];
             move(destinationSquare);
         }
         
@@ -230,11 +230,11 @@ namespace Chess.Game
                 }
                 else /* if (squareToCheck.isOccupied) */ 
                 {
-                    return this.color.getOpposite() == squareToCheck.Piece.Value.color;
+                    return this.color.getOpposite() == squareToCheck.Piece.Object.color;
                 }
             };
             
-            List<Square> squaresLegalToMove = board.SearchForSquares(
+            List<Square> squaresLegalToMove = Board.SearchForSquares(
                 squareChecker, this.position, directions: this.LegalMovementDirections.ToArray());
             
 

@@ -14,9 +14,9 @@ namespace Chess.Game
 
         protected ulong ID { get; } = uniqueIDs++;
 
-        public string name { get; }
+        public string Name { get; }
     
-        public virtual Color color { get; }
+        public virtual Color Color { get; }
 
         private Board board;
         
@@ -36,30 +36,17 @@ namespace Chess.Game
         /* Any other constructors should call this as a delegating constructor */
         public Player(Color color, Board board = null)
         {
-            this.name = "Player " + ID;
-            this.color = color;
+            this.Name = "Player " + ID;
+            this.Color = color;
             this.Board = board;
         }
 
         public Player(Player other) :
-            this(other.color)
+            this(other.Color)
         {
             //can't clone our own board since we don't control it
             //the game itself is responsible for cloning the board and then assigning it to us
             this.Board = null;
-        }
-
-        public static Player CreateByCopy(Player player)
-        {
-            switch (player)
-            {
-                case Human human:
-                    return new Human(human);
-                case AI ai:
-                    return new AI(ai);
-                default:
-                    throw new InvalidEnumArgumentException();
-            }
         }
         
         object ICloneable.Clone()
@@ -77,18 +64,15 @@ namespace Chess.Game
 
             if (boardSearched != null)
             {
-                foreach (var file in boardSearched.Squares)
-                {
-                    foreach (Square square in file)
+                foreach (var square in boardSearched.Squares)
+                {    
+                    if (square.isOccupied)
                     {
-                        if (square.isOccupied)
-                        {
-                            Piece piece = square.Piece.Value;
+                        Piece piece = square.Piece.Object;
 
-                            if (piece.color == this.color)
-                            {
-                                matchingColorPieces.Add(piece);
-                            }
+                        if (piece.color == this.Color)
+                        {
+                            matchingColorPieces.Add(piece);
                         }
                     }
                 }
@@ -106,11 +90,11 @@ namespace Chess.Game
             }
         }
 
-        public abstract MoveAction decideNextMove();
+        public abstract Move decideNextMove();
 
-        public List<MoveAction> findPossibleMoves()
+        public List<Move> findPossibleMoves()
         {
-            var moves = new List<MoveAction>();
+            var moves = new List<Move>();
             
             foreach (var piece in pieces)
             {
@@ -121,32 +105,32 @@ namespace Chess.Game
             return moves;
         }
         
-        public virtual List<MoveAction> findBestMoves()
+        public virtual List<Move> findBestMoves()
         {
-            var moves = new List<MoveAction>();
+            var moves = new List<Move>();
             
             foreach (var piece in pieces)
             {
-                Optional<MoveAction> bestMoveForPiece = findBestMoveForPiece(piece);
+                Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
 
                 if (bestMoveForPiece.HasValue)
                 {
-                    moves.Add(bestMoveForPiece.Value);
+                    moves.Add(bestMoveForPiece.Object);
                 }
             }
 
             return moves;
         }
 
-        public List<MoveAction> findPossibleMovesForPiece(Piece piece)
+        public List<Move> findPossibleMovesForPiece(Piece piece)
         {
-            var moves = new List<MoveAction>();
+            var moves = new List<Move>();
             
             List<Square> moveDestinations = piece.findAllPossibleLegalMoveDestinations();
             
             foreach (var moveDestination in moveDestinations)
             {
-                var move = new MoveAction(this, piece, moveDestination);
+                var move = new Move(this, piece, moveDestination);
                 
                 moves.Add(move);
             }
@@ -154,9 +138,9 @@ namespace Chess.Game
             return moves;
         }
 
-        public virtual Optional<MoveAction> findBestMoveForPiece(Piece piece)
+        public virtual Optional<Move> findBestMoveForPiece(Piece piece)
         {
-            List<MoveAction> moves = findPossibleMovesForPiece(piece);
+            List<Move> moves = findPossibleMovesForPiece(piece);
 
             moves = moves.extractHighestValueSubset();
 
@@ -166,11 +150,11 @@ namespace Chess.Game
             }
             else
             {
-                return new Optional<MoveAction>(null);
+                return new Optional<Move>(null);
             }
         }
         
-        public Tree<MoveAction> computeMoveDecisionTree()
+        public Tree<Move> computeMoveDecisionTree()
         {
             throw new NotImplementedException();
         }

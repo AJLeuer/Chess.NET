@@ -5,27 +5,17 @@ namespace Chess.Game
 {
     public class Square : ICloneable
     {
-        public Vec2<uint> position { get; }
+        public Vec2<uint> Position { get; }
+        
+        public RankAndFile BoardPosition
+        {
+            get { return Position; }
+        }
 
-        public Board board { get; set; }
+        public Board Board { get; set; }
 
         private Piece piece = null;
-
-        public bool isEmpty
-        {
-            get { return (isOccupied == false); }
-        }
-
-        public bool isOccupied
-        {
-            get { return Piece.HasValue; }
-        }
-
-        public RankAndFile boardPosition
-        {
-            get { return position; }
-        }
-
+        
         public Optional<Piece> Piece
         {
             get { return piece; }
@@ -41,24 +31,42 @@ namespace Chess.Game
                 }
                 else
                 {
-                    this.piece = value.Value;
+                    this.piece = value.Object;
                     piece.Square = this;
                 }
             }
         }
 
-        public Square(Square other)
+        public bool isEmpty
         {
-            position = new Vec2<uint>(other.position);
-            /* Don't copy other's board pointer */
-            Piece = (other.isEmpty) ? Optional<Piece>.Empty : Game.Piece.create(other.piece);
+            get { return (isOccupied == false); }
         }
 
-        public Square(char file, ushort rank, Board board = null)
+        public bool isOccupied
         {
-            position = new RankAndFile(file, rank);
-            this.board = board;
-            piece = null;
+            get { return Piece.HasValue; }
+        }
+        
+        
+        public Square(Vec2<uint> position, Board board, Piece piece = null)
+        {
+            Position = position;
+            Board = board;
+            Piece = new Optional<Piece>(piece);
+        }
+
+        public Square(Square other):
+            this(new Vec2<uint>(other.Position),
+                 null, /* Don't copy other's board pointer */
+                 (other.isEmpty) ? null : Game.Piece.create(other.piece))
+        {
+            
+        }
+
+        public Square(char file, ushort rank, Board board = null) :
+            this(new RankAndFile(file, rank), board)
+        {
+            
         }
 
         public Square(Piece piece, char file, ushort rank, Board board = null) :

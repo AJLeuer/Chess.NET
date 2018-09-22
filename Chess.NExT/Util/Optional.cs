@@ -16,7 +16,7 @@ namespace Chess.Util
 
         private T value;
         
-        public T Value
+        public T Object
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Chess.Util
 
         public static explicit operator T(Optional<T> optional)
         {
-            return optional.Value;
+            return optional.Object;
         }
         
         public static implicit operator Optional<T>(T value)

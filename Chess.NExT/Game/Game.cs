@@ -13,44 +13,80 @@ namespace Chess.Game
 {
     public abstract class BasicGame : ICloneable
     {
+        protected static ulong IDs = 0;
+
+        protected ulong ID { get; } = IDs++;
+        
         protected ulong iterations = 0;
 
         /* Note: Must be initialized first */
-        public Board board { get; protected set; }
+        public virtual Board Board { get; protected set; }
         
         /* holds references to pieces at index (0, 0) through (1, 15) */
-        protected Player player0;
+        public Player Player0 { get; protected set; }
         
         /* holds references to pieces at index (6, 0) through (7, 7) */
-        protected Player player1;
+        public Player Player1 { get; protected set; }
 
-        protected Player currentPlayer = null;
+        public Player WhitePlayer
+        {
+            get
+            {
+                if (Player0.Color == white)
+                {
+                    return Player0;
+                }
+                else
+                {
+                    return Player1;
+                }
+            }
+        }
+        
+        public Player BlackPlayer
+        {
+            get
+            {
+                if (Player1.Color == black)
+                {
+                    return Player1;
+                }
+                else
+                {
+                    return Player0;
+                }
+            }
+        }
+
+        protected Player CurrentPlayer = null;
         
         protected List<GameRecordEntry> gameRecord;
 
-        public GameStateAdvancedAction onGameAdvanced { get; } = () => { };
+        public GameStateAdvancedAction OnGameAdvanced { get; } = () => { };
 
         protected BasicGame() :
             this(new Board())
         {
-            player0 = new AI(white, this.board);
-            player1 = new AI(black, this.board);
+            Player0 = new AI(white, this.Board);
+            Player1 = new AI(black, this.Board);
         }
 
         protected BasicGame(BasicGame other) :
             /* call copy constructor directly if class doesn't expect to have subclasses,
             call Clone() method where inheritance is in play and polymorphism is needed */
-            this(new Board(other.board), other.player0.Clone(), other.player1.Clone())
+            this(new Board(other.Board), 
+                 (other.Player0 == null) ? null : other.Player0.Clone(),
+                 (other.Player1 == null) ? null : other.Player1.Clone())
         {
             
         }
 
-        protected BasicGame(Board board, Player player0 = null, Player player1 = null)
+        public BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
-            this.board = board;
-            this.player0 = player0;
-            this.player1 = player1;
-            board.game = this;
+            this.Board = board;
+            this.Player0 = player0;
+            this.Player1 = player1;
+            board.Game = this;
 
             initializePlayers();
         }
@@ -64,10 +100,13 @@ namespace Chess.Game
         
         protected void initializePlayers()
         {
-            if ((player0 != null) && (player1 != null))
+            if (Player0 != null)
             {
-                player0.Board = board;
-                player1.Board = board;
+                Player0.Board = Board;
+            }
+            if (Player1 != null)
+            {
+                Player1.Board = Board;
             }
         }
         
@@ -99,17 +138,17 @@ namespace Chess.Game
 
         public void advance()
         {
-            advance(Optional<MoveAction>.Empty);
+            advance(Optional<Move>.Empty);
         }
         
-        public void advance(Optional<MoveAction> overridingMove)
+        public void advance(Optional<Move> overridingMove)
         {
             decideMove(overridingMove);
 
-            onGameAdvanced.Invoke();
+            OnGameAdvanced.Invoke();
         }
 
-        protected abstract void decideMove(Optional<MoveAction> overridingMove);
+        protected abstract void decideMove(Optional<Move> overridingMove);
         
         /// <summary>
         /// Display or record any output intended for the user, where the type of output is defined by the implementation
@@ -117,31 +156,20 @@ namespace Chess.Game
         /// </summary>
         protected abstract void display();
 
-        /**
-         * @return The Player with the same color as the Player passed in as an argument
-         */
-        private Player findMatchingPlayer(Player player) {
-            return (player.color == player0.color) ? player0 : player1;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The Player from this <see cref="Chess.Game"/> with the same color as <paramref name="player"/></returns>
+        public Player FindMatchingPlayer(Player player) {
+            return (player.Color == Player0.Color) ? Player0 : Player1;
         }
 
-        /**
-         * @return The Player with the color opposite the Player passed in as an argument
-         */
-        private Player findOpponentPlayer(Player player) {
-            return (player.color != player0.color) ? player0 : player1;
-        }
-
-        /**
-         * @return A MoveIntent object with the matching Piece found by calling this->board.findMatch(move.piece), such that the returned
-         * MoveIntent could be used to make the same move but in this game
-         */
-        private MoveAction translate(MoveAction move)
-        {
-            Player player = findMatchingPlayer(move.player);
-            Piece piece = board.findMatchingPiece(move.piece);
-            Square destination = board.findMatchingSquare(move.destination);
-            
-            return new MoveAction(player, piece, destination);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The Player from this <see cref="Chess.Game"/> with the color opposite <paramref name="player"/></returns>
+        public Player FindOpponentPlayer(Player player) {
+            return (player.Color != Player0.Color) ? Player0 : Player1;
         }
     }
     
@@ -170,12 +198,12 @@ namespace Chess.Game
 
         public override BasicGame Clone()
         {
-            return new ChessGame(board, player0, player1);
+            return new ChessGame(this);
         }
 
         private void initializeSpriteTextures()
         {
-            board.initializeSpriteTextures();
+            Board.initializeSpriteTextures();
         }
 
         protected override void setup()
@@ -190,28 +218,25 @@ namespace Chess.Game
             Thread.Sleep(TimeSpan.FromMilliseconds(2));
         }
 
-        protected override void decideMove(Optional<MoveAction> overridingMove)
+        protected override void decideMove(Optional<Move> overridingMove)
         {
-            currentPlayer = (iterations % 2) == 0 ? this.player0 : this.player1;
+            CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
 
-            MoveAction nextMove = currentPlayer.decideNextMove();
+            Move nextMove = CurrentPlayer.decideNextMove();
 
-            nextMove.commit();
+            nextMove.Commit();
 
         }
 
         public void displayChessBoard()
         {
-            foreach (var file in board.Squares)
+            foreach (var square in Board)
             {
-                foreach (Square square in file)
-                {
-                    var piece = square.Piece;
+                var piece = square.Piece;
                     
-                    if (piece.HasValue)
-                    {
-                        window.Draw(piece.Value.sprite);
-                    }
+                if (piece.HasValue)
+                {
+                    window.Draw(piece.Object.sprite);
                 }
             }
         }
@@ -255,27 +280,62 @@ namespace Chess.Game
 
         public override BasicGame Clone()
         {
-            return new SimulatedGame(board, player0, player1);
+            return new SimulatedGame(this);
         }
         
         protected override void setup(){}
 
-        protected override void decideMove(Optional<MoveAction> overridingMove)
+        protected override void decideMove(Optional<Move> overridingMove)
         {
                         
             if (overridingMove.HasValue) {
-                overridingMove.Value.commit();
+                overridingMove.Object.Commit();
             }
             else {
 
-                MoveAction nextMove = currentPlayer.decideNextMove();
-                nextMove.commit();
+                Move nextMove = CurrentPlayer.decideNextMove();
+                nextMove.Commit();
             }
             //and definitely don't sleep
         }
         
         protected override void display(){}
 
+    }
+    
+    /// <summary>
+    /// A BasicGame used only for testing the outcomes of potential moves
+    /// </summary>
+    public class TemporaryGame : BasicGame
+    {
+        public TemporaryGame() :
+            base()
+        {
+            
+        }
+
+        public TemporaryGame(BasicGame other) :
+            base(other)
+        {
+            
+        }
+
+        public TemporaryGame(Board board, Player player0 = null, Player player1 = null) :
+            base(board, player0, player1)
+        {
+            
+        }
+
+        public override BasicGame Clone()
+        {
+            return new TemporaryGame(this);
+        }
+        
+        protected override void setup(){}
+
+        protected override void decideMove(Optional<Move> overridingMove) {}
+        
+        protected override void display(){}
     }
     
     public delegate void GameStateAdvancedAction();

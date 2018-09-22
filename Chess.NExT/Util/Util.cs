@@ -50,7 +50,7 @@ namespace Chess.Util
         public static ICloneable[] DeepClone(this ICloneable[] array)
         {
             ConstructorInfo constructor = array.GetType().GetConstructors()[0];
-            ICloneable[] cloneArray = (ICloneable[]) constructor.Invoke(new object[]{array.Length});
+            ICloneable[] cloneArray = (ICloneable[]) constructor.Invoke(new object[] {array.Length});
 
             for (uint i = 0; i < array.Length; i++)
             {
@@ -73,6 +73,24 @@ namespace Chess.Util
             }
 
             return cloneArrays;
+        }
+        
+        public static ICloneable[,] DeepClone(this ICloneable[,] array)
+        {
+            ConstructorInfo constructor = array.GetType().GetConstructors()[0];
+            ICloneable[,] cloneArray = (ICloneable[,]) constructor.Invoke(new object[] {array.GetLength(0), array.GetLength(1)}); 
+
+            for (uint i = 0; i < array.GetLength(0); i++)
+            {
+                for (uint j = 0; j < array.GetLength(1); j++)
+                {
+                    var original = (ICloneable) array[i, j];
+                    var clone = (ICloneable) original.Clone();
+                    cloneArray[i,j] = clone;
+                }
+            }
+
+            return cloneArray;
         }
 
         public static T selectElementAtRandom<T>(this System.Collections.Generic.IList<T> container)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
@@ -220,79 +220,5 @@ namespace Chess.Game
 		{
 			algrebraicNotation = new AlgebraicNotation(piece, destination);
 		}
-	}
-
-	public class MoveAction : IComparable, IComparable<MoveAction>
-	{
-		public Player player { get; }
-		
-		public Piece piece { get; }
-		
-		public Square destination { get; }
-		
-		protected Board board { get { return piece.board; } }
-		
-		public short value { get; protected set; }
-
-		public MoveAction(Player player, Piece piece, Square destination)
-		{
-			this.player = player;
-			this.piece = piece;
-			this.destination = destination;
-			calculateValue();
-		}
-		
-		public static bool operator > (MoveAction moveIntent0, MoveAction moveIntent1)
-		{
-			return moveIntent0.value > moveIntent1.value;
-		}
-
-		public static bool operator < (MoveAction moveIntent0, MoveAction moveIntent1)
-		{
-			return moveIntent0.value < moveIntent1.value;
-		}
-
-		public int CompareTo(object @object)
-		{
-			if (@object.GetType() == typeof(MoveAction))
-			{
-				return CompareTo((MoveAction) @object);
-			}
-			else
-			{
-				throw new NotImplementedException();
-			}
-		}
-		
-		public int CompareTo(MoveAction move)
-		{
-			if (this > move)
-			{
-				return 1;
-			}
-			else if (this < move)
-			{
-				return -1;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-
-		protected void calculateValue()
-		{
-			short startingValue = board.CalculateRelativeValue(player);
-
-			short valueAfterMove = board.evaluateAfterHypotheticalMove(player, piece, destination.boardPosition);
-
-			value = (short)(valueAfterMove - startingValue);
-		}
-
-		public void commit()
-		{
-			piece.move(destination);
-		}
-
 	}
 }

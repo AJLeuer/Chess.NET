@@ -24,7 +24,7 @@ namespace Chess.Game
             throw new NotImplementedException();
         }
 
-        public override MoveAction decideNextMove()
+        public override Move decideNextMove()
         {
             //todo: implement
             throw new NotImplementedException();
