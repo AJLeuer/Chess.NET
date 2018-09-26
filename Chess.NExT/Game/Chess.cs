@@ -9,10 +9,10 @@ using Rank = System.UInt16;
 	
 namespace Chess.Game
 {
-	public enum Color
+	public enum Color : byte
 	{
-		white,
-		black
+		white = 0xFF,
+		black = 0x00
 	}
     
 	public static class ColorMethods {

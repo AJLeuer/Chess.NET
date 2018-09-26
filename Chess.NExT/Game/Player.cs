@@ -70,7 +70,7 @@ namespace Chess.Game
                     {
                         Piece piece = square.Piece.Object;
 
-                        if (piece.color == this.Color)
+                        if (piece.Color == this.Color)
                         {
                             matchingColorPieces.Add(piece);
                         }

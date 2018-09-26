@@ -1,9 +1,11 @@
 ﻿using System;
 using Chess.Util;
+using Chess.View;
+using SFML.Graphics;
 
 namespace Chess.Game
 {
-    public class Square : ICloneable
+    public class Square : ICloneable, ChessDrawable
     {
         public Vec2<uint> Position { get; }
         
@@ -12,11 +14,28 @@ namespace Chess.Game
             get { return Position; }
         }
 
+        private Color? color = null;
+
+        public Color Color
+        {
+            get
+            {
+                if (color.HasValue == false)
+                {
+                    color = determineColor();
+                }
+
+                return color.Value;
+            }
+        }
+
+        public Sprite Sprite { get; set; }
+
         public Board Board { get; set; }
 
         private Piece piece = null;
         
-        public Optional<Piece> Piece
+        public Optional<Piece> Piece 
         {
             get { return piece; }
             set
@@ -89,6 +108,35 @@ namespace Chess.Game
         public object Clone()
         {
             return new Square(this);
+        }
+
+        public void InitializeSprite()
+        {
+            var spriteTexture = new Texture(Config.BoardSpriteFilePath);
+            Sprite = new Sprite(spriteTexture);
+            
+            if (Piece.HasValue)
+            {
+                Piece.Object.InitializeSprite();
+            }
+        }
+
+        protected Color determineColor()
+        {
+            Color color;
+            
+            uint coordinateSum = Position.X + Position.Y;
+            
+            if ((coordinateSum % 2) == 0) //is even
+            {
+                color = Color.white;
+            }
+            else
+            {
+                color = Color.black;
+            }
+
+            return color;
         }
 
         public void handleLeavingPiece()

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Chess.Util;
+using Chess.View;
 using SFML.Graphics;
 using static Chess.Game.Color;
 
 namespace Chess.Game
 {
-    public abstract class Piece : ICloneable
+    public abstract class Piece : ICloneable, ChessDrawable
     {
         public static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>();
 
@@ -20,19 +21,17 @@ namespace Chess.Game
         
         public abstract char ASCIISymbol { get; }
 
-        public Color color { get; }
+        public Color Color { get; }
 
         public abstract ushort Value { get; }
+        
+        protected string spriteImageFilePath;
+
+        public Sprite Sprite { get; set; }
         
         public abstract List<Direction> LegalMovementDirections { get; }
 
         public uint movesMade { get; protected set; } = 0;
-
-        protected string spriteImageFilePath;
-
-        protected Texture spriteTexture;
-
-        public Sprite sprite { get; private set; }
 
         protected Optional<Square> square;
         
@@ -154,7 +153,7 @@ namespace Chess.Game
         {
             /* ID init from IDs */
             this.symbol = symbol;
-            this.color = color;
+            this.Color = color;
             /* movesMade init to 0 */
             this.spriteImageFilePath = spriteImageFilePath;
             /* Don't initialize the actual texture/sprite data. Too
@@ -165,7 +164,7 @@ namespace Chess.Game
         {
             //Pieces resulting from copies have their own, unique IDs
             symbol = other.symbol;
-            color = other.color;
+            Color = other.Color;
             /* movesMade is already init to 0 */
             spriteImageFilePath = other.spriteImageFilePath;
             startingPosition = other.startingPosition;
@@ -192,6 +191,21 @@ namespace Chess.Game
         public void onCapture()
         {
             onCaptured?.Invoke();
+        }
+
+        public void InitializeSprite () 
+        {
+            var spriteTexture = new Texture(spriteImageFilePath);
+            Sprite = new Sprite(spriteTexture);
+            updateSpritePosition();
+        }
+        
+        public void updateSpritePosition () 
+        {
+            if (Sprite != null)
+            {
+                Sprite.Position = position.convertToPosition();
+            }
         }
 	    
         /**
@@ -230,7 +244,7 @@ namespace Chess.Game
                 }
                 else /* if (squareToCheck.isOccupied) */ 
                 {
-                    return this.color.getOpposite() == squareToCheck.Piece.Object.color;
+                    return this.Color.getOpposite() == squareToCheck.Piece.Object.Color;
                 }
             };
             
@@ -240,19 +254,5 @@ namespace Chess.Game
 
             return squaresLegalToMove;
         }
-        
-        public void initializeSpriteTexture () {
-			spriteTexture = new Texture(spriteImageFilePath);
-			sprite = new Sprite(this.spriteTexture);
-			updateSpritePosition();
-		}
-        
-        public void updateSpritePosition () {
-            if (sprite != null)
-            {
-                sprite.Position = position.convertToPosition();
-            }
-        }
-
     }
 }

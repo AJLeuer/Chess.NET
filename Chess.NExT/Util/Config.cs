@@ -16,6 +16,8 @@ namespace Chess.Util
         
         public static readonly TrueColor WindowForegroundColor = new TrueColor(0, 196, 240, 0);
 
+        public static readonly string BoardSpriteFilePath = "./Assets/Bitmaps/Board.png";
+
         public const string MainFontFilePath = "./Assets/Fonts/RobotoMono-Regular.ttf";
      
         public const uint defaultTextCharacterSize = 60;

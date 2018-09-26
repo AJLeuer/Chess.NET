@@ -15,14 +15,14 @@ namespace Chess.View
 
 		protected static VideoMode createDefaultVideoMode()
 		{
-			Vec2<uint> baseWindowSize = new Vec2<uint>{x = MainWindowSize.x, y = MainWindowSize.y};
+			Vec2<uint> baseWindowSize = new Vec2<uint>{X = MainWindowSize.X, Y = MainWindowSize.Y};
 			
 			float dpiScale = DisplayData.getDisplayScalingFactor();
 			
-			Vec2 <uint> scaledWindowSize = new Vec2<uint>((uint)(baseWindowSize.x * dpiScale),
-				(uint)(baseWindowSize.y * dpiScale));
+			Vec2 <uint> scaledWindowSize = new Vec2<uint>((uint)(baseWindowSize.X * dpiScale),
+				(uint)(baseWindowSize.Y * dpiScale));
 			
-			return new VideoMode(scaledWindowSize.x, scaledWindowSize.y);
+			return new VideoMode(scaledWindowSize.X, scaledWindowSize.Y);
 		}
 
 		static Window()
@@ -45,11 +45,6 @@ namespace Chess.View
 			};
 			this.backgroundColor = backgroundColor;
 			this.SetVisible(true);
-		}
-
-		public void display()
-		{
-			
 		}
 
 		public void setBackgroundColor(TrueColor color)

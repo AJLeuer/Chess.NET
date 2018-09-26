@@ -5,6 +5,8 @@ using System.Threading;
 using SFML.Window;
 
 using Chess.Util;
+using Chess.View;
+using SFML.Graphics;
 using static Chess.Util.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -171,27 +173,29 @@ namespace Chess.Game
         }
     }
     
-    public class ChessGame : BasicGame 
+    public class ChessGame : BasicGame, ChessDrawable
     {
 
         protected Window window = new Window();
 
+        public Sprite Sprite { get; set; }
+
         public ChessGame() :
             base()
         {
-            initializeSpriteTextures();
+            InitializeSprite();
         }
 
         public ChessGame(BasicGame other) :
             base(other)
         {
-            initializeSpriteTextures();
+            InitializeSprite();
         }
 
         public ChessGame(Board board, Player player0, Player player1) :
             base(board, player0, player1)
         {
-            initializeSpriteTextures();
+            InitializeSprite();
         }
 
         public override BasicGame Clone()
@@ -199,9 +203,9 @@ namespace Chess.Game
             return new ChessGame(this);
         }
 
-        private void initializeSpriteTextures()
+        public void InitializeSprite()
         {
-            Board.initializeSpriteTextures();
+            Board.InitializeSprite();
         }
 
         protected override void setup()
@@ -213,7 +217,8 @@ namespace Chess.Game
         {
             window.DispatchEvents();
             window.Clear();
-            displayChessBoard();
+            drawChessBoard();
+            window.Display();
             Thread.Sleep(TimeSpan.FromMilliseconds(2));
         }
 
@@ -226,7 +231,7 @@ namespace Chess.Game
             nextMove.Commit();
         }
 
-        public void displayChessBoard()
+        protected void drawChessBoard()
         {
             foreach (var square in Board)
             {
@@ -234,7 +239,7 @@ namespace Chess.Game
                     
                 if (piece.HasValue)
                 {
-                    window.Draw(piece.Object.sprite);
+                    window.Draw(piece.Object.Sprite);
                 }
             }
         }
@@ -283,8 +288,8 @@ namespace Chess.Game
         {
             return new SimulatedGame(this);
         }
-        
-        protected override void setup(){}
+
+        protected override void setup() {}
         
         public override void advance()
         {

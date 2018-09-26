@@ -38,7 +38,7 @@ namespace Chess.Game
 	    {
 		    get
 		    {
-			    if (this.color == black)
+			    if (this.Color == black)
 			    {
 				    return down;
 			    }
@@ -53,7 +53,7 @@ namespace Chess.Game
 	    {
 		    get
 		    {
-			    if (this.color == black)
+			    if (this.Color == black)
 			    {
 				    return blackLegalCaptureDirections;
 			    }
@@ -157,7 +157,7 @@ namespace Chess.Game
 			    }
 			    else /* if (squareToCheck.isOccupied) */ 
 			    {
-				    return this.color.getOpposite() == squareToCheck.Piece.Object.color;
+				    return this.Color.getOpposite() == squareToCheck.Piece.Object.Color;
 			    }
 		    };
 		    

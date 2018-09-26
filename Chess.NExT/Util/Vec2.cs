@@ -21,49 +21,49 @@ namespace Chess.Util
         IFormattable
     {
 
-        public N x { get; set; } 
-        public N y { get; set; } 
+        public N X { get; set; } 
+        public N Y { get; set; } 
 
         public Vec2(Vec2<N> other) :
-            this(other.x, other.y)
+            this(other.X, other.Y)
         {
             
         }
 
         public Vec2(N x, N y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
         
         public static implicit operator Vec2<N>(Vector2f sfmlVector)
         {
-            return new Vec2<N> {x = (dynamic) sfmlVector.X, y = (dynamic) sfmlVector.Y};
+            return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
         }
         
         public static implicit operator Vec2<N>(Vector2i sfmlVector)
         {
-            return new Vec2<N> {x = (dynamic) sfmlVector.X, y = (dynamic) sfmlVector.Y};
+            return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
         }
         
         public static implicit operator Vec2<N>(Vector2u sfmlVector)
         {
-            return new Vec2<N> {x = (dynamic) sfmlVector.X, y = (dynamic) sfmlVector.Y};
+            return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
         }
         
         public static implicit operator Vector2f(Vec2<N> vector)
         {
-            return new Vector2f {X = (dynamic) vector.x, Y = (dynamic) vector.y};
+            return new Vector2f {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }
         
         public static implicit operator Vector2i(Vec2<N> vector)
         {
-            return new Vector2i {X = (dynamic) vector.x, Y = (dynamic) vector.y};
+            return new Vector2i {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }
         
         public static implicit operator Vector2u(Vec2<N> vector)
         {
-            return new Vector2u {X = (dynamic) vector.x, Y = (dynamic) vector.y};
+            return new Vector2u {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }
 
         public Vec2<OtherNumericType> ConvertMemberType <OtherNumericType>() where OtherNumericType : 
@@ -74,7 +74,7 @@ namespace Chess.Util
             IEquatable<OtherNumericType>, 
             IFormattable
         {
-            return new Vec2<OtherNumericType>((OtherNumericType) (dynamic) x, (OtherNumericType) (dynamic) y);
+            return new Vec2<OtherNumericType>((OtherNumericType) (dynamic) X, (OtherNumericType) (dynamic) Y);
         }
 
         public N this[uint index]
@@ -83,11 +83,11 @@ namespace Chess.Util
             {
                 if (index == 0)
                 {
-                    return x;
+                    return X;
                 }
                 else if (index == 1)
                 {
-                    return y;
+                    return Y;
                 }
                 else
                 {
@@ -98,11 +98,11 @@ namespace Chess.Util
             {
                 if (index == 0)
                 {
-                    x = value;
+                    X = value;
                 }
                 else if (index == 1)
                 {
-                    y = value;
+                    Y = value;
                 }
                 else
                 {
@@ -113,8 +113,8 @@ namespace Chess.Util
         
         public static Boolean operator == (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return ((dynamic) vector0.x == (dynamic) vector1.x) &&
-                   ((dynamic) vector0.y == (dynamic) vector1.y);
+            return ((dynamic) vector0.X == (dynamic) vector1.X) &&
+                   ((dynamic) vector0.Y == (dynamic) vector1.Y);
         }
 
         public static bool operator != (Vec2<N> vector0, Vec2<N> vector1)
@@ -143,38 +143,38 @@ namespace Chess.Util
         {
             unchecked
             {
-                return (x.GetHashCode() * 397) ^ y.GetHashCode();
+                return (X.GetHashCode() * 397) ^ Y.GetHashCode();
             }
         }
 
         public static Vec2<N> operator + (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>(checked((dynamic)vector0.x + (dynamic)vector1.x), checked((dynamic) vector0.y + (dynamic) vector1.y));
+            return new Vec2<N>(checked((dynamic)vector0.X + (dynamic)vector1.X), checked((dynamic) vector0.Y + (dynamic) vector1.Y));
         }
         
         public static Vec2<long> operator + (Vec2<N> vector0, Vec2<short> vector1)
         {
             Vec2<int> v0 = vector0.ConvertMemberType<int>();
-            return new Vec2<long>(v0.x + vector1.x, v0.y + vector1.y);
+            return new Vec2<long>(v0.X + vector1.X, v0.Y + vector1.Y);
         }
 
         public static Vec2<N> operator - (Vec2<N> vector0, Vec2<N> vector1)
         {
-            return new Vec2<N>(checked((dynamic)vector0.x - (dynamic)vector1.x), checked((dynamic) vector0.y - (dynamic) vector1.y));
+            return new Vec2<N>(checked((dynamic)vector0.X - (dynamic)vector1.X), checked((dynamic) vector0.Y - (dynamic) vector1.Y));
         }
         
         public static Vec2<N> operator * (Vec2<N> vector, N n)
         {
-            N x = (N) ((dynamic) vector.x * n);
-            N y = (N) ((dynamic) vector.y * n);
+            N x = (N) ((dynamic) vector.X * n);
+            N y = (N) ((dynamic) vector.Y * n);
             
             return new Vec2<N>(x, y);
         }
         
         public static Vec2<N> operator / (Vec2<N> vector, N n)
         {
-            N x = (N) ((dynamic) vector.x / n);
-            N y = (N) ((dynamic) vector.y / n);
+            N x = (N) ((dynamic) vector.X / n);
+            N y = (N) ((dynamic) vector.Y / n);
             
             return new Vec2<N>(x, y);
         }
@@ -204,8 +204,8 @@ namespace Chess.Util
 
         private static double distance(Vec2<double> point0, Vec2<double> point1)
         {
-            double xDifference = point1.x - point0.x;
-            double yDifference = point1.y - point0.y;
+            double xDifference = point1.X - point0.X;
+            double yDifference = point1.Y - point0.Y;
 
             xDifference = Math.Abs(xDifference);
             yDifference = Math.Abs(yDifference);

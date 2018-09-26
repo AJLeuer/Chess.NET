@@ -75,6 +75,7 @@
     <Compile Include="Tests\KnightTest.cs" />
     <Compile Include="Tests\MoveTest.cs" />
     <Compile Include="Tests\PlayerTest.cs" />
+    <Compile Include="Tests\SquareTest.cs" />
     <Compile Include="Util\TestUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
