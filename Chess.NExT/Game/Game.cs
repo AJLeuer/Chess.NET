@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using SFML.Window;
 
@@ -136,19 +137,16 @@ namespace Chess.Game
 
         protected abstract void setup();
 
-        public void advance()
+        public virtual void advance()
         {
-            advance(Optional<Move>.Empty);
-        }
-        
-        public void advance(Optional<Move> overridingMove)
-        {
-            decideMove(overridingMove);
+            decideMove();
 
             OnGameAdvanced.Invoke();
+            
+            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
 
-        protected abstract void decideMove(Optional<Move> overridingMove);
+        protected abstract void decideMove();
         
         /// <summary>
         /// Display or record any output intended for the user, where the type of output is defined by the implementation
@@ -213,19 +211,19 @@ namespace Chess.Game
 
         protected override void display()
         {
+            window.DispatchEvents();
             window.Clear();
             displayChessBoard();
             Thread.Sleep(TimeSpan.FromMilliseconds(2));
         }
 
-        protected override void decideMove(Optional<Move> overridingMove)
+        protected override void decideMove()
         {
             CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
 
-            Move nextMove = CurrentPlayer.decideNextMove();
+            Move nextMove = CurrentPlayer.DecideNextMove();
 
             nextMove.Commit();
-
         }
 
         public void displayChessBoard()
@@ -241,20 +239,23 @@ namespace Chess.Game
             }
         }
 
-        private void monitorMouse () {
-            var mouseMonitor = new ThreadStart(() => 
-            {
-                while (GameActive) {
-                    if (Mouse.IsButtonPressed(ButtonMain)) {
-                        Mouse.GetPosition();
-                    }
-                    Thread.Sleep(TimeSpan.FromMilliseconds(1));
-                }
-            });
-            
-            var mouseMonitoringThread = new Thread(mouseMonitor);
-            
-            mouseMonitoringThread.Start();
+        private void monitorMouse () 
+        {
+            // var mouseMonitor = new ThreadStart(() => 
+            // {
+            //     while (GameActive) 
+            //     {
+            //         if (Mouse.IsButtonPressed(ButtonMain)) 
+            //         {
+            //             Mouse.GetPosition();
+            //         }
+            //         Thread.Sleep(TimeSpan.FromMilliseconds(1));
+            //     }
+            // });
+            //
+            // var mouseMonitoringThread = new Thread(mouseMonitor);
+            //
+            // mouseMonitoringThread.Start();
         }
     }
     
@@ -284,29 +285,29 @@ namespace Chess.Game
         }
         
         protected override void setup(){}
-
-        protected override void decideMove(Optional<Move> overridingMove)
+        
+        public override void advance()
         {
-                        
-            if (overridingMove.HasValue) {
-                overridingMove.Object.Commit();
-            }
-            else {
+            decideMove();
 
-                Move nextMove = CurrentPlayer.decideNextMove();
-                nextMove.Commit();
-            }
+            OnGameAdvanced.Invoke();
+            
             //and definitely don't sleep
+        }
+
+        protected override void decideMove()
+        {
+            Move nextMove = CurrentPlayer.DecideNextMove();
+            nextMove.Commit();
         }
         
         protected override void display(){}
-
     }
     
     /// <summary>
     /// A BasicGame used only for testing the outcomes of potential moves
     /// </summary>
-    public class TemporaryGame : BasicGame
+    public class TemporaryGame : SimulatedGame
     {
         public TemporaryGame() :
             base()
@@ -331,11 +332,7 @@ namespace Chess.Game
             return new TemporaryGame(this);
         }
         
-        protected override void setup(){}
-
-        protected override void decideMove(Optional<Move> overridingMove) {}
-        
-        protected override void display(){}
+        protected override void decideMove() {}
     }
     
     public delegate void GameStateAdvancedAction();

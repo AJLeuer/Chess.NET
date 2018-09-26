@@ -200,7 +200,7 @@ namespace Chess.Game
         */
         public bool canMove()
         {
-            var moves = findAllPossibleLegalMoveDestinations();
+            var moves = FindAllPossibleLegalMoveDestinations();
 
             bool canMove = (moves.Count > 0);
 
@@ -220,7 +220,7 @@ namespace Chess.Game
             move(destinationSquare);
         }
         
-        public virtual List<Square> findAllPossibleLegalMoveDestinations()
+        public virtual List<Square> FindAllPossibleLegalMoveDestinations()
         {
             Predicate<Square> squareChecker = (Square squareToCheck) =>
             {

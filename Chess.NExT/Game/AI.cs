@@ -24,23 +24,23 @@ namespace Chess.Game
         
         public override void onTurn()
         {
-            Move move = decideNextMove();
+            Move move = DecideNextMove();
 
             move.Commit();
         }
 
-        public override Move decideNextMove()
+        public override Move DecideNextMove()
         {
             return chooseBestMove();
         }
 
 		protected Move chooseBestMove() 
 		{
-			List<Move> highValueMoveOptions = findBestMoves();
+			List<Move> highValueMoveOptions = FindBestMoves();
 
-			highValueMoveOptions = highValueMoveOptions.extractHighestValueSubset();
+			highValueMoveOptions = highValueMoveOptions.ExtractHighestValueSubset();
 	
-			Move move = highValueMoveOptions.selectElementAtRandom();
+			Move move = highValueMoveOptions.SelectElementAtRandom();
 
 			return move;
 		}

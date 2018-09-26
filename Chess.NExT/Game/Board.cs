@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using C5;
@@ -128,7 +129,7 @@ namespace Chess.Game
 		
 		public IEnumerator<Square> GetEnumerator()
 		{
-			return (IEnumerator<Square>) Squares.GetEnumerator();
+			return Squares.OfType<Square>().GetEnumerator();
 		}
 		
 		IEnumerator IEnumerable.GetEnumerator()
@@ -289,7 +290,7 @@ namespace Chess.Game
 		/// <param name="player">The player from whose perspective the value of the game state is calculated</param>
 		public virtual short CalculateRelativeValue(Player player)
 		{
-			var (blackSum, whiteSum) = AbsoluteValueToPlayers();
+			var (blackSum, whiteSum) = CalculateAbsoluteValueToPlayers();
 
 			if (player.Color == black) {
 				short result = (short)(blackSum - whiteSum);
@@ -301,7 +302,7 @@ namespace Chess.Game
 			}
 		}
 
-		public (short valueToBlack, short valueToWhite) AbsoluteValueToPlayers()
+		public (short valueToBlack, short valueToWhite) CalculateAbsoluteValueToPlayers()
 		{
 			short valueToBlack = 0;
 			short valueToWhite = 0;

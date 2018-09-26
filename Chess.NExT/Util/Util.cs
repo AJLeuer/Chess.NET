@@ -93,7 +93,7 @@ namespace Chess.Util
             return cloneArray;
         }
 
-        public static T selectElementAtRandom<T>(this System.Collections.Generic.IList<T> container)
+        public static T SelectElementAtRandom<T>(this System.Collections.Generic.IList<T> container)
         {
             var randomizer = new Random();
 
@@ -104,7 +104,7 @@ namespace Chess.Util
             return randomElement;
         }
         
-        public static List<T> extractHighestValueSubset<T>(this List<T> list) where T : IComparable<T>
+        public static List<T> ExtractHighestValueSubset<T>(this List<T> list) where T : IComparable<T>
         {
             if (list.Count == 0)
             {

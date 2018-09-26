@@ -90,28 +90,28 @@ namespace Chess.Game
             }
         }
 
-        public abstract Move decideNextMove();
+        public abstract Move DecideNextMove();
 
-        public List<Move> findPossibleMoves()
+        public List<Move> FindPossibleMoves()
         {
             var moves = new List<Move>();
             
             foreach (var piece in pieces)
             {
-                var movesForPiece = findPossibleMovesForPiece(piece);
+                var movesForPiece = FindAllPossibleMovesForPiece(piece);
                 moves.AddRange(movesForPiece);
             }
 
             return moves;
         }
         
-        public virtual List<Move> findBestMoves()
+        public virtual List<Move> FindBestMoves()
         {
             var moves = new List<Move>();
             
             foreach (var piece in pieces)
             {
-                Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
+                Optional<Move> bestMoveForPiece = FindBestMoveForPiece(piece);
 
                 if (bestMoveForPiece.HasValue)
                 {
@@ -122,11 +122,11 @@ namespace Chess.Game
             return moves;
         }
 
-        public List<Move> findPossibleMovesForPiece(Piece piece)
+        public List<Move> FindAllPossibleMovesForPiece(Piece piece)
         {
             var moves = new List<Move>();
             
-            List<Square> moveDestinations = piece.findAllPossibleLegalMoveDestinations();
+            List<Square> moveDestinations = piece.FindAllPossibleLegalMoveDestinations();
             
             foreach (var moveDestination in moveDestinations)
             {
@@ -138,15 +138,15 @@ namespace Chess.Game
             return moves;
         }
 
-        public virtual Optional<Move> findBestMoveForPiece(Piece piece)
+        public virtual Optional<Move> FindBestMoveForPiece(Piece piece)
         {
-            List<Move> moves = findPossibleMovesForPiece(piece);
+            List<Move> moves = FindAllPossibleMovesForPiece(piece);
 
-            moves = moves.extractHighestValueSubset();
+            moves = moves.ExtractHighestValueSubset();
 
             if (moves.Any())
             {
-                return moves.selectElementAtRandom();
+                return moves.SelectElementAtRandom();
             }
             else
             {
@@ -154,7 +154,7 @@ namespace Chess.Game
             }
         }
         
-        public Tree<Move> computeMoveDecisionTree()
+        public Tree<Move> ComputeMoveDecisionTree()
         {
             throw new NotImplementedException();
         }

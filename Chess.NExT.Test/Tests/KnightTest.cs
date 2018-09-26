@@ -20,7 +20,7 @@ namespace Chess.NExT.Test.Tests
 
             square.Piece = knight;
 
-            List<Square> possibleMoves = knight.findAllPossibleLegalMoveDestinations();
+            List<Square> possibleMoves = knight.FindAllPossibleLegalMoveDestinations();
             
             possibleMoves.Should().BeEquivalentTo(board['f', 2], board['d', 2], board['c', 3],
                 board['c', 5], board['d', 6], board['f', 6], board['g', 5] , board['g', 3]);

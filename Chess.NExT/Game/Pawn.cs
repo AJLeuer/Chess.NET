@@ -111,7 +111,7 @@ namespace Chess.Game
 		* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
 		* no such Squares, empty
 		*/
-	    public override List<Square> findAllPossibleLegalMoveDestinations()
+	    public override List<Square> FindAllPossibleLegalMoveDestinations()
 	    {
 		    List<Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
 
