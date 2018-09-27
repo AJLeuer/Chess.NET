@@ -35,13 +35,22 @@ namespace Chess.NExT.Test.Tests
 				CallBase = true
 			};
 			
+			var whitePlayerCloneMock = new Mock<Player>(Color.white, null)
+			{
+				CallBase = true
+			};
+			
 			var gameMock = new Mock<BasicGame>(MockBehavior.Loose, board, whitePlayerMock.Object, null)
 			{
 				CallBase = true
 			};
 			
+			/* Need to provide an implementation of Clone(), since it's an abstract method */
 			whitePlayerMock.Setup((Player self) => self.Clone())
-						   .Returns(() => { return new Mock<Player>(whitePlayerMock.Object).Object; });
+						   .Returns(() => { return whitePlayerCloneMock.Object; });
+			
+			whitePlayerMock.Setup((Player self) => self.Color)
+						   .CallBase();
 			
 			game = gameMock.Object;
 			whitePlayer = whitePlayerMock.Object;
@@ -54,8 +63,7 @@ namespace Chess.NExT.Test.Tests
 			
 			var move = new Move(whitePlayer, whiteKnight, board['a', 8]);
 
-			move.Value.Should()
-				.Be(5);
+			move.Value.Should().Be(5);
 		}
 	}
 }

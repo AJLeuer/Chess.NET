@@ -14,7 +14,7 @@ namespace Chess.Game
             get { return Position; }
         }
 
-        private Color? color = null;
+        private Optional<Color> color = Optional<Color>.Empty;
 
         public Color Color
         {
@@ -25,7 +25,7 @@ namespace Chess.Game
                     color = determineColor();
                 }
 
-                return color.Value;
+                return color.Object;
             }
         }
 

@@ -294,11 +294,13 @@ namespace Chess.Game
 		{
 			var (blackSum, whiteSum) = CalculateAbsoluteValueToPlayers();
 
-			if (player.Color == black) {
+			if (player.Color == black) 
+			{
 				short result = (short)(blackSum - whiteSum);
 				return result;
 			}
-			else /* if (player.color == white) */ {
+			else /* if (player.color == white) */ 
+			{
 				short result = (short)(whiteSum - blackSum);
 				return result;
 			}

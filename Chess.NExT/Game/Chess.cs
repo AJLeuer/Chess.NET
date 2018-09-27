@@ -9,10 +9,19 @@ using Rank = System.UInt16;
 	
 namespace Chess.Game
 {
-	public enum Color : byte
+	// public enum Color
+	// {
+	// 	black,
+	// 	white
+	// }
+	public abstract class Color
 	{
-		white = 0xFF,
-		black = 0x00
+		public static readonly Color white = new White();
+		public static readonly Color black = new Black();
+		
+		public class White : Color {}
+
+		public class Black : Color {}
 	}
     
 	public static class ColorMethods {
@@ -21,9 +30,9 @@ namespace Chess.Game
 		{
 			switch (color)
 			{
-				case Color.white:
+				case Color.White white:
 					return Color.black;
-				case Color.black:
+				case Color.Black black:
 					return Color.white;
 				default:
 					throw new InvalidEnumArgumentException();
