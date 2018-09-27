@@ -4,11 +4,10 @@ using NUnit.Framework;
 
 namespace Chess.NExT.Test.Tests
 {
-	[TestFixture]
-	public class SquareTest
+	public static class SquareTest
 	{
 		[Test]
-		public void WhiteSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
+		public static void WhiteSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
 		{
 			Square square = new Square('h', 7);
 
@@ -16,7 +15,7 @@ namespace Chess.NExT.Test.Tests
 		}
 		
 		[Test]
-		public void BlackSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
+		public static void BlackSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
 		{
 			Square square = new Square('b', 2);
 

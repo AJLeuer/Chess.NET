@@ -4,6 +4,7 @@ using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
 using static Chess.Game.Color;
+using static Chess.Game.BasicGame;
 
 namespace Chess.Game
 {
@@ -30,6 +31,8 @@ namespace Chess.Game
         public Sprite Sprite { get; set; }
         
         public abstract List<Direction> LegalMovementDirections { get; }
+        
+        public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
 
         public uint movesMade { get; protected set; } = 0;
 
@@ -249,8 +252,10 @@ namespace Chess.Game
             };
             
             List<Square> squaresLegalToMove = Board.SearchForSquares(
-                squareChecker, this.position, directions: this.LegalMovementDirections.ToArray());
-            
+                squareMatcher: squareChecker, 
+                startingSquarePosition: this.position, 
+                directions: LegalMovementDirections.ToArray(), 
+                distance: MaximumMoveDistance);
 
             return squaresLegalToMove;
         }

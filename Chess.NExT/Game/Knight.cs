@@ -54,6 +54,8 @@ namespace Chess.Game
                 return directions;
             }
         }
+        
+        public override ushort MaximumMoveDistance { get { return 1; } }
 
         public Knight(Knight other) :
             base(other)

@@ -16,6 +16,8 @@ namespace Chess.Game
 {
     public abstract class BasicGame : ICloneable
     {
+        public static readonly ushort MaximumPossibleMoveDistance = (ushort) Board.EmptySquares.GetLength(0);
+        
         protected static ulong IDs = 0;
 
         protected ulong ID { get; } = IDs++;

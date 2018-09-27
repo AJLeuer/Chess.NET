@@ -14,13 +14,12 @@ namespace Chess.Game
 	// 	black,
 	// 	white
 	// }
-	public abstract class Color
+	public class Color
 	{
 		public static readonly Color white = new White();
 		public static readonly Color black = new Black();
 		
 		public class White : Color {}
-
 		public class Black : Color {}
 	}
     

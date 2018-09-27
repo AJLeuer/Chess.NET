@@ -197,7 +197,7 @@ namespace Chess.Game
 			
 			foreach (var direction in directions)
 			{
-				var squaresInCurrentDirection = searchForSquaresInGivenDirection(squareMatcher, 
+				var squaresInCurrentDirection = searchForAvailableSquaresInGivenDirection(squareMatcher, 
 					startingSquarePosition, (short) distance, direction);
 				
 				matchingSquares.AddRange(squaresInCurrentDirection);
@@ -206,7 +206,7 @@ namespace Chess.Game
 			return matchingSquares;
 		}
 
-		private List<Square> searchForSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
+		private List<Square> searchForAvailableSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
 		{
 			var matchingSquares = new List<Square>();
 

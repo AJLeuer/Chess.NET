@@ -1,4 +1,3 @@
-using C5;
 using Chess.Game;
 using Chess.Util;
 using FluentAssertions;

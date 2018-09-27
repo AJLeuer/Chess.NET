@@ -80,6 +80,8 @@ namespace Chess.Game
 			    return legalMovementDirections.Object;
 		    }
 	    }
+		
+		public override ushort MaximumMoveDistance { get { return 1; } }
 
 		public Pawn(Pawn other) :
 			base(other)

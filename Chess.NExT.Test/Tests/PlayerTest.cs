@@ -48,7 +48,7 @@ namespace Chess.NExT.Test.Tests
             List<Piece> pieces = player.findOwnPiecesOnBoard(mockBoard);
 
             //checks that pawnF2, pawnG2, and knightG1 (and nothing else) are in pieces, but in no particular order
-            AdditionalCollectionAssertions.Contains(actual: pieces, knightG1, pawnF2, pawnG2);
+            AdditionalCollectionAssertions.AssertContains(actual: pieces, knightG1, pawnF2, pawnG2);
         }
     }
 }
