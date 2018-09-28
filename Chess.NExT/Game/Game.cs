@@ -86,7 +86,7 @@ namespace Chess.Game
             
         }
 
-        public BasicGame(Board board, Player player0 = null, Player player1 = null)
+        protected BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
             this.Board = board;
             this.Player0 = player0;
