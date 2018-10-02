@@ -12,28 +12,28 @@ namespace Chess.NExT.Test.Tests
         {
             Vec2<uint> position = new Vec2<uint>(3, 3);
             
-            RankAndFile boardPosition = position; //invokes conversion operator
+            RankFile boardPosition = position; //invokes conversion operator
 
-            boardPosition.Should().BeEquivalentTo(new RankAndFile('d', 5));
+            boardPosition.Should().BeEquivalentTo(new RankFile('d', 4));
         }
         
         [Test]
         public static void ShouldConvertRankAndFileToPosition()
         {
-            RankAndFile g7 = new RankAndFile('g', 7);
+            RankFile g7 = new RankFile('g', 7);
             
             Vec2<uint> position = g7; //invokes conversion operator
 
-            position.Should().BeEquivalentTo(new Vec2<uint>(6, 1));
+            position.Should().BeEquivalentTo(new Vec2<uint>(6, 6));
         }
 
         [Test]
         public static void RankAndFileConversionShouldBeReversible()
         {
-            RankAndFile a8 = new RankAndFile('a', 8);
+            RankFile a8 = new RankFile('a', 8);
             
             Vec2<uint> position = a8; //invokes conversion operator
-            RankAndFile reverseConvertedPosition = position; //invokes conversion operator
+            RankFile reverseConvertedPosition = position; //invokes conversion operator
             
             reverseConvertedPosition.Should().BeEquivalentTo(a8);
         }

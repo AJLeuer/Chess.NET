@@ -73,7 +73,7 @@ namespace Chess.Game
             return new King(this);
         }
 	
-        public override void move(RankAndFile destination)  
+        public override void move(RankFile destination)  
         {
             //todo add move legality checking
             base.move(destination);

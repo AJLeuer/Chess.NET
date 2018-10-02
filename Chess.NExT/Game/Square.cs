@@ -7,11 +7,11 @@ namespace Chess.Game
 {
     public class Square : ICloneable, ChessDrawable
     {
-        public Vec2<uint> Position { get; }
+        public Vec2<uint> BoardPosition { get; }
         
-        public RankAndFile BoardPosition
+        public RankFile RankAndFile
         {
-            get { return Position; }
+            get { return BoardPosition; }
         }
 
         private Optional<Color> color = Optional<Color>.Empty;
@@ -67,15 +67,15 @@ namespace Chess.Game
         }
         
         
-        public Square(Vec2<uint> position, Board board, Piece piece = null)
+        public Square(Vec2<uint> boardPosition, Board board, Piece piece = null)
         {
-            Position = position;
+            BoardPosition = boardPosition;
             Board = board;
             Piece = new Optional<Piece>(piece);
         }
 
         public Square(Square other):
-            this(new Vec2<uint>(other.Position),
+            this(new Vec2<uint>(other.BoardPosition),
                  null, /* Don't copy other's board pointer */
                  (other.isEmpty) ? null : Game.Piece.create(other.piece))
         {
@@ -83,7 +83,7 @@ namespace Chess.Game
         }
 
         public Square(char file, ushort rank, Board board = null) :
-            this(new RankAndFile(file, rank), board)
+            this(new RankFile(file, rank), board)
         {
             
         }
@@ -125,15 +125,15 @@ namespace Chess.Game
         {
             Color color;
             
-            uint coordinateSum = Position.X + Position.Y;
+            uint coordinateSum = BoardPosition.X + BoardPosition.Y;
             
             if ((coordinateSum % 2) == 0) //is even
             {
-                color = Color.white;
+                color = Color.black;
             }
             else
             {
-                color = Color.black;
+                color = Color.white;
             }
 
             return color;

@@ -18,7 +18,7 @@ namespace Chess.Game
         
         public ulong ID { get; } = IDs++;
 
-        public char symbol { get; }
+        public char Symbol { get; }
         
         public abstract char ASCIISymbol { get; }
 
@@ -34,7 +34,7 @@ namespace Chess.Game
         
         public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
 
-        public uint movesMade { get; protected set; } = 0;
+        public uint MovesMade { get; protected set; } = 0;
 
         protected Optional<Square> square;
         
@@ -47,9 +47,9 @@ namespace Chess.Game
                 {
                     updateSpritePosition();
                     
-                    if (movesMade == 0)
+                    if (MovesMade == 0)
                     {
-                        this.startingPosition = new Vec2<uint>(square.Object.Position);
+                        this.startingPosition = new Vec2<uint>(square.Object.BoardPosition);
                     } 
                 }
             }
@@ -63,9 +63,9 @@ namespace Chess.Game
 
         protected Vec2<uint> startingPosition;
 
-        public RankAndFile position
+        public RankFile BoardPosition
         {
-            get { return Square.Position; }
+            get { return Square.BoardPosition; }
         }
         
         public CallBack onCaptured { get; set; }
@@ -155,7 +155,7 @@ namespace Chess.Game
         protected Piece(char symbol, string spriteImageFilePath, Color color)
         {
             /* ID init from IDs */
-            this.symbol = symbol;
+            this.Symbol = symbol;
             this.Color = color;
             /* movesMade init to 0 */
             this.spriteImageFilePath = spriteImageFilePath;
@@ -166,7 +166,7 @@ namespace Chess.Game
         protected Piece(Piece other)
         {
             //Pieces resulting from copies have their own, unique IDs
-            symbol = other.symbol;
+            Symbol = other.Symbol;
             Color = other.Color;
             /* movesMade is already init to 0 */
             spriteImageFilePath = other.spriteImageFilePath;
@@ -207,7 +207,8 @@ namespace Chess.Game
         {
             if (Sprite != null)
             {
-                Sprite.Position = position.convertToPosition();
+                //Sprite.Position = position.ConvertToScreenPosition();
+                throw new NotImplementedException();
             }
         }
 	    
@@ -229,10 +230,10 @@ namespace Chess.Game
 
             destination.receiveArrivingPiece(this);
 
-            movesMade++;
+            MovesMade++;
         }
         
-        public virtual void move(RankAndFile destination) {
+        public virtual void move(RankFile destination) {
             Square destinationSquare = Board[destination];
             move(destinationSquare);
         }
@@ -253,7 +254,7 @@ namespace Chess.Game
             
             List<Square> squaresLegalToMove = Board.SearchForSquares(
                 squareMatcher: squareChecker, 
-                startingSquarePosition: this.position, 
+                startingSquarePosition: this.BoardPosition, 
                 directions: LegalMovementDirections.ToArray(), 
                 distance: MaximumMoveDistance);
 

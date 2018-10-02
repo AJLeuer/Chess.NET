@@ -10,8 +10,6 @@ namespace Chess.Util
 {
     public static class Util
     {
-        public const ushort lowerCaseA = 97;
-        
         public static Vector2f ConvertVector<N>(this Vec2<N> vector) where N : 
             struct, 
             IComparable, 

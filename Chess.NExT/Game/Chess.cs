@@ -86,7 +86,8 @@ namespace Chess.Game
 		public static implicit operator Vec2<short>(Direction direction) { return direction.value; }
 	}
 
-    public struct RankAndFile : IEquatable<RankAndFile> {
+    public struct RankFile : IEquatable<RankFile> 
+    {
 	    
 	    // ReSharper disable once UnusedMember.Local
 	    private const File firstFile = 'a';
@@ -99,82 +100,86 @@ namespace Chess.Game
 
 		private const Rank lastRank = 8;
 
-		public static File convertToFile(uint x) {
-			char c = (char)(x + lowerCaseA);
+		public static File convertToFile(uint boardPositionX) 
+		{
+			var firstFileCharCode = (Int32)firstFile;
+			char c = (char)(boardPositionX + firstFileCharCode);
 			return c;
 		}
  
-		public static Rank convertToRank(uint y) {
-			var rank = lastRank - y;
+		public static Rank convertToRank(uint boardPositionY) 
+		{
+			var rank = firstRank + boardPositionY;
 			return (Rank)rank;
 		}
 
-	    public static uint convertToInteger(File file)
+	    private static uint convertToBoardPositionIntegerX(File file)
 	    {
-		    int intValue = file - lowerCaseA;
+		    var firstFileCharCode = (Int32)firstFile;
+		    int intValue = file - firstFileCharCode;
 		    return (uint)intValue;
 	    }
 	    
-	    public static uint convertToInteger(Rank rank)
+	    private static uint convertToBoardPositionIntegerY(Rank rank)
 	    {
-		    int intValue = (lastRank - rank) % lastRank;
-		    return (uint) intValue;
+		    return (uint)(rank - firstRank);
+	    }
+	    
+	    public static Vec2<uint> ConvertToBoardPosition (RankFile rankAndFile)  
+	    {
+
+		    /* Chess ranks start with 1 at the bottom and increase as we move up the board,
+		     but window coordinates start with y = 0 at the top, and y increases with descent.
+		     So to convert our rank to a y-coordinate, we'll need to essentially swap each rank
+		     value across the horizontal axis, and subtract 1 from it (rank values start at 1, but
+		     vec2<int> values start at 0)
+
+		     Chess files can be converted from x-coordinates by subtracting the Unicode decimal value for 'a' -
+		     97 - from the decimal value of the char representing the rank. Applied to 'a', this gives an x-coord
+		     of 0, 'b' outputs as 1, 'c' is 2, etc.
+		     */
+
+		    uint y = convertToBoardPositionIntegerY(rankAndFile.rank);
+
+		    //convert file to x:
+		    uint x = convertToBoardPositionIntegerX(rankAndFile.file);
+
+		    return new Vec2<uint>(x, y);
 	    }
 
 		public File file { get; }
 
 		public Rank rank { get; }
 
-	    public RankAndFile(char file, ushort rank)
+	    public RankFile(char file, ushort rank)
 	    {
 		    this.file = file;
 		    this.rank = rank;
 	    }
 
-	    public RankAndFile(Vec2<uint> position) : 
+	    public RankFile(Vec2<uint> position) : 
 		    this(convertToFile(position[0]), convertToRank(position[1]))
 	    {
 		    
 	    }
 
-		public static implicit operator RankAndFile(Vec2<uint> position)  
+		public static implicit operator RankFile(Vec2<uint> position)  
 		{
-			return new RankAndFile(position);
+			return new RankFile(position);
 		}
 	    
-	    public static implicit operator Vec2<uint>(RankAndFile boardPosition)  
+	    public static implicit operator Vec2<uint>(RankFile boardRankAndFile)  
 	    {
-		    return boardPosition.convertToPosition();
+		    return ConvertToBoardPosition(boardRankAndFile);
 	    }
 
-		public Vec2<uint> convertToPosition ()  {
-
-			/* Chess ranks start with 1 at the bottom and increase as we move up the board,
-			 but window coordinates start with y = 0 at the top, and y increases with descent.
-			 So to convert our rank to a y-coordinate, we'll need to essentially swap each rank
-			 value across the horizontal axis, and subtract 1 from it (rank values start at 1, but
-			 vec2<int> values start at 0)
-
-			 Chess files can be converted from x-coordinates by subtracting the Unicode decimal value for 'a' -
-			 97 - from the decimal value of the char representing the rank. Applied to 'a', this gives an x-coord
-			 of 0, 'b' outputs as 1, 'c' is 2, etc.
-			 */
-
-			uint y = convertToInteger(rank);
-
-			//convert file to x:
-			uint x = convertToInteger(file);
-
-			return new Vec2<uint>(x, y);
-		}
-
-	    public static Boolean operator == (RankAndFile boardPosition0, RankAndFile boardPosition1)
+	    public static Boolean operator == (RankFile boardPosition0, RankFile boardPosition1)
 	    {
 		    return (boardPosition0.rank == boardPosition1.rank) &&
 		           (boardPosition0.file == boardPosition1.file);
 	    }
 
-	    public static bool operator != (RankAndFile boardPosition0, RankAndFile boardPosition1)
+	    public static bool operator != (RankFile boardPosition0, RankFile boardPosition1)
 	    {
 		    return !(boardPosition0 == boardPosition1);
 	    }
@@ -183,7 +188,7 @@ namespace Chess.Game
 	    {
 		    if (@object?.GetType() == this.GetType())
 		    {
-			    return this.Equals((RankAndFile) @object);
+			    return this.Equals((RankFile) @object);
 		    }
 		    else
 		    {
@@ -191,7 +196,7 @@ namespace Chess.Game
 		    }
 	    }
 
-	    public bool Equals(RankAndFile other)
+	    public bool Equals(RankFile other)
 	    {
 		    return this == other;
 	    }
@@ -206,17 +211,19 @@ namespace Chess.Game
     }
 
 	[SuppressMessage("ReSharper", "NotAccessedField.Local")]
-	public struct GameRecordEntry {
+	public struct GameRecordEntry 
+	{
 	
-		public struct AlgebraicNotation {
+		public struct AlgebraicNotation 
+		{
 		
 			public char pieceSymbol;
 			
-			public RankAndFile destination;
+			public RankFile destination;
 			
-			public AlgebraicNotation(Piece piece,  RankAndFile destination)
+			public AlgebraicNotation(Piece piece,  RankFile destination)
 			{
-				pieceSymbol = piece.symbol;
+				pieceSymbol = piece.Symbol;
 				this.destination = destination;
 			}		
 		} 
@@ -224,7 +231,7 @@ namespace Chess.Game
 		public AlgebraicNotation algrebraicNotation;		
 
 		// ReSharper disable once UnusedMember.Local
-		public GameRecordEntry(Piece piece, RankAndFile destination)
+		public GameRecordEntry(Piece piece, RankFile destination)
 		{
 			algrebraicNotation = new AlgebraicNotation(piece, destination);
 		}
