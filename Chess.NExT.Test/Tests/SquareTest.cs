@@ -2,22 +2,29 @@ using Chess.Game;
 using FluentAssertions;
 using NUnit.Framework;
 
+using File = System.Char;
+using Rank = System.UInt16;
+
 namespace Chess.NExT.Test.Tests
 {
 	public static class SquareTest
 	{
-		[Test]
-		public static void WhiteSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
+		[TestCase('c', (Rank)8)]
+		[TestCase('d', (Rank)5)]
+		[TestCase('h', (Rank)7)]
+		public static void WhiteSquaresShouldDetermineOwnColorBasedOnPositionOnBoard(File file, Rank rank)
 		{
-			Square square = new Square('h', 7);
+			var square = new Square(file, rank);
 
 			square.Color.Should().Be(Color.white);
 		}
 		
-		[Test]
-		public static void BlackSquaresShouldDetermineOwnColorBasedOnPositionOnBoard()
+		[TestCase('a', (Rank)1)]
+		[TestCase('b', (Rank)2)]
+		[TestCase('g', (Rank)7)]
+		public static void BlackSquaresShouldDetermineOwnColorBasedOnPositionOnBoard(File file, Rank rank)
 		{
-			Square square = new Square('b', 2);
+			var square = new Square(file, rank);
 
 			square.Color.Should().Be(Color.black);
 		}
