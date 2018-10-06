@@ -139,22 +139,29 @@ namespace Chess.Game
 		     of 0, 'b' outputs as 1, 'c' is 2, etc.
 		     */
 
-		    uint y = convertToBoardPositionIntegerY(rankAndFile.rank);
+		    uint y = convertToBoardPositionIntegerY(rankAndFile.Rank);
 
 		    //convert file to x:
-		    uint x = convertToBoardPositionIntegerX(rankAndFile.file);
+		    uint x = convertToBoardPositionIntegerX(rankAndFile.File);
 
 		    return new Vec2<uint>(x, y);
 	    }
 
-		public File file { get; }
+		private File file;
+		
+		public File File
+		{
+			get { return file; }
+			
+			private set { file = Char.ToLower(value); }
+		}
 
-		public Rank rank { get; }
+		public Rank Rank { get; }
 
-	    public RankFile(char file, ushort rank)
-	    {
-		    this.file = file;
-		    this.rank = rank;
+	    public RankFile(char file, ushort rank) : this()
+		{
+		    File = file;
+		    Rank = rank;
 	    }
 
 	    public RankFile(Vec2<uint> position) : 
@@ -175,8 +182,8 @@ namespace Chess.Game
 
 	    public static Boolean operator == (RankFile boardPosition0, RankFile boardPosition1)
 	    {
-		    return (boardPosition0.rank == boardPosition1.rank) &&
-		           (boardPosition0.file == boardPosition1.file);
+		    return (boardPosition0.Rank == boardPosition1.Rank) &&
+		           (boardPosition0.File == boardPosition1.File);
 	    }
 
 	    public static bool operator != (RankFile boardPosition0, RankFile boardPosition1)
@@ -205,7 +212,7 @@ namespace Chess.Game
 	    {
 		    unchecked
 		    {
-			    return (file.GetHashCode() * 397) ^ rank.GetHashCode();
+			    return (File.GetHashCode() * 397) ^ Rank.GetHashCode();
 		    }
 	    }
     }

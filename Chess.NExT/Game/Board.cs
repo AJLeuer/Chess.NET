@@ -9,7 +9,6 @@ using C5;
 using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
-using static Chess.Util.Util;
 using static Chess.Game.Color;
 
 using File = System.Char;
@@ -33,43 +32,43 @@ namespace Chess.Game
 
 		public static readonly Square[,] DefaultStartingSquares = new Square[,]
 		{
-			{ new Square('♖', 'a', 1), new Square('♙', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square('♟', 'a', 7), new Square('♜', 'a', 8) },
+			{ new Square('♖'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♜') },
 			
-			{ new Square('♘', 'b', 1), new Square('♙', 'b', 2), new Square(' ', 'b', 3), new Square(' ', 'b', 4), new Square(' ', 'b', 5), new Square(' ', 'b', 6), new Square('♟', 'b', 7), new Square('♞', 'b', 8) },
+			{ new Square('♘'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♞') },
 			
-			{ new Square('♗', 'c', 1), new Square('♙', 'c', 2), new Square(' ', 'c', 3), new Square(' ', 'c', 4), new Square(' ', 'c', 5), new Square(' ', 'c', 6), new Square('♟', 'c', 7), new Square('♝', 'c', 8) },
+			{ new Square('♗'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♝') },
 			
-			{ new Square('♕', 'd', 1), new Square('♙', 'd', 2), new Square(' ', 'd', 3), new Square(' ', 'd', 4), new Square(' ', 'd', 5), new Square(' ', 'd', 6), new Square('♟', 'd', 7), new Square('♛', 'd', 8) },
+			{ new Square('♕'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♛') },
 			
-			{ new Square('♔', 'e', 1), new Square('♙', 'e', 2), new Square(' ', 'e', 3), new Square(' ', 'e', 4), new Square(' ', 'e', 5), new Square(' ', 'e', 6), new Square('♟', 'e', 7), new Square('♚', 'e', 8) },
+			{ new Square('♔'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♚') },
 			
-			{ new Square('♗', 'f', 1), new Square('♙', 'f', 2), new Square(' ', 'f', 3), new Square(' ', 'f', 4), new Square(' ', 'f', 5), new Square(' ', 'f', 6), new Square('♟', 'f', 7), new Square('♝', 'f', 8) },
+			{ new Square('♗'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♝') },
 			
-			{ new Square('♘', 'g', 1), new Square('♙', 'g', 2), new Square(' ', 'g', 3), new Square(' ', 'g', 4), new Square(' ', 'g', 5), new Square(' ', 'g', 6), new Square('♟', 'g', 7), new Square('♞', 'g', 8) },
+			{ new Square('♘'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♞') },
 			
-			{ new Square('♖', 'h', 1), new Square('♙', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square('♟', 'h', 7), new Square('♜', 'h', 8) }
+			{ new Square('♖'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♜') }
 		};
 		
 		public static readonly Square[,] EmptySquares = new Square[,]
 		{
-			{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'b', 1), new Square(' ', 'b', 2), new Square(' ', 'b', 3), new Square(' ', 'b', 4), new Square(' ', 'b', 5), new Square(' ', 'b', 6), new Square(' ', 'b', 7), new Square(' ', 'b', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'c', 1), new Square(' ', 'c', 2), new Square(' ', 'c', 3), new Square(' ', 'c', 4), new Square(' ', 'c', 5), new Square(' ', 'c', 6), new Square(' ', 'c', 7), new Square(' ', 'c', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'd', 1), new Square(' ', 'd', 2), new Square(' ', 'd', 3), new Square(' ', 'd', 4), new Square(' ', 'd', 5), new Square(' ', 'd', 6), new Square(' ', 'd', 7), new Square(' ', 'd', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'e', 1), new Square(' ', 'e', 2), new Square(' ', 'e', 3), new Square(' ', 'e', 4), new Square(' ', 'e', 5), new Square(' ', 'e', 6), new Square(' ', 'e', 7), new Square(' ', 'e', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'f', 1), new Square(' ', 'f', 2), new Square(' ', 'f', 3), new Square(' ', 'f', 4), new Square(' ', 'f', 5), new Square(' ', 'f', 6), new Square(' ', 'f', 7), new Square(' ', 'f', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'g', 1), new Square(' ', 'g', 2), new Square(' ', 'g', 3), new Square(' ', 'g', 4), new Square(' ', 'g', 5), new Square(' ', 'g', 6), new Square(' ', 'g', 7), new Square(' ', 'g', 8) },
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
 			
-			{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
+			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') }
 		};
 
-		private Square[,] squares;
+		private SquareGrid squares;
 
 		public virtual Square[,] Squares
 		{
@@ -333,6 +332,35 @@ namespace Chess.Game
 			}
 
 			return (valueToBlack, valueToWhite);
+		}
+	}
+
+	public class SquareGrid
+	{
+		private Square[,] squares;
+
+		private SquareGrid(Square[,] squares)
+		{
+			this.squares = squares;
+			
+			for (uint i = 0; i < this.squares.GetLength(0); i++)
+			{
+				for (uint j = 0; j < this.squares.GetLength(1); j++)
+				{
+					Square square = this.squares[i, j];
+					square.BoardPosition = new Vec2<uint>(i, j);
+				}
+			}
+		}
+
+		public static implicit operator Square[,] (SquareGrid grid)
+		{
+			return grid.squares;
+		}
+		
+		public static implicit operator SquareGrid (Square[,] squares)
+		{
+			return new SquareGrid(squares);
 		}
 	}
 

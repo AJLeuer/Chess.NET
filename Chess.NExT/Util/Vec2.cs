@@ -12,7 +12,7 @@ namespace System
 
 namespace Chess.Util
 {
-    public struct Vec2<N> : IEquatable<Vec2<N>>, IIndexable<N> where N:
+    public struct Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
         struct,
         IComparable, 
         IComparable<N>, 
@@ -116,6 +116,17 @@ namespace Chess.Util
             return ((dynamic) vector0.X == (dynamic) vector1.X) &&
                    ((dynamic) vector0.Y == (dynamic) vector1.Y);
         }
+        
+        public static Boolean operator == (Vec2<N> vector, (N,N) pair)
+        {
+            return ((dynamic) vector.X == (dynamic) pair.Item1) &&
+                   ((dynamic) vector.Y == (dynamic) pair.Item2);
+        }
+
+        public static bool operator != (Vec2<N> vector, (N, N) pair)
+        {
+            return !(vector == pair);
+        }
 
         public static bool operator != (Vec2<N> vector0, Vec2<N> vector1)
         {
@@ -128,6 +139,10 @@ namespace Chess.Util
             {
                 return this.Equals((Vec2<N>) @object);
             }
+            else if (@object?.GetType() == typeof((N, N)))
+            {
+                return this.Equals((ValueTuple<N,N>) @object);
+            }
             else
             {
                 throw new NotImplementedException();
@@ -137,6 +152,11 @@ namespace Chess.Util
         public bool Equals(Vec2<N> other)
         {
             return this == other;
+        }
+        
+        public bool Equals((N, N) pair)
+        {
+            return this == pair;
         }
 
         public override int GetHashCode()

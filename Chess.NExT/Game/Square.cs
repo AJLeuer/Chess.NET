@@ -7,7 +7,7 @@ namespace Chess.Game
 {
     public class Square : ICloneable, ChessDrawable
     {
-        public Vec2<uint> BoardPosition { get; }
+        public Vec2<uint> BoardPosition { get; set; }
         
         public RankFile RankAndFile
         {
@@ -65,39 +65,23 @@ namespace Chess.Game
         {
             get { return Piece.HasValue; }
         }
-        
-        
-        public Square(Vec2<uint> boardPosition, Board board, Piece piece = null)
+
+        public Square(Piece piece = null, Board board = null)
         {
-            BoardPosition = boardPosition;
             Board = board;
             Piece = new Optional<Piece>(piece);
         }
 
+        public Square(char pieceSymbol, Board board = null) :
+            this(Game.Piece.create(pieceSymbol), board)
+        {
+            
+        }
+        
         public Square(Square other):
-            this(new Vec2<uint>(other.BoardPosition),
-                 null, /* Don't copy other's board pointer */
-                 (other.isEmpty) ? null : Game.Piece.create(other.piece))
+            this ((other.isEmpty) ? null : Game.Piece.create(other.piece)) /* Don't copy other's board pointer */
         {
-            
-        }
-
-        public Square(char file, ushort rank, Board board = null) :
-            this(new RankFile(file, rank), board)
-        {
-            
-        }
-
-        public Square(Piece piece, char file, ushort rank, Board board = null) :
-            this(file, rank, board)
-        {
-            this.Piece = piece;
-        }
-
-        public Square(char pieceSymbol, char file, ushort rank, Board board = null) :
-            this(file, rank, board)
-        {
-            this.Piece = Game.Piece.create(pieceSymbol);
+            BoardPosition = new Vec2<uint>(other.BoardPosition);
         }
 
         ~Square()
