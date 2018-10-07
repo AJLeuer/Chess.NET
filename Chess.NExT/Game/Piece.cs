@@ -68,7 +68,7 @@ namespace Chess.Game
             get { return Square.BoardPosition; }
         }
         
-        public CallBack onCaptured { get; set; }
+        public CallBack OnCaptured { get; set; }
         
         public static Piece create(char symbol) {
             Piece piece;
@@ -193,7 +193,7 @@ namespace Chess.Game
 
         public void onCapture()
         {
-            onCaptured?.Invoke();
+            OnCaptured?.Invoke();
         }
 
         public void InitializeSprite () 
@@ -216,7 +216,7 @@ namespace Chess.Game
         * Returns true if there exists at least one Square that this Piece can legally move to,
         * false otherwise
         */
-        public bool canMove()
+        public bool CanMove()
         {
             var moves = FindAllPossibleLegalMoveDestinations();
 
@@ -225,7 +225,8 @@ namespace Chess.Game
             return canMove;
         }
         
-        public virtual void move(Square destination) {
+        public virtual void Move(Square destination) 
+        {
             Square.handleLeavingPiece();
 
             destination.receiveArrivingPiece(this);
@@ -233,9 +234,10 @@ namespace Chess.Game
             MovesMade++;
         }
         
-        public virtual void move(RankFile destination) {
+        public virtual void Move(RankFile destination) 
+        {
             Square destinationSquare = Board[destination];
-            move(destinationSquare);
+            Move(destinationSquare);
         }
         
         public virtual List<Square> FindAllPossibleLegalMoveDestinations()

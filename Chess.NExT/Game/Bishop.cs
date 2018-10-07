@@ -62,10 +62,10 @@ namespace Chess.Game
             return new Bishop(this);
         }
 
-        public override void move(RankFile destination) 
+        public override void Move(RankFile destination) 
         {
             //todo add move legality checking
-            base.move(destination);
+            base.Move(destination);
             Console.WriteLine("Warning: add move legality checking");
         }
 

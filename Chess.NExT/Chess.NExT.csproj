@@ -113,7 +113,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Bitmaps\.DS_Store" />
     <Content Include="Assets\Fonts\RobotoMono-Regular.ttf" />
     <Content Include="Config\sfmlnet-audio-2.dll.config" />
     <Content Include="Config\sfmlnet-graphics-2.dll.config" />

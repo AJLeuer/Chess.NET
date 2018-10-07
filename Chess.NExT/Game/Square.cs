@@ -66,14 +66,13 @@ namespace Chess.Game
             get { return Piece.HasValue; }
         }
 
-        public Square(Piece piece = null, Board board = null)
+        public Square(Piece piece = null)
         {
-            Board = board;
             Piece = new Optional<Piece>(piece);
         }
 
-        public Square(char pieceSymbol, Board board = null) :
-            this(Game.Piece.create(pieceSymbol), board)
+        public Square(char pieceSymbol) :
+            this(Game.Piece.create(pieceSymbol))
         {
             
         }

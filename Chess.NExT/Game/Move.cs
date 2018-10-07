@@ -118,7 +118,7 @@ namespace Chess.Game
         /// </summary>
         public void Commit()
         {
-            Piece.move(Destination);
+            Piece.Move(Destination);
         }
 		
         /// <summary>

@@ -169,10 +169,10 @@ namespace Chess.Game
 		    return captureSquares;
 	    }
 
-	    public override void move(RankFile destination)  
+	    public override void Move(RankFile destination)  
 	    {
 			//todo add move legality checking
-		    base.move(destination);
+		    base.Move(destination);
 		}
 
     }

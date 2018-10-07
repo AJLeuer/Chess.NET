@@ -24,14 +24,52 @@ namespace Chess.Game
         
         protected ulong iterations = 0;
 
+        private Board board;
         /* Note: Must be initialized first */
-        public virtual Board Board { get; protected set; }
+        public virtual Board Board 
+        { 
+            get { return board; }
+            
+            protected set
+            {
+                this.board = value;
+                
+                if (Board != null)
+                {
+                    Board.Game = this;
+                }
+            }
+        }
+
+        private Player player0;
+        private Player player1;
         
         /* holds references to pieces at index (0, 0) through (1, 15) */
-        public Player Player0 { get; protected set; }
+        public Player Player0
+        {
+            get { return player0; }
+            
+            protected set { initializePlayer(ref player0, value); }
+        }
         
         /* holds references to pieces at index (6, 0) through (7, 7) */
-        public Player Player1 { get; protected set; }
+        public Player Player1
+        {
+            get { return player1; }
+            
+            protected set { initializePlayer(ref player1, value); }
+        }
+        
+        // ReSharper disable once RedundantAssignment
+        protected void initializePlayer(ref Player playerMember, Player player)
+        {
+            playerMember = player;
+            
+            if (playerMember != null)
+            {
+                playerMember.Board = Board;
+            }
+        }
 
         public Player WhitePlayer
         {
@@ -91,9 +129,6 @@ namespace Chess.Game
             this.Board = board;
             this.Player0 = player0;
             this.Player1 = player1;
-            board.Game = this;
-
-            initializePlayers();
         }
 
         object ICloneable.Clone()
@@ -102,18 +137,6 @@ namespace Chess.Game
         }
 
         public abstract BasicGame Clone();
-        
-        protected void initializePlayers()
-        {
-            if (Player0 != null)
-            {
-                Player0.Board = Board;
-            }
-            if (Player1 != null)
-            {
-                Player1.Board = Board;
-            }
-        }
         
         public void PlayGame ()
         {
@@ -266,7 +289,8 @@ namespace Chess.Game
         }
     }
     
-    public class SimulatedGame : BasicGame {
+    public class SimulatedGame : BasicGame 
+    {
 
         public SimulatedGame() :
             base()
