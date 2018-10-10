@@ -26,10 +26,6 @@ namespace Chess.Game
 
         public abstract ushort Value { get; }
         
-        protected string spriteImageFilePath;
-
-        public Sprite Sprite { get; set; }
-        
         public abstract List<Direction> LegalMovementDirections { get; }
         
         public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
@@ -45,12 +41,13 @@ namespace Chess.Game
                 
                 if (square.HasValue)
                 {
-                    updateSpritePosition();
+                    Position2D = calculate2DPosition();
                     
                     if (MovesMade == 0)
                     {
                         this.startingPosition = new Vec2<uint>(square.Object.BoardPosition);
                     } 
+                    
                 }
             }
             get { return square.Object; } 
@@ -69,6 +66,28 @@ namespace Chess.Game
         }
         
         public CallBack OnCaptured { get; set; }
+        
+        protected string spriteImageFilePath;
+
+        public Sprite Sprite { get; set; }
+        
+        public Size Size
+        {
+            get { return Sprite.Texture.Size; }
+        }
+        
+        public Vec2<uint> Position2D
+        {
+            get { return Sprite.Position; }
+            
+            set
+            {
+                if (Sprite != null)
+                {
+                    Sprite.Position = value;
+                }
+            }
+        }
         
         public static Piece create(char symbol) {
             Piece piece;
@@ -196,20 +215,21 @@ namespace Chess.Game
             OnCaptured?.Invoke();
         }
 
-        public void InitializeSprite () 
+        public void InitializeGraphicalElements() 
         {
             var spriteTexture = new Texture(spriteImageFilePath);
             Sprite = new Sprite(spriteTexture);
-            updateSpritePosition();
+        }
+
+        public void Initialize2DPosition(Vec2<uint> position = default)
+        {
+            this.Position2D = calculate2DPosition();
         }
         
-        public void updateSpritePosition () 
+        public Vec2<uint> calculate2DPosition()
         {
-            if (Sprite != null)
-            {
-                //Sprite.Position = position.ConvertToScreenPosition();
-                throw new NotImplementedException();
-            }
+            Vec2<uint> position = (Square.Position2D / 2) / 2;
+            return position;
         }
 	    
         /**

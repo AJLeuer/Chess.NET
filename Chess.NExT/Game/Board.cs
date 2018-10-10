@@ -18,18 +18,6 @@ namespace Chess.Game
 {
 	public class Board : ICloneable, IEnumerable<Square>, ChessDrawable
 	{
-
-		protected static ulong IDs = 0;
-
-		protected ulong ID { get; } = IDs++;
-		
-		public Sprite Sprite { get; set; }
-		
-		public virtual Vec2<uint> maxPosition
-		{
-			get { return new Vec2<uint>((uint) Squares.GetLength(0) - 1, (uint) Squares.GetLength(1) - 1); }
-		}
-
 		public static readonly Square[,] DefaultStartingSquares = new Square[,]
 		{
 			{ new Square('♖'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♜') },
@@ -67,6 +55,15 @@ namespace Chess.Game
 			
 			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') }
 		};
+		
+		protected static ulong IDs = 0;
+		
+		protected ulong ID { get; } = IDs++;
+
+		public virtual Vec2<uint> MaxPosition
+		{
+			get { return new Vec2<uint>((uint) Squares.GetLength(0) - 1, (uint) Squares.GetLength(1) - 1); }
+		}
 
 		private SquareGrid squares;
 
@@ -80,7 +77,20 @@ namespace Chess.Game
 				takeOwnershipOfSquares();
 			}
 		}
-
+				
+		public Sprite Sprite { get; set; }
+		
+		public Size Size
+		{
+			get { return Sprite.Texture.Size; }
+		}
+		
+		public Vec2<uint> Position2D
+		{
+			get { return Sprite.Position; }
+			set { Sprite.Position = value; }
+		}
+		
 		public BasicGame Game { get; set; }
 
 		public Board() :
@@ -153,19 +163,43 @@ namespace Chess.Game
 		{
 			return new Board(this);
 		}
-		
-		public void InitializeSprite()
+
+		public void InitializeGraphicalElements()
 		{
 			var spriteTexture = new Texture(Config.BoardSpriteFilePath);
 			Sprite = new Sprite(spriteTexture);
-			
+
 			foreach (var square in Squares)
 			{
-				square.InitializeSprite();
+				square.InitializeGraphicalElements();
+			}
+		}
+
+		public void Initialize2DPosition(Vec2<uint> position)
+		{
+			this.Position2D = position;
+
+			Vec2<uint> squareOrigin = Position2D;
+			
+			for (uint i = 0; i < Squares.GetLength(0); i++)
+			{
+				Square square = null;
+				for (uint j = 0; j < Squares.GetLength(1); j++)
+				{
+					square = Squares[i, j];
+
+					square.Initialize2DPosition(squareOrigin);
+
+					squareOrigin.Y += square.Size.Height;
+				}
+				
+				// ReSharper disable once PossibleNullReferenceException
+				squareOrigin.X += square.Size.Width;
+				squareOrigin.Y = Position2D.Y;
 			}
 		}
 		
-		protected void takeOwnershipOfSquares()
+		private void takeOwnershipOfSquares()
 		{
 			if (Squares == null)
 			{
@@ -177,9 +211,8 @@ namespace Chess.Game
 				square.Board = this;
 			}	
 		}
-
 		
-		/// <param name="position">This function checks whether <paramref name="position"/> is within the bounds of the Chess board</param>
+		/// <param name="position">This function checks whether <paramref name="position"/> is within the bounds of the chess board</param>
 		///
 		/// <return>true if position exists on the board, false otherwise</return>
 		public virtual bool IsInsideBounds(Vec2<int> position)

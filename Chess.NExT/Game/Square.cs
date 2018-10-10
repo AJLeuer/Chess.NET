@@ -31,6 +31,26 @@ namespace Chess.Game
 
         public Sprite Sprite { get; set; }
 
+        public Size Size
+        {
+            get { return Sprite.Texture.Size; }
+        }
+
+        public Vec2<uint> Position2D
+        {
+            get
+            {
+                if (Sprite != null)
+                {
+                    return Sprite.Position;
+                }
+
+                return (0, 0);
+            }
+            
+            set { Sprite.Position = value; }
+        }
+
         public Board Board { get; set; }
 
         private Piece piece = null;
@@ -93,14 +113,24 @@ namespace Chess.Game
             return new Square(this);
         }
 
-        public void InitializeSprite()
+        public void InitializeGraphicalElements()
         {
             var spriteTexture = new Texture(Config.BoardSpriteFilePath);
             Sprite = new Sprite(spriteTexture);
             
             if (Piece.HasValue)
             {
-                Piece.Object.InitializeSprite();
+                Piece.Object.InitializeGraphicalElements();
+            }
+        }
+
+        public void Initialize2DPosition(Vec2<uint> position)
+        {
+            this.Position2D = position;
+
+            if (Piece.HasValue)
+            {
+                Piece.Object.Initialize2DPosition();
             }
         }
 

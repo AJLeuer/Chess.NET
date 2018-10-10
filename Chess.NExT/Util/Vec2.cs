@@ -36,32 +36,42 @@ namespace Chess.Util
             this.Y = y;
         }
         
-        public static implicit operator Vec2<N>(Vector2f sfmlVector)
+        public static implicit operator Vec2<N> ((N, N) pair)
+        {
+            return new Vec2<N> {X = pair.Item1, Y = pair.Item2};
+        }
+        
+        public static implicit operator Vec2<N> (Vector2f sfmlVector)
+        {
+            return new Vec2<N> {X = (N)(dynamic)sfmlVector.X, Y = (N)(dynamic)sfmlVector.Y};
+        }
+        
+        public static implicit operator Vec2<N> (Vector2i sfmlVector)
         {
             return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
         }
         
-        public static implicit operator Vec2<N>(Vector2i sfmlVector)
+        public static implicit operator Vec2<N> (Vector2u sfmlVector)
         {
             return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
         }
         
-        public static implicit operator Vec2<N>(Vector2u sfmlVector)
+        public static implicit operator (N, N) (Vec2<N> vector)
         {
-            return new Vec2<N> {X = (dynamic) sfmlVector.X, Y = (dynamic) sfmlVector.Y};
+            return (vector.X, vector.Y);
         }
         
-        public static implicit operator Vector2f(Vec2<N> vector)
+        public static implicit operator Vector2f (Vec2<N> vector)
         {
             return new Vector2f {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }
         
-        public static implicit operator Vector2i(Vec2<N> vector)
+        public static implicit operator Vector2i (Vec2<N> vector)
         {
             return new Vector2i {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }
         
-        public static implicit operator Vector2u(Vec2<N> vector)
+        public static implicit operator Vector2u (Vec2<N> vector)
         {
             return new Vector2u {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
         }

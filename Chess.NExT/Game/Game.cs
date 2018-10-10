@@ -25,7 +25,7 @@ namespace Chess.Game
         protected ulong iterations = 0;
 
         private Board board;
-        /* Note: Must be initialized first */
+        
         public virtual Board Board 
         { 
             get { return board; }
@@ -198,39 +198,35 @@ namespace Chess.Game
         }
     }
     
-    public class ChessGame : BasicGame, ChessDrawable
+    public class ChessGame : BasicGame
     {
 
         protected Window window = new Window();
 
-        public Sprite Sprite { get; set; }
-
         public ChessGame() :
             base()
         {
-            InitializeSprite();
+            Board.InitializeGraphicalElements();
+            Board.Initialize2DPosition((0, 0));
         }
 
         public ChessGame(BasicGame other) :
             base(other)
         {
-            InitializeSprite();
+            Board.InitializeGraphicalElements();
+            Board.Initialize2DPosition((0, 0));
         }
 
         public ChessGame(Board board, Player player0, Player player1) :
             base(board, player0, player1)
         {
-            InitializeSprite();
+            Board.InitializeGraphicalElements();
+            Board.Initialize2DPosition((0, 0));
         }
 
         public override BasicGame Clone()
         {
             return new ChessGame(this);
-        }
-
-        public void InitializeSprite()
-        {
-            Board.InitializeSprite();
         }
 
         protected override void setup()
