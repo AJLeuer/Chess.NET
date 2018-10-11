@@ -3,11 +3,13 @@ using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
 
+using Position = Chess.Util.Vec2<uint>;
+
 namespace Chess.Game
 {
     public class Square : ICloneable, ChessDrawable
     {
-        public Vec2<uint> BoardPosition { get; set; }
+        public Position BoardPosition { get; set; }
         
         public RankFile RankAndFile
         {
@@ -36,7 +38,7 @@ namespace Chess.Game
             get { return Sprite.Texture.Size; }
         }
 
-        public Vec2<uint> Position2D
+        public Position Position2D
         {
             get
             {
@@ -100,7 +102,7 @@ namespace Chess.Game
         public Square(Square other):
             this ((other.isEmpty) ? null : Game.Piece.create(other.piece)) /* Don't copy other's board pointer */
         {
-            BoardPosition = new Vec2<uint>(other.BoardPosition);
+            BoardPosition = new Position(other.BoardPosition);
         }
 
         ~Square()
@@ -125,7 +127,7 @@ namespace Chess.Game
             }
         }
 
-        public void Initialize2DPosition(Vec2<uint> position)
+        public void Initialize2DPosition(Position position)
         {
             this.Position2D = position;
 

@@ -3,6 +3,8 @@ using Chess.Util;
 using FluentAssertions;
 using NUnit.Framework;
 
+using Position = Chess.Util.Vec2<uint>;
+
 namespace Chess.NExT.Test.Tests
 {
     public static class ChessTest
@@ -10,7 +12,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldConvertCoordinatePositionToRankAndFile()
         {
-            Vec2<uint> position = new Vec2<uint>(3, 3);
+            Position position = new Position(3, 3);
             
             RankFile boardPosition = position; //invokes conversion operator
 
@@ -22,9 +24,9 @@ namespace Chess.NExT.Test.Tests
         {
             RankFile g7 = new RankFile('g', 7);
             
-            Vec2<uint> position = g7; //invokes conversion operator
+            Position position = g7; //invokes conversion operator
 
-            position.Should().BeEquivalentTo(new Vec2<uint>(6, 6));
+            position.Should().BeEquivalentTo(new Position(6, 6));
         }
 
         [Test]
@@ -32,7 +34,7 @@ namespace Chess.NExT.Test.Tests
         {
             RankFile a8 = new RankFile('a', 8);
             
-            Vec2<uint> position = a8; //invokes conversion operator
+            Position position = a8; //invokes conversion operator
             RankFile reverseConvertedPosition = position; //invokes conversion operator
             
             reverseConvertedPosition.Should().BeEquivalentTo(a8);

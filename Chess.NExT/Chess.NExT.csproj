@@ -100,7 +100,6 @@
     <Compile Include="Util\Config.cs" />
     <Compile Include="Util\Optional.cs" />
     <Compile Include="Util\Pair.cs" />
-    <Compile Include="Util\Position.cs" />
     <Compile Include="Util\Size.cs" />
     <Compile Include="Util\SortedList.cs" />
     <Compile Include="Util\TrueColor.cs" />

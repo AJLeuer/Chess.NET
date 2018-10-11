@@ -11,6 +11,7 @@ using Chess.View;
 using SFML.Graphics;
 using static Chess.Game.Color;
 
+using Position = Chess.Util.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 
@@ -60,9 +61,9 @@ namespace Chess.Game
 		
 		protected ulong ID { get; } = IDs++;
 
-		public virtual Vec2<uint> MaxPosition
+		public virtual Position MaxPosition
 		{
-			get { return new Vec2<uint>((uint) Squares.GetLength(0) - 1, (uint) Squares.GetLength(1) - 1); }
+			get { return new Position((uint) Squares.GetLength(0) - 1, (uint) Squares.GetLength(1) - 1); }
 		}
 
 		private SquareGrid squares;
@@ -85,7 +86,7 @@ namespace Chess.Game
 			get { return Sprite.Texture.Size; }
 		}
 		
-		public Vec2<uint> Position2D
+		public Position Position2D
 		{
 			get { return Sprite.Position; }
 			set { Sprite.Position = value; }
@@ -115,12 +116,12 @@ namespace Chess.Game
 		{
 			get
 			{
-				Vec2<uint> position = rankAndFile;
+				Position position = rankAndFile;
 				return Squares[position.X, position.Y];
 			}
 			set
 			{
-				Vec2<uint> position = rankAndFile;
+				Position position = rankAndFile;
 				Squares[position.X, position.Y] = value;
 			}
 		}
@@ -175,11 +176,11 @@ namespace Chess.Game
 			}
 		}
 
-		public void Initialize2DPosition(Vec2<uint> position)
+		public void Initialize2DPosition(Position position)
 		{
 			this.Position2D = position;
 
-			Vec2<uint> squareOrigin = Position2D;
+			Position squareOrigin = Position2D;
 			
 			for (uint i = 0; i < Squares.GetLength(0); i++)
 			{
@@ -226,7 +227,7 @@ namespace Chess.Game
 			}
 		}
 		
-		public List<Square> SearchForSquares(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition,
+		public List<Square> SearchForSquares(Predicate<Square> squareMatcher, Position startingSquarePosition,
 			ushort distance = 1, params Direction[] directions)
 		{
 			var matchingSquares = new List<Square>();
@@ -242,7 +243,7 @@ namespace Chess.Game
 			return matchingSquares;
 		}
 
-		private List<Square> searchForAvailableSquaresInGivenDirection(Predicate<Square> squareMatcher, Vec2<uint> startingSquarePosition, short maximumDistance, Direction direction)
+		private List<Square> searchForAvailableSquaresInGivenDirection(Predicate<Square> squareMatcher, Position startingSquarePosition, short maximumDistance, Direction direction)
 		{
 			var matchingSquares = new List<Square>();
 
@@ -381,7 +382,7 @@ namespace Chess.Game
 				for (uint j = 0; j < this.squares.GetLength(1); j++)
 				{
 					Square square = this.squares[i, j];
-					square.BoardPosition = new Vec2<uint>(i, j);
+					square.BoardPosition = new Position(i, j);
 				}
 			}
 		}

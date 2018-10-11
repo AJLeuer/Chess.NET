@@ -2,8 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
-using static Chess.Util.Util;
 
+using Position = Chess.Util.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 	
@@ -125,7 +125,7 @@ namespace Chess.Game
 		    return (uint)(rank - firstRank);
 	    }
 	    
-	    public static Vec2<uint> ConvertToBoardPosition (RankFile rankAndFile)  
+	    public static Position ConvertToBoardPosition (RankFile rankAndFile)  
 	    {
 
 		    /* Chess ranks start with 1 at the bottom and increase as we move up the board,
@@ -144,7 +144,7 @@ namespace Chess.Game
 		    //convert file to x:
 		    uint x = convertToBoardPositionIntegerX(rankAndFile.File);
 
-		    return new Vec2<uint>(x, y);
+		    return new Position(x, y);
 	    }
 
 		private File file;
@@ -164,18 +164,18 @@ namespace Chess.Game
 		    Rank = rank;
 	    }
 
-	    public RankFile(Vec2<uint> position) : 
+	    public RankFile(Position position) : 
 		    this(convertToFile(position[0]), convertToRank(position[1]))
 	    {
 		    
 	    }
 
-		public static implicit operator RankFile(Vec2<uint> position)  
+		public static implicit operator RankFile(Position position)  
 		{
 			return new RankFile(position);
 		}
 	    
-	    public static implicit operator Vec2<uint>(RankFile boardRankAndFile)  
+	    public static implicit operator Position(RankFile boardRankAndFile)  
 	    {
 		    return ConvertToBoardPosition(boardRankAndFile);
 	    }

@@ -3,6 +3,7 @@ using Chess.Util;
 using FluentAssertions;
 using NUnit.Framework;
 
+using Position = Chess.Util.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 
@@ -16,7 +17,7 @@ namespace Chess.NExT.Test.Tests
 		public static void WhiteSquaresShouldDetermineOwnColorBasedOnPositionOnBoard(File file, Rank rank)
 		{
 			var square = new Square();
-			square.BoardPosition = new Vec2<uint>(file, rank);			
+			square.BoardPosition = new Position(file, rank);			
 
 			square.Color.Should().Be(Color.white);
 		}
@@ -27,7 +28,7 @@ namespace Chess.NExT.Test.Tests
 		public static void BlackSquaresShouldDetermineOwnColorBasedOnPositionOnBoard(File file, Rank rank)
 		{
 			var square = new Square();
-			square.BoardPosition = new Vec2<uint>(file, rank);		
+			square.BoardPosition = new Position(file, rank);		
 
 			square.Color.Should().Be(Color.black);
 		}

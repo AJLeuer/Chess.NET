@@ -6,6 +6,8 @@ using SFML.Graphics;
 using static Chess.Game.Color;
 using static Chess.Game.BasicGame;
 
+using Position = Chess.Util.Vec2<uint>;
+
 namespace Chess.Game
 {
     public abstract class Piece : ICloneable, ChessDrawable
@@ -46,7 +48,7 @@ namespace Chess.Game
                     
                     if (MovesMade == 0)
                     {
-                        //this.startingPosition = new Vec2<uint>(Square.BoardPosition);
+                        //this.startingPosition = new Position(Square.BoardPosition);
                     } 
                     
                 }
@@ -59,7 +61,7 @@ namespace Chess.Game
             get { return Square.Board; }
         }
 
-        protected Vec2<uint> startingPosition { get; set; }
+        protected Position startingPosition { get; set; }
 
         public RankFile BoardPosition
         {
@@ -79,7 +81,7 @@ namespace Chess.Game
             get { return Sprite.Texture.Size; }
         }
         
-        public Vec2<uint> Position2D
+        public Position Position2D
         {
             get { return Sprite.Position; }
             
@@ -211,7 +213,7 @@ namespace Chess.Game
             Sprite = new Sprite(spriteTexture);
         }
 
-        public void Initialize2DPosition(Vec2<uint> position = default)
+        public void Initialize2DPosition(Position position = default)
         {
             calculate2DPosition();
         }

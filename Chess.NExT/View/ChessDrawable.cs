@@ -1,6 +1,8 @@
 using Chess.Util;
 using SFML.Graphics;
 
+using Position = Chess.Util.Vec2<uint>;
+
 namespace Chess.View
 {
 	public interface ChessDrawable
@@ -9,10 +11,10 @@ namespace Chess.View
 		
 		Size Size { get; }
 		
-		Vec2<uint> Position2D { get; set; }
+		Position Position2D { get; set; }
 		
 		void InitializeGraphicalElements();
 
-		void Initialize2DPosition(Vec2<uint> position);
+		void Initialize2DPosition(Position position);
 	}
 }
