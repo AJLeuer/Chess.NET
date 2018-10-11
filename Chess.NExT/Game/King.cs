@@ -54,7 +54,7 @@ namespace Chess.Game
         }
 	    
         public King(Color color) :
-            base(defaultSymbols[color], defaultImageFiles[color], color)
+            base(defaultSymbols[color], color, defaultImageFiles[color])
         {
 	
         }

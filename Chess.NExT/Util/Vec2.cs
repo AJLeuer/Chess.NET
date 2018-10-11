@@ -12,7 +12,7 @@ namespace System
 
 namespace Chess.Util
 {
-    public struct Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
+    public class Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
         struct,
         IComparable, 
         IComparable<N>, 
@@ -21,9 +21,14 @@ namespace Chess.Util
         IFormattable
     {
 
-        public N X { get; set; } 
-        public N Y { get; set; } 
+        public N X { get; set; }
+        public N Y { get; set; }
 
+        protected Vec2()
+        {
+            
+        }
+        
         public Vec2(Vec2<N> other) :
             this(other.X, other.Y)
         {
@@ -63,7 +68,8 @@ namespace Chess.Util
         
         public static implicit operator Vector2f (Vec2<N> vector)
         {
-            return new Vector2f {X = (dynamic) vector.X, Y = (dynamic) vector.Y};
+            var sfmlVector = new Vector2f {X = (float)(dynamic) vector.X, Y = (float)(dynamic) vector.Y};
+            return sfmlVector;
         }
         
         public static implicit operator Vector2i (Vec2<N> vector)
@@ -199,6 +205,14 @@ namespace Chess.Util
             N y = (N) ((dynamic) vector.Y * n);
             
             return new Vec2<N>(x, y);
+        }
+        
+        public static Vec2<double> operator / (Vec2<N> vector0, Vec2<N> vector1)
+        {
+            double x = ((double) (dynamic) vector0.X / (double) (dynamic) vector1.X);
+            double y = ((double) (dynamic) vector0.Y / (double) (dynamic) vector1.Y);
+            
+            return new Vec2<double>(x, y);
         }
         
         public static Vec2<N> operator / (Vec2<N> vector, N n)

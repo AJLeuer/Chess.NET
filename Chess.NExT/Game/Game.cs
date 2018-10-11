@@ -185,7 +185,8 @@ namespace Chess.Game
         /// 
         /// </summary>
         /// <returns>The Player from this <see cref="Chess.Game"/> with the same color as <paramref name="player"/></returns>
-        public Player FindMatchingPlayer(Player player) {
+        public Player FindMatchingPlayer(Player player) 
+        {
             return (player.Color == Player0.Color) ? Player0 : Player1;
         }
 
@@ -193,7 +194,8 @@ namespace Chess.Game
         /// 
         /// </summary>
         /// <returns>The Player from this <see cref="Chess.Game"/> with the color opposite <paramref name="player"/></returns>
-        public Player FindOpponentPlayer(Player player) {
+        public Player FindOpponentPlayer(Player player) 
+        {
             return (player.Color != Player0.Color) ? Player0 : Player1;
         }
     }

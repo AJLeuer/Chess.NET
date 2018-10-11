@@ -90,7 +90,7 @@ namespace Chess.Game
 	    }
 
 	    public Pawn(Color color) :
-		    base(defaultSymbols[color], defaultImageFiles[color], color)
+		    base(defaultSymbols[color], color, defaultImageFiles[color])
 	    {
 	
 	    }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Chess.Util;
 using Chess.View;
@@ -41,11 +41,12 @@ namespace Chess.Game
                 
                 if (square.HasValue)
                 {
-                    Position2D = calculate2DPosition();
+                    
+                    PostAssignedToSquareActions?.Invoke();
                     
                     if (MovesMade == 0)
                     {
-                        this.startingPosition = new Vec2<uint>(square.Object.BoardPosition);
+                        //this.startingPosition = new Vec2<uint>(Square.BoardPosition);
                     } 
                     
                 }
@@ -58,14 +59,16 @@ namespace Chess.Game
             get { return Square.Board; }
         }
 
-        protected Vec2<uint> startingPosition;
+        protected Vec2<uint> startingPosition { get; set; }
 
         public RankFile BoardPosition
         {
             get { return Square.BoardPosition; }
         }
         
-        public CallBack OnCaptured { get; set; }
+        public CallBack PostCapturedActions { get; set; }
+        
+        public CallBack PostAssignedToSquareActions { get; set; }
         
         protected string spriteImageFilePath;
 
@@ -171,26 +174,18 @@ namespace Chess.Game
             }
         }
         
-        protected Piece(char symbol, string spriteImageFilePath, Color color)
+        protected Piece(char symbol, Color color, string spriteImageFilePath)
         {
-            /* ID init from IDs */
             this.Symbol = symbol;
-            this.Color = color;
-            /* movesMade init to 0 */
+            this.Color  = color;
             this.spriteImageFilePath = spriteImageFilePath;
-            /* Don't initialize the actual texture/sprite data. Too
-             expensive - we only init it when we need it */
+
+            PostAssignedToSquareActions += this.calculate2DPosition;
         }
         
-        protected Piece(Piece other)
+        protected Piece(Piece other):
+            this(other.Symbol, other.Color, other.spriteImageFilePath)
         {
-            //Pieces resulting from copies have their own, unique IDs
-            Symbol = other.Symbol;
-            Color = other.Color;
-            /* movesMade is already init to 0 */
-            spriteImageFilePath = other.spriteImageFilePath;
-            startingPosition = other.startingPosition;
-            
             /* Don't initialize the actual texture/sprite data. Too
              expensive - we only init it when we need it (lazily) */
 
@@ -210,11 +205,6 @@ namespace Chess.Game
 
         public abstract Piece Clone();
 
-        public void onCapture()
-        {
-            OnCaptured?.Invoke();
-        }
-
         public void InitializeGraphicalElements() 
         {
             var spriteTexture = new Texture(spriteImageFilePath);
@@ -223,13 +213,12 @@ namespace Chess.Game
 
         public void Initialize2DPosition(Vec2<uint> position = default)
         {
-            this.Position2D = calculate2DPosition();
+            calculate2DPosition();
         }
         
-        public Vec2<uint> calculate2DPosition()
+        protected void calculate2DPosition()
         {
-            Vec2<uint> position = (Square.Position2D / 2) / 2;
-            return position;
+            this.Position2D = (Square.Position2D / 2) / 2;
         }
 	    
         /**

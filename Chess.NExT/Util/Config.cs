@@ -1,9 +1,11 @@
 ﻿using Chess.View;
+using MonoMac.PrintCore;
 using static SFML.Window.Mouse;
 
 namespace Chess.Util
 {
-
+    using Resolution = Chess.Util.Size;
+    
     public static class Config
     {
         public static bool GameActive = false;
@@ -15,6 +17,8 @@ namespace Chess.Util
         public static readonly TrueColor WindowBackgroundColor = new TrueColor(0x18, 0x18, 0x18, 0x7F);
         
         public static readonly TrueColor WindowForegroundColor = new TrueColor(0, 196, 240, 0);
+
+        public static readonly Resolution BoardResolution = new Resolution {Width = 2560, Height = 2560};
 
         public static readonly string BoardSpriteFilePath = "./Assets/Bitmaps/Board.png";
 

@@ -43,7 +43,7 @@ namespace Chess.Game
         }
 	    
         public Bishop(Color color) :
-            base(defaultSymbols[color], defaultImageFiles[color], color)
+            base(defaultSymbols[color], color, defaultImageFiles[color])
         {
 	
         }

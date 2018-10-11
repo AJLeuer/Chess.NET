@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using SFML.System;
 
 namespace Chess.Util
@@ -6,9 +8,17 @@ namespace Chess.Util
 	{
 		private Vec2<uint> value;
 
-		public uint Width { get { return value.X; } }
-		
-		public uint Height { get { return value.Y; } }
+		public uint Width
+		{
+			get { return value.X; }
+			set { this.value.X = value; }
+		}
+
+		public uint Height
+		{
+			get { return value.Y; }
+			set { this.value.Y = value; }
+		}
 
 		public Size(uint width, uint height) :
 			this(new Vec2<uint>(width, height))
@@ -40,6 +50,18 @@ namespace Chess.Util
 		public static Vec2<uint> operator + (Vec2<uint> vector, Size size)
 		{
 			return vector + size.value;
+		}
+		
+		public static Size operator / (Size size, uint n)
+		{
+			Vec2<uint> quotient = size.value / n;
+            
+			return new Size(quotient);
+		}
+		
+		public static Vec2<double> operator / (Size size0, Size size1)
+		{
+			return size0.value / size1.value;
 		}
 	}
 }

@@ -55,7 +55,7 @@ namespace Chess.Game
         }
 	
         public Queen(Color color) :
-            base(defaultSymbols[color], defaultImageFiles[color], color)
+            base(defaultSymbols[color], color, defaultImageFiles[color])
         {
 	
         }

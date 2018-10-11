@@ -64,7 +64,7 @@ namespace Chess.Game
         }
         
         public Knight(Color color) :
-            base(defaultSymbols[color], defaultImageFiles[color], color)
+            base(defaultSymbols[color], color, defaultImageFiles[color])
         {
 	
         }

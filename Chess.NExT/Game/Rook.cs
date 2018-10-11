@@ -45,7 +45,7 @@ namespace Chess.Game
         }
         
         public Rook(Color color) :
-            base(defaultSymbols[color], defaultImageFiles[color], color)
+            base(defaultSymbols[color], color, defaultImageFiles[color])
         {
 	
         }

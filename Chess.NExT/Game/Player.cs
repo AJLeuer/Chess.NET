@@ -86,7 +86,7 @@ namespace Chess.Game
             foreach (var piece in pieces)
             {
                 CallBack removePiece = () => pieces.Remove(piece);
-                piece.OnCaptured += removePiece;
+                piece.PostCapturedActions += removePiece;
             }
         }
 

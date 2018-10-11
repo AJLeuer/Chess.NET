@@ -117,6 +117,7 @@ namespace Chess.Game
         {
             var spriteTexture = new Texture(Config.BoardSpriteFilePath);
             Sprite = new Sprite(spriteTexture);
+            Sprite.Scale = calculateScalingFromBoardResolution(Size);
             
             if (Piece.HasValue)
             {
@@ -169,13 +170,28 @@ namespace Chess.Game
 
         protected void captureCurrentPiece()
         {
-            piece?.onCapture();
+            piece.PostCapturedActions?.Invoke();
             clearCurrentPiece();
         }
 
         protected void clearCurrentPiece()
         {
             Piece = Optional<Piece>.Empty;
+        }
+
+        protected static Vec2<double> calculateScalingFromBoardResolution(Size unscaledSizeOfSquare)
+        {
+            ushort numberOfSquaresHorizontal = (ushort) Game.Board.DefaultStartingSquares.GetLength(0);
+            ushort numberOfSquaresVertical = (ushort) Game.Board.DefaultStartingSquares.GetLength(1);
+            
+            uint targetWidthForSquare = Chess.Util.Config.BoardResolution.Width / numberOfSquaresHorizontal;
+            uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;
+
+            Size targetSizeForSquare = new Size {Width = targetWidthForSquare, Height = targetHeightForSquare};
+
+            Vec2<double> scaleFactor = targetSizeForSquare / unscaledSizeOfSquare;
+
+            return scaleFactor;
         }
 
     }
