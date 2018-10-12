@@ -24,7 +24,6 @@ namespace Chess.Game
                 {
                     value = calculateValue();
                 }
-
                 // ReSharper disable once PossibleInvalidOperationException
                 return value.Value;
             }

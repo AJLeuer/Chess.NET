@@ -3,15 +3,17 @@ using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
 
+using File = System.Char;
+using Rank = System.UInt16;
 using Position = Chess.Util.Vec2<uint>;
 
 namespace Chess.Game
 {
     public class Square : ICloneable, ChessDrawable
     {
-        public Position? BoardPosition { get; set; } = null;
+        public Position BoardPosition { get; protected set; }
         
-        public RankFile? RankAndFile
+        public RankFile RankAndFile
         {
             get { return BoardPosition; }
         }
@@ -89,21 +91,47 @@ namespace Chess.Game
             get { return Piece.HasValue; }
         }
 
-        public Square(Piece piece = null)
+        public Square(File file, Rank rank):
+            this(null, file, rank)
         {
-            Piece = new Optional<Piece>(piece);
+            
         }
 
-        public Square(char pieceSymbol) :
-            this(Game.Piece.create(pieceSymbol))
+        public Square(RankFile rankAndFile) :
+            this(null, rankAndFile)
+        {
+            
+        }
+        
+        public Square(Piece piece, File file, Rank rank)
+        {
+            BoardPosition = new RankFile(file, rank);
+            Piece = new Optional<Piece>(piece);
+        }
+        
+        public Square(Piece piece, RankFile rankAndFile):
+            this(piece, rankAndFile.File, rankAndFile.Rank)
+        {
+            
+        }
+        
+        public Square(char pieceSymbol, File file, Rank rank) :
+            this(Game.Piece.create(pieceSymbol), file, rank)
+        {
+            
+        }
+        
+        public Square(char pieceSymbol, RankFile rankAndFile) :
+            this(Game.Piece.create(pieceSymbol), rankAndFile)
         {
             
         }
         
         public Square(Square other):
-            this ((other.isEmpty) ? null : Game.Piece.create(other.piece)) /* Don't copy other's board pointer */
+            this ((other.isEmpty) ? null : Game.Piece.create(other.piece),
+                   new RankFile(other.RankAndFile)) /* Don't copy other's board pointer */
         {
-            BoardPosition = new Position(other.BoardPosition ?? default);
+            
         }
 
         ~Square()
@@ -142,8 +170,7 @@ namespace Chess.Game
         {
             Color color;
             
-            // ReSharper disable once PossibleInvalidOperationException
-            uint coordinateSum = BoardPosition.Value.X + BoardPosition.Value.Y;
+            uint coordinateSum = BoardPosition.X + BoardPosition.Y;
             
             color = (coordinateSum % 2) == 0 ? Color.black : Color.white;
 

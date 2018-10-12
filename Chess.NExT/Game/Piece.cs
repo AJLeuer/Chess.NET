@@ -64,27 +64,23 @@ namespace Chess.Game
                 {
                     return this.PositionHistory.First();
                 }
-                else if (BoardPosition.HasValue)
-                {
-                    return BoardPosition.Value;
-                }
                 else
                 {
-                    throw new InvalidOperationException("Square position not set");
+                    return BoardPosition;
                 }
             }
         }
 
         public List<RankFile> PositionHistory { get; } = new List<RankFile>();
 
-        public RankFile? BoardPosition
+        public RankFile BoardPosition
         {
             get { return Square.BoardPosition; }
         }
-        
-        public CallBack PostCapturedActions { get; set; }
-        
-        public CallBack PieceMovingNotifier { get; set; }
+
+        public CallBack PostCapturedActions;
+
+        public CallBack PieceMovingNotifier;
         
         protected string spriteImageFilePath;
 
@@ -237,11 +233,8 @@ namespace Chess.Game
 
         protected void recordCurrentPosition()
         {
-            if (BoardPosition.HasValue)
-            {
-                var currentPosition = new RankFile(this.BoardPosition.Value);
-                PositionHistory.Add(currentPosition);
-            }
+            var currentPosition = new RankFile(this.BoardPosition);
+            PositionHistory.Add(currentPosition);
         }
 	    
         /**
@@ -295,7 +288,7 @@ namespace Chess.Game
             // ReSharper disable once PossibleInvalidOperationException
             List<Square> squaresLegalToMove = Board.SearchForSquares(
                 squareMatcher: squareChecker, 
-                startingSquarePosition: this.BoardPosition.Value, 
+                startingSquarePosition: this.BoardPosition, 
                 directions: LegalMovementDirections.ToArray(), 
                 distance: MaximumMoveDistance);
 

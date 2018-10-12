@@ -137,7 +137,7 @@ namespace Chess.Game
 		    };
 		    
 		    List<Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
-			    this.BoardPosition.Value, 1, this.legalMovementDirectionToEmptySquares);
+			    this.BoardPosition, 1, this.legalMovementDirectionToEmptySquares);
 
 		    if (availableSquares.Count > 0)
 		    {
@@ -165,7 +165,7 @@ namespace Chess.Game
 		    };
 		    
 		    List<Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
-			    this.BoardPosition.Value, 1, this.legalCaptureDirections.ToArray());
+			    this.BoardPosition, 1, this.legalCaptureDirections.ToArray());
 
 		    return captureSquares;
 	    }
