@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 
 namespace Chess.Game
 {
-    public class Pawn : Piece
+	public class Pawn : Piece
     {
 	    
 	    protected static readonly List<Direction> blackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
@@ -136,7 +137,7 @@ namespace Chess.Game
 		    };
 		    
 		    List<Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
-			    this.BoardPosition, 1, this.legalMovementDirectionToEmptySquares);
+			    this.BoardPosition.Value, 1, this.legalMovementDirectionToEmptySquares);
 
 		    if (availableSquares.Count > 0)
 		    {
@@ -164,7 +165,7 @@ namespace Chess.Game
 		    };
 		    
 		    List<Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
-			    this.BoardPosition, 1, this.legalCaptureDirections.ToArray());
+			    this.BoardPosition.Value, 1, this.legalCaptureDirections.ToArray());
 
 		    return captureSquares;
 	    }

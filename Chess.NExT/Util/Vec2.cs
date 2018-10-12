@@ -12,7 +12,7 @@ namespace System
 
 namespace Chess.Util
 {
-    public class Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
+    public struct Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
         struct,
         IComparable, 
         IComparable<N>, 
@@ -23,11 +23,6 @@ namespace Chess.Util
 
         public N X { get; set; }
         public N Y { get; set; }
-
-        protected Vec2()
-        {
-            
-        }
         
         public Vec2(Vec2<N> other) :
             this(other.X, other.Y)

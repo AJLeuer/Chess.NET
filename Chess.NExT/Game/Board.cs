@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using C5;
@@ -19,42 +20,43 @@ namespace Chess.Game
 {
 	public class Board : ICloneable, IEnumerable<Square>, ChessDrawable
 	{
+		
 		public static readonly Square[,] DefaultStartingSquares = new Square[,]
 		{
-			{ new Square('♖'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♜') },
+			{ new Square('♖' /* a 1 */), new Square('♙' /* a 2 */), new Square(' ' /* a 3 */), new Square(' ' /* a 4 */), new Square(' ' /* a 5 */), new Square(' ' /* a 6 */), new Square('♟' /* a 7 */), new Square('♜' /* a 8 */) },
 			
-			{ new Square('♘'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♞') },
+			{ new Square('♘' /* b 1 */), new Square('♙' /* b 2 */), new Square(' ' /* b 3 */), new Square(' ' /* b 4 */), new Square(' ' /* b 5 */), new Square(' ' /* b 6 */), new Square('♟' /* b 7 */), new Square('♞' /* b 8 */) },
 			
-			{ new Square('♗'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♝') },
+			{ new Square('♗' /* c 1 */), new Square('♙' /* c 2 */), new Square(' ' /* c 3 */), new Square(' ' /* c 4 */), new Square(' ' /* c 5 */), new Square(' ' /* c 6 */), new Square('♟' /* c 7 */), new Square('♝' /* c 8 */) },
 			
-			{ new Square('♕'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♛') },
+			{ new Square('♕' /* d 1 */), new Square('♙' /* d 2 */), new Square(' ' /* d 3 */), new Square(' ' /* d 4 */), new Square(' ' /* d 5 */), new Square(' ' /* d 6 */), new Square('♟' /* d 7 */), new Square('♛' /* d 8 */) },
 			
-			{ new Square('♔'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♚') },
+			{ new Square('♔' /* e 1 */), new Square('♙' /* e 2 */), new Square(' ' /* e 3 */), new Square(' ' /* e 4 */), new Square(' ' /* e 5 */), new Square(' ' /* e 6 */), new Square('♟' /* e 7 */), new Square('♚' /* e 8 */) },
 			
-			{ new Square('♗'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♝') },
+			{ new Square('♗' /* f 1 */), new Square('♙' /* f 2 */), new Square(' ' /* f 3 */), new Square(' ' /* f 4 */), new Square(' ' /* f 5 */), new Square(' ' /* f 6 */), new Square('♟' /* f 7 */), new Square('♝' /* f 8 */) },
 			
-			{ new Square('♘'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♞') },
+			{ new Square('♘' /* g 1 */), new Square('♙' /* g 2 */), new Square(' ' /* g 3 */), new Square(' ' /* g 4 */), new Square(' ' /* g 5 */), new Square(' ' /* g 6 */), new Square('♟' /* g 7 */), new Square('♞' /* g 8 */) },
 			
-			{ new Square('♖'), new Square('♙'), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square('♟'), new Square('♜') }
+			{ new Square('♖' /* h 1 */), new Square('♙' /* h 2 */), new Square(' ' /* h 3 */), new Square(' ' /* h 4 */), new Square(' ' /* h 5 */), new Square(' ' /* h 6 */), new Square('♟' /* h 7 */), new Square('♜' /* h 8 */) }
 		};
 		
 		public static readonly Square[,] EmptySquares = new Square[,]
 		{
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* a 1 */), new Square(' ' /* a 2 */), new Square(' ' /* a 3 */), new Square(' ' /* a 4 */), new Square(' ' /* a 5 */), new Square(' ' /* a 6 */), new Square(' ' /* a 7 */), new Square(' ' /* a 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* b 1 */), new Square(' ' /* b 2 */), new Square(' ' /* b 3 */), new Square(' ' /* b 4 */), new Square(' ' /* b 5 */), new Square(' ' /* b 6 */), new Square(' ' /* b 7 */), new Square(' ' /* b 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* c 1 */), new Square(' ' /* c 2 */), new Square(' ' /* c 3 */), new Square(' ' /* c 4 */), new Square(' ' /* c 5 */), new Square(' ' /* c 6 */), new Square(' ' /* c 7 */), new Square(' ' /* c 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* d 1 */), new Square(' ' /* d 2 */), new Square(' ' /* d 3 */), new Square(' ' /* d 4 */), new Square(' ' /* d 5 */), new Square(' ' /* d 6 */), new Square(' ' /* d 7 */), new Square(' ' /* d 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* e 1 */), new Square(' ' /* e 2 */), new Square(' ' /* e 3 */), new Square(' ' /* e 4 */), new Square(' ' /* e 5 */), new Square(' ' /* e 6 */), new Square(' ' /* e 7 */), new Square(' ' /* e 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* f 1 */), new Square(' ' /* f 2 */), new Square(' ' /* f 3 */), new Square(' ' /* f 4 */), new Square(' ' /* f 5 */), new Square(' ' /* f 6 */), new Square(' ' /* f 7 */), new Square(' ' /* f 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') },
+			{ new Square(' ' /* g 1 */), new Square(' ' /* g 2 */), new Square(' ' /* g 3 */), new Square(' ' /* g 4 */), new Square(' ' /* g 5 */), new Square(' ' /* g 6 */), new Square(' ' /* g 7 */), new Square(' ' /* g 8 */) },
 			
-			{ new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' '), new Square(' ') }
+			{ new Square(' ' /* h 1 */), new Square(' ' /* h 2 */), new Square(' ' /* h 3 */), new Square(' ' /* h 4 */), new Square(' ' /* h 5 */), new Square(' ' /* h 6 */), new Square(' ' /* h 7 */), new Square(' ' /* h 8 */) }
 		};
 		
 		protected static ulong IDs = 0;
@@ -86,7 +88,7 @@ namespace Chess.Game
 			get { return Sprite.Texture.Size; }
 		}
 		
-		public Position Position2D
+		public Position Coordinates2D
 		{
 			get { return Sprite.Position; }
 			set { Sprite.Position = value; }
@@ -176,11 +178,11 @@ namespace Chess.Game
 			}
 		}
 
-		public void Initialize2DPosition(Position position)
+		public void Initialize2DCoordinates(Vec2<uint> coordinates)
 		{
-			this.Position2D = position;
+			this.Coordinates2D = coordinates;
 
-			Position squareOrigin = Position2D;
+			Vec2<uint> squareOrigin = Coordinates2D;
 			
 			for (uint i = 0; i < Squares.GetLength(0); i++)
 			{
@@ -189,14 +191,14 @@ namespace Chess.Game
 				{
 					square = Squares[i, j];
 
-					square.Initialize2DPosition(squareOrigin);
+					square.Initialize2DCoordinates(squareOrigin);
 
 					squareOrigin.Y += square.Size.Height;
 				}
 				
 				// ReSharper disable once PossibleNullReferenceException
 				squareOrigin.X += square.Size.Width;
-				squareOrigin.Y = Position2D.Y;
+				squareOrigin.Y = Coordinates2D.Y;
 			}
 		}
 		
@@ -296,8 +298,13 @@ namespace Chess.Game
 		
 		public Square FindMatchingSquare(Square square)
 		{
-			Square ownSquare = this[square.RankAndFile];
-			return ownSquare;
+			if (square.RankAndFile.HasValue)
+			{
+				Square ownSquare = this[square.RankAndFile.Value];
+				return ownSquare;
+			}
+
+			throw new InvalidOperationException("Square position not set");
 		}
 
 		/// <summary>Finds the Piece on this board that matches the given argument. There are three requirements for a match:

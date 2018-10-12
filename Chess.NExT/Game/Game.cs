@@ -209,21 +209,21 @@ namespace Chess.Game
             base()
         {
             Board.InitializeGraphicalElements();
-            Board.Initialize2DPosition((0, 0));
+            Board.Initialize2DCoordinates((0, 0));
         }
 
         public ChessGame(BasicGame other) :
             base(other)
         {
             Board.InitializeGraphicalElements();
-            Board.Initialize2DPosition((0, 0));
+            Board.Initialize2DCoordinates((0, 0));
         }
 
         public ChessGame(Board board, Player player0, Player player1) :
             base(board, player0, player1)
         {
             Board.InitializeGraphicalElements();
-            Board.Initialize2DPosition((0, 0));
+            Board.Initialize2DCoordinates((0, 0));
         }
 
         public override BasicGame Clone()

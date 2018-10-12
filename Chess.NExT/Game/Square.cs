@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
@@ -9,9 +9,9 @@ namespace Chess.Game
 {
     public class Square : ICloneable, ChessDrawable
     {
-        public Position BoardPosition { get; set; }
+        public Position? BoardPosition { get; set; } = null;
         
-        public RankFile RankAndFile
+        public RankFile? RankAndFile
         {
             get { return BoardPosition; }
         }
@@ -38,7 +38,7 @@ namespace Chess.Game
             get { return Sprite.Texture.Size; }
         }
 
-        public Position Position2D
+        public Vec2<uint> Coordinates2D
         {
             get
             {
@@ -74,6 +74,7 @@ namespace Chess.Game
                 {
                     this.piece = value.Object;
                     piece.Square = this;
+                    handleNewPiece();
                 }
             }
         }
@@ -102,7 +103,7 @@ namespace Chess.Game
         public Square(Square other):
             this ((other.isEmpty) ? null : Game.Piece.create(other.piece)) /* Don't copy other's board pointer */
         {
-            BoardPosition = new Position(other.BoardPosition);
+            BoardPosition = new Position(other.BoardPosition ?? default);
         }
 
         ~Square()
@@ -127,13 +128,13 @@ namespace Chess.Game
             }
         }
 
-        public void Initialize2DPosition(Position position)
+        public void Initialize2DCoordinates(Vec2<uint> coordinates)
         {
-            this.Position2D = position;
+            this.Coordinates2D = coordinates;
 
             if (Piece.HasValue)
             {
-                Piece.Object.Initialize2DPosition();
+                Piece.Object.Initialize2DCoordinates();
             }
         }
 
@@ -141,23 +142,24 @@ namespace Chess.Game
         {
             Color color;
             
-            uint coordinateSum = BoardPosition.X + BoardPosition.Y;
+            // ReSharper disable once PossibleInvalidOperationException
+            uint coordinateSum = BoardPosition.Value.X + BoardPosition.Value.Y;
             
-            if ((coordinateSum % 2) == 0) //is even
-            {
-                color = Color.black;
-            }
-            else
-            {
-                color = Color.white;
-            }
+            color = (coordinateSum % 2) == 0 ? Color.black : Color.white;
 
             return color;
         }
 
-        public void handleLeavingPiece()
+        protected void handleLeavingPiece()
         {
+            // ReSharper disable once DelegateSubtraction
+            Piece.Object.PieceMovingNotifier -= this.handleLeavingPiece;
             clearCurrentPiece();
+        }
+
+        protected void handleNewPiece()
+        {
+            this.Piece.Object.PieceMovingNotifier += this.handleLeavingPiece;
         }
 
         public void receiveArrivingPiece(Piece arrivingPiece)
@@ -167,7 +169,7 @@ namespace Chess.Game
                 captureCurrentPiece();
             }
 
-            this.Piece = arrivingPiece;
+            this.Piece = arrivingPiece; //calls handleNewPiece()
         }
 
         protected void captureCurrentPiece()

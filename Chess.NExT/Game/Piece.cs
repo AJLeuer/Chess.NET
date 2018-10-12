@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
@@ -14,7 +15,7 @@ namespace Chess.Game
     {
         public static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>();
 
-        public static readonly Dictionary<Color, string> defaultImageFiles = new Dictionary<Color, string>();
+        public static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String>();
    
         protected static ulong IDs = 0;
         
@@ -36,21 +37,15 @@ namespace Chess.Game
 
         protected Optional<Square> square;
         
-        public Square Square {
+        public Square Square 
+        {
             set
             {
                 this.square = value;
                 
                 if (square.HasValue)
                 {
-                    
-                    PostAssignedToSquareActions?.Invoke();
-                    
-                    if (MovesMade == 0)
-                    {
-                        //this.startingPosition = new Position(Square.BoardPosition);
-                    } 
-                    
+                    updateStateToHandleAssignmentToNewSquare();
                 }
             }
             get { return square.Object; } 
@@ -61,16 +56,35 @@ namespace Chess.Game
             get { return Square.Board; }
         }
 
-        protected Position startingPosition { get; set; }
+        public Position StartingPosition
+        {
+            get
+            {
+                if (PositionHistory.Any())
+                {
+                    return this.PositionHistory.First();
+                }
+                else if (BoardPosition.HasValue)
+                {
+                    return BoardPosition.Value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Square position not set");
+                }
+            }
+        }
 
-        public RankFile BoardPosition
+        public List<RankFile> PositionHistory { get; } = new List<RankFile>();
+
+        public RankFile? BoardPosition
         {
             get { return Square.BoardPosition; }
         }
         
         public CallBack PostCapturedActions { get; set; }
         
-        public CallBack PostAssignedToSquareActions { get; set; }
+        public CallBack PieceMovingNotifier { get; set; }
         
         protected string spriteImageFilePath;
 
@@ -81,7 +95,7 @@ namespace Chess.Game
             get { return Sprite.Texture.Size; }
         }
         
-        public Position Position2D
+        public Position Coordinates2D
         {
             get { return Sprite.Position; }
             
@@ -181,8 +195,6 @@ namespace Chess.Game
             this.Symbol = symbol;
             this.Color  = color;
             this.spriteImageFilePath = spriteImageFilePath;
-
-            PostAssignedToSquareActions += this.calculate2DPosition;
         }
         
         protected Piece(Piece other):
@@ -213,14 +225,23 @@ namespace Chess.Game
             Sprite = new Sprite(spriteTexture);
         }
 
-        public void Initialize2DPosition(Position position = default)
+        public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
         {
-            calculate2DPosition();
+            update2DPosition();
         }
         
-        protected void calculate2DPosition()
+        protected void update2DPosition()
         {
-            this.Position2D = (Square.Position2D / 2) / 2;
+            this.Coordinates2D = (Square.Coordinates2D / 2) / 2;
+        }
+
+        protected void recordCurrentPosition()
+        {
+            if (BoardPosition.HasValue)
+            {
+                var currentPosition = new RankFile(this.BoardPosition.Value);
+                PositionHistory.Add(currentPosition);
+            }
         }
 	    
         /**
@@ -238,7 +259,7 @@ namespace Chess.Game
         
         public virtual void Move(Square destination) 
         {
-            Square.handleLeavingPiece();
+            PieceMovingNotifier?.Invoke();
 
             destination.receiveArrivingPiece(this);
 
@@ -250,7 +271,13 @@ namespace Chess.Game
             Square destinationSquare = Board[destination];
             Move(destinationSquare);
         }
-        
+
+        private void updateStateToHandleAssignmentToNewSquare()
+        {
+            update2DPosition();
+            recordCurrentPosition();
+        }
+
         public virtual List<Square> FindAllPossibleLegalMoveDestinations()
         {
             Predicate<Square> squareChecker = (Square squareToCheck) =>
@@ -265,9 +292,10 @@ namespace Chess.Game
                 }
             };
             
+            // ReSharper disable once PossibleInvalidOperationException
             List<Square> squaresLegalToMove = Board.SearchForSquares(
                 squareMatcher: squareChecker, 
-                startingSquarePosition: this.BoardPosition, 
+                startingSquarePosition: this.BoardPosition.Value, 
                 directions: LegalMovementDirections.ToArray(), 
                 distance: MaximumMoveDistance);
 
