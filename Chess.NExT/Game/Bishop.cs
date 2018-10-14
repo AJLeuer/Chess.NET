@@ -7,18 +7,12 @@ namespace Chess.Game
 {
     public class Bishop : Piece
     {
-        protected static readonly List<Direction> defaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
+        protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
         
-        public new static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>
+        public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
         {
             {black, '♝'}, 
             {white, '♗'}
-        };
-
-        public new static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String> 
-        {
-            {black, "./Assets/Bitmaps/BlackBishop.png"},
-            {white, "./Assets/Bitmaps/WhiteBishop.png"}
         };
 
         public override char ASCIISymbol
@@ -33,7 +27,7 @@ namespace Chess.Game
         
         public override List<Direction> LegalMovementDirections
         {
-            get { return defaultLegalMovementDirections; }
+            get { return DefaultLegalMovementDirections; }
         }
 
         public Bishop(Bishop other) :
@@ -43,15 +37,15 @@ namespace Chess.Game
         }
 	    
         public Bishop(Color color) :
-            base(defaultSymbols[color], color, defaultImageFiles[color])
+            base(DefaultSymbols[color], color)
         {
 	
         }
 	
         public Bishop(char symbol) :
-            this((symbol == defaultSymbols[black]) ? black : white)
+            this((symbol == DefaultSymbols[black]) ? black : white)
         {
-            if (defaultSymbols.ContainsValue(symbol) == false)
+            if (DefaultSymbols.ContainsValue(symbol) == false)
             {
                 throw new ArgumentException($"{symbol} is not a valid chess piece");
             }
@@ -69,5 +63,73 @@ namespace Chess.Game
             Console.WriteLine("Warning: add move legality checking");
         }
 
+    }
+
+    namespace Graphical
+    {
+        public class Bishop : Piece
+        {
+            protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
+        
+            public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+            {
+                {black, '♝'}, 
+                {white, '♗'}
+            };
+
+            public static readonly Dictionary<Color, String> DefaultImageFiles = new Dictionary<Color, String> 
+            {
+                {black, "./Assets/Bitmaps/BlackBishop.png"},
+                {white, "./Assets/Bitmaps/WhiteBishop.png"}
+            };
+
+            public override char ASCIISymbol
+            {
+                get { return 'B'; }
+            }
+
+            public override ushort Value
+            {
+                get { return 3; }
+            }
+        
+            public override List<Direction> LegalMovementDirections
+            {
+                get { return DefaultLegalMovementDirections; }
+            }
+
+            public Bishop(Bishop other) :
+                base(other)
+            {
+		    
+            }
+	    
+            public Bishop(Color color) :
+                base(DefaultSymbols[color], color, DefaultImageFiles[color])
+            {
+	
+            }
+	
+            public Bishop(char symbol) :
+                this((symbol == DefaultSymbols[black]) ? black : white)
+            {
+                if (DefaultSymbols.ContainsValue(symbol) == false)
+                {
+                    throw new ArgumentException($"{symbol} is not a valid chess piece");
+                }
+            }
+        
+            public override Game.Piece Clone()
+            {
+                return new Bishop(this);
+            }
+
+            public override void Move(RankFile destination) 
+            {
+                //todo add move legality checking
+                base.Move(destination);
+                Console.WriteLine("Warning: add move legality checking");
+            }
+        }
     }
 }

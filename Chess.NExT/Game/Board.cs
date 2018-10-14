@@ -5,11 +5,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using C5;
+using System.Reflection;
+using SFML.Graphics;
 
 using Chess.Util;
 using Chess.View;
-using SFML.Graphics;
 using static Chess.Game.Color;
 
 using Position = Chess.Util.Vec2<uint>;
@@ -18,9 +18,8 @@ using Rank = System.UInt16;
 
 namespace Chess.Game
 {
-	public class Board : ICloneable, IEnumerable<Square>, ChessDrawable
+	public class Board : ICloneable, IEnumerable<Square>
 	{
-		
 		public static readonly Square[,] DefaultStartingSquares = new Square[,]
 		{
 			{ new Square('♖', 'a', 1), new Square('♙', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square('♟', 'a', 7), new Square('♜', 'a', 8) },
@@ -40,7 +39,7 @@ namespace Chess.Game
 			{ new Square('♖', 'h', 1), new Square('♙', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square('♟', 'h', 7), new Square('♜', 'h', 8) }
 		};
 		
-		public static readonly Square[,] EmptySquares = new Square[,]
+		public static readonly Square[,] DefaultEmptySquares = new Square[,]
 		{
 			{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
 			
@@ -81,19 +80,6 @@ namespace Chess.Game
 			}
 		}
 				
-		public Sprite Sprite { get; set; }
-		
-		public Size Size
-		{
-			get { return Sprite.Texture.Size; }
-		}
-		
-		public Position Coordinates2D
-		{
-			get { return Sprite.Position; }
-			set { Sprite.Position = value; }
-		}
-		
 		public BasicGame Game { get; set; }
 
 		public Board() :
@@ -147,7 +133,7 @@ namespace Chess.Game
 			return board.Squares;
 		}
 		
-		public IEnumerator<Square> GetEnumerator()
+		public virtual IEnumerator<Square> GetEnumerator()
 		{
 			return Squares.OfType<Square>().GetEnumerator();
 		}
@@ -162,46 +148,11 @@ namespace Chess.Game
 			return Clone();
 		}
 
-		public Board Clone()
+		public virtual Board Clone()
 		{
 			return new Board(this);
 		}
 
-		public void InitializeGraphicalElements()
-		{
-			var spriteTexture = new Texture(Config.BoardSpriteFilePath);
-			Sprite = new Sprite(spriteTexture);
-
-			foreach (var square in Squares)
-			{
-				square.InitializeGraphicalElements();
-			}
-		}
-
-		public void Initialize2DCoordinates(Vec2<uint> coordinates)
-		{
-			this.Coordinates2D = coordinates;
-
-			Vec2<uint> squareOrigin = Coordinates2D;
-			
-			for (uint i = 0; i < Squares.GetLength(0); i++)
-			{
-				Square square = null;
-				for (uint j = 0; j < Squares.GetLength(1); j++)
-				{
-					square = Squares[i, j];
-
-					square.Initialize2DCoordinates(squareOrigin);
-
-					squareOrigin.Y += square.Size.Height;
-				}
-				
-				// ReSharper disable once PossibleNullReferenceException
-				squareOrigin.X += square.Size.Width;
-				squareOrigin.Y = Coordinates2D.Y;
-			}
-		}
-		
 		private void takeOwnershipOfSquares()
 		{
 			if (Squares == null)
@@ -368,6 +319,119 @@ namespace Chess.Game
 			}
 
 			return (valueToBlack, valueToWhite);
+		}
+	}
+
+	namespace Graphical
+	{
+		public class Board : Chess.Game.Board, ChessDrawable
+		{
+			public new static readonly Graphical.Square[,] DefaultStartingSquares = new Graphical.Square[,]
+			{
+				{ new Square('♖', 'a', 1), new Square('♙', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square('♟', 'a', 7), new Square('♜', 'a', 8) },
+				
+				{ new Square('♘', 'b', 1), new Square('♙', 'b', 2), new Square(' ', 'b', 3), new Square(' ', 'b', 4), new Square(' ', 'b', 5), new Square(' ', 'b', 6), new Square('♟', 'b', 7), new Square('♞', 'b', 8) },
+				
+				{ new Square('♗', 'c', 1), new Square('♙', 'c', 2), new Square(' ', 'c', 3), new Square(' ', 'c', 4), new Square(' ', 'c', 5), new Square(' ', 'c', 6), new Square('♟', 'c', 7), new Square('♝', 'c', 8) },
+				
+				{ new Square('♕', 'd', 1), new Square('♙', 'd', 2), new Square(' ', 'd', 3), new Square(' ', 'd', 4), new Square(' ', 'd', 5), new Square(' ', 'd', 6), new Square('♟', 'd', 7), new Square('♛', 'd', 8) },
+				
+				{ new Square('♔', 'e', 1), new Square('♙', 'e', 2), new Square(' ', 'e', 3), new Square(' ', 'e', 4), new Square(' ', 'e', 5), new Square(' ', 'e', 6), new Square('♟', 'e', 7), new Square('♚', 'e', 8) },
+				
+				{ new Square('♗', 'f', 1), new Square('♙', 'f', 2), new Square(' ', 'f', 3), new Square(' ', 'f', 4), new Square(' ', 'f', 5), new Square(' ', 'f', 6), new Square('♟', 'f', 7), new Square('♝', 'f', 8) },
+				
+				{ new Square('♘', 'g', 1), new Square('♙', 'g', 2), new Square(' ', 'g', 3), new Square(' ', 'g', 4), new Square(' ', 'g', 5), new Square(' ', 'g', 6), new Square('♟', 'g', 7), new Square('♞', 'g', 8) },
+				
+				{ new Square('♖', 'h', 1), new Square('♙', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square('♟', 'h', 7), new Square('♜', 'h', 8) }
+			};
+			
+			public new static readonly Graphical.Square[,] DefaultEmptySquares = new Graphical.Square[,]
+			{
+				{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
+				
+				{ new Square(' ', 'b', 1), new Square(' ', 'b', 2), new Square(' ', 'b', 3), new Square(' ', 'b', 4), new Square(' ', 'b', 5), new Square(' ', 'b', 6), new Square(' ', 'b', 7), new Square(' ', 'b', 8) },
+				
+				{ new Square(' ', 'c', 1), new Square(' ', 'c', 2), new Square(' ', 'c', 3), new Square(' ', 'c', 4), new Square(' ', 'c', 5), new Square(' ', 'c', 6), new Square(' ', 'c', 7), new Square(' ', 'c', 8) },
+				
+				{ new Square(' ', 'd', 1), new Square(' ', 'd', 2), new Square(' ', 'd', 3), new Square(' ', 'd', 4), new Square(' ', 'd', 5), new Square(' ', 'd', 6), new Square(' ', 'd', 7), new Square(' ', 'd', 8) },
+				
+				{ new Square(' ', 'e', 1), new Square(' ', 'e', 2), new Square(' ', 'e', 3), new Square(' ', 'e', 4), new Square(' ', 'e', 5), new Square(' ', 'e', 6), new Square(' ', 'e', 7), new Square(' ', 'e', 8) },
+				
+				{ new Square(' ', 'f', 1), new Square(' ', 'f', 2), new Square(' ', 'f', 3), new Square(' ', 'f', 4), new Square(' ', 'f', 5), new Square(' ', 'f', 6), new Square(' ', 'f', 7), new Square(' ', 'f', 8) },
+				
+				{ new Square(' ', 'g', 1), new Square(' ', 'g', 2), new Square(' ', 'g', 3), new Square(' ', 'g', 4), new Square(' ', 'g', 5), new Square(' ', 'g', 6), new Square(' ', 'g', 7), new Square(' ', 'g', 8) },
+				
+				{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
+			};
+			
+			public Sprite Sprite { get; set; }
+		
+			public Size Size
+			{
+				get { return Sprite.Texture.Size; }
+			}
+		
+			public Position Coordinates2D
+			{
+				get { return Sprite.Position; }
+				set { Sprite.Position = value; }
+			}
+
+			public Board():
+				base(DefaultStartingSquares)
+			{
+			}
+
+			public Board(Board other): 
+				base(other)
+			{
+			}
+
+			public Board(Graphical.Square[,] squares): 
+				base(squares)
+			{
+			}
+			
+			public override Game.Board Clone()
+			{
+				return new Graphical.Board(this);
+			}
+			
+			public void InitializeGraphicalElements()
+			{
+				var spriteTexture = new Texture(Config.BoardSpriteFilePath);
+				Sprite = new Sprite(spriteTexture);
+
+				foreach (var baseSquare in Squares)
+				{
+					var square = (Square) baseSquare;
+					square.InitializeGraphicalElements();
+				}
+			}
+
+			public void Initialize2DCoordinates(Vec2<uint> coordinates)
+			{
+				this.Coordinates2D = coordinates;
+
+				Vec2<uint> squareOrigin = Coordinates2D;
+			
+				for (uint i = 0; i < Squares.GetLength(0); i++)
+				{
+					Square square = null;
+					for (uint j = 0; j < Squares.GetLength(1); j++)
+					{
+						square = (Square) Squares[i, j];
+
+						square.Initialize2DCoordinates(squareOrigin);
+
+						squareOrigin.Y += square.Size.Height;
+					}
+				
+					// ReSharper disable once PossibleNullReferenceException
+					squareOrigin.X += square.Size.Width;
+					squareOrigin.Y =  Coordinates2D.Y;
+				}
+			}
 		}
 	}
 

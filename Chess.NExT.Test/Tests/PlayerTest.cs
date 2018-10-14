@@ -13,9 +13,9 @@ namespace Chess.NExT.Test.Tests
         public static void ShouldFindOwnPiecesOnBoard()
         {
                         
-            Pawn pawnF2 = (Pawn) Piece.create('♙');
-            Pawn pawnG2 = (Pawn) Piece.create('♙');
-            Knight knightG1 = (Knight) Piece.create('♘');
+            Pawn pawnF2 = (Pawn) Piece.Create('♙');
+            Pawn pawnG2 = (Pawn) Piece.Create('♙');
+            Knight knightG1 = (Knight) Piece.Create('♘');
             
             var squares = new Square[,]
             {

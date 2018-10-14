@@ -92,7 +92,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void SquarePositionShouldMatchPositionOnGrid()
         {
-            var board = new Board(Board.EmptySquares);
+            var board = new Board(Board.DefaultEmptySquares);
             
             for (uint i = 0; i < board.Squares.GetLength(0); i++)
             {

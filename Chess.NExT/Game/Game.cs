@@ -16,7 +16,7 @@ namespace Chess.Game
 {
     public abstract class BasicGame : ICloneable
     {
-        public static readonly ushort MaximumPossibleMoveDistance = (ushort) Board.EmptySquares.GetLength(0);
+        public static readonly ushort MaximumPossibleMoveDistance = (ushort) Board.DefaultEmptySquares.GetLength(0);
         
         protected static ulong IDs = 0;
 
@@ -26,7 +26,7 @@ namespace Chess.Game
 
         private Board board;
         
-        public virtual Board Board 
+        public Board Board 
         { 
             get { return board; }
             
@@ -106,12 +106,12 @@ namespace Chess.Game
         protected List<GameRecordEntry> gameRecord;
 
         public GameStateAdvancedAction OnGameAdvanced { get; } = () => { };
-
-        protected BasicGame() :
-            this(new Board())
+        
+        protected BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
-            Player0 = new AI(white, this.Board);
-            Player1 = new AI(black, this.Board);
+            this.Board   = board;
+            this.Player0 = player0 ?? new AI(white, this.Board);
+            this.Player1 = player1 ?? new AI(black, this.Board);
         }
 
         protected BasicGame(BasicGame other) :
@@ -122,13 +122,6 @@ namespace Chess.Game
                  (other.Player1 == null) ? null : other.Player1.Clone())
         {
             
-        }
-
-        protected BasicGame(Board board, Player player0 = null, Player player1 = null)
-        {
-            this.Board = board;
-            this.Player0 = player0;
-            this.Player1 = player1;
         }
 
         object ICloneable.Clone()
@@ -200,98 +193,104 @@ namespace Chess.Game
         }
     }
     
-    public class ChessGame : BasicGame
+    namespace Graphical
     {
-
-        protected Window window = new Window();
-
-        public ChessGame() :
-            base()
+        public class ChessGame : BasicGame
         {
-            Board.InitializeGraphicalElements();
-            Board.Initialize2DCoordinates((0, 0));
-        }
+            protected Window window = new Window();
 
-        public ChessGame(BasicGame other) :
-            base(other)
-        {
-            Board.InitializeGraphicalElements();
-            Board.Initialize2DCoordinates((0, 0));
-        }
+            protected Board GraphicalBoard { get { return (Graphical.Board) base.Board; } }
 
-        public ChessGame(Board board, Player player0, Player player1) :
-            base(board, player0, player1)
-        {
-            Board.InitializeGraphicalElements();
-            Board.Initialize2DCoordinates((0, 0));
-        }
-
-        public override BasicGame Clone()
-        {
-            return new ChessGame(this);
-        }
-
-        protected override void setup()
-        {
-            monitorMouse();
-        }
-
-        protected override void display()
-        {
-            window.DispatchEvents();
-            window.Clear();
-            drawChessBoard();
-            window.Display();
-            Thread.Sleep(TimeSpan.FromMilliseconds(2));
-        }
-
-        protected override void decideMove()
-        {
-            CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
-
-            Move nextMove = CurrentPlayer.DecideNextMove();
-
-            nextMove.Commit();
-        }
-
-        protected void drawChessBoard()
-        {
-            foreach (var square in Board)
+            public ChessGame() :
+                base(new Board())
             {
-                var piece = square.Piece;
-                    
-                if (piece.HasValue)
+                GraphicalBoard.InitializeGraphicalElements();
+                GraphicalBoard.Initialize2DCoordinates((0, 0));
+            }
+    
+            public ChessGame(BasicGame other) :
+                base(other)
+            {
+                GraphicalBoard.InitializeGraphicalElements();
+                GraphicalBoard.Initialize2DCoordinates((0, 0));
+            }
+    
+            public ChessGame(Game.Board board, Player player0, Player player1) :
+                base(board, player0, player1)
+            {
+                GraphicalBoard.InitializeGraphicalElements();
+                GraphicalBoard.Initialize2DCoordinates((0, 0));
+            }
+    
+            public override BasicGame Clone()
+            {
+                return new ChessGame(this);
+            }
+    
+            protected override void setup()
+            {
+                monitorMouse();
+            }
+    
+            protected override void display()
+            {
+                window.DispatchEvents();
+                window.Clear();
+                drawChessBoard();
+                window.Display();
+                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+            }
+    
+            protected override void decideMove()
+            {
+                CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
+    
+                Move nextMove = CurrentPlayer.DecideNextMove();
+    
+                nextMove.Commit();
+            }
+    
+            protected void drawChessBoard()
+            {
+                foreach (var square in GraphicalBoard)
                 {
-                    window.Draw(piece.Object.Sprite);
+                    var graphicalSquare = square as Graphical.Square;
+                    
+                    var piece = graphicalSquare.GraphicalPiece;
+                        
+                    if (piece.HasValue)
+                    {
+                        window.Draw(piece.Object.Sprite);
+                    }
                 }
             }
-        }
-
-        private void monitorMouse () 
-        {
-            // var mouseMonitor = new ThreadStart(() => 
-            // {
-            //     while (GameActive) 
-            //     {
-            //         if (Mouse.IsButtonPressed(ButtonMain)) 
-            //         {
-            //             Mouse.GetPosition();
-            //         }
-            //         Thread.Sleep(TimeSpan.FromMilliseconds(1));
-            //     }
-            // });
-            //
-            // var mouseMonitoringThread = new Thread(mouseMonitor);
-            //
-            // mouseMonitoringThread.Start();
+    
+            private void monitorMouse () 
+            {
+                // var mouseMonitor = new ThreadStart(() => 
+                // {
+                //     while (GameActive) 
+                //     {
+                //         if (Mouse.IsButtonPressed(ButtonMain)) 
+                //         {
+                //             Mouse.GetPosition();
+                //         }
+                //         Thread.Sleep(TimeSpan.FromMilliseconds(1));
+                //     }
+                // });
+                //
+                // var mouseMonitoringThread = new Thread(mouseMonitor);
+                //
+                // mouseMonitoringThread.Start();
+            }
         }
     }
-    
+
     public class SimulatedGame : BasicGame 
     {
 
         public SimulatedGame() :
-            base()
+            base(new Board())
         {
             
         }

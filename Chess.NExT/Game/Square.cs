@@ -9,7 +9,7 @@ using Position = Chess.Util.Vec2<uint>;
 
 namespace Chess.Game
 {
-    public class Square : ICloneable, ChessDrawable
+    public class Square : ICloneable
     {
         public Position BoardPosition { get; protected set; }
         
@@ -31,28 +31,6 @@ namespace Chess.Game
 
                 return color.Object;
             }
-        }
-
-        public Sprite Sprite { get; set; }
-
-        public Size Size
-        {
-            get { return Sprite.Texture.Size; }
-        }
-
-        public Vec2<uint> Coordinates2D
-        {
-            get
-            {
-                if (Sprite != null)
-                {
-                    return Sprite.Position;
-                }
-
-                return (0, 0);
-            }
-            
-            set { Sprite.Position = value; }
         }
 
         public Board Board { get; set; }
@@ -116,19 +94,19 @@ namespace Chess.Game
         }
         
         public Square(char pieceSymbol, File file, Rank rank) :
-            this(Game.Piece.create(pieceSymbol), file, rank)
+            this(Game.Piece.Create(pieceSymbol), file, rank)
         {
             
         }
         
         public Square(char pieceSymbol, RankFile rankAndFile) :
-            this(Game.Piece.create(pieceSymbol), rankAndFile)
+            this(Game.Piece.Create(pieceSymbol), rankAndFile)
         {
             
         }
         
         public Square(Square other):
-            this ((other.isEmpty) ? null : Game.Piece.create(other.piece),
+            this ((other.isEmpty) ? null : Game.Piece.Create(other.piece),
                    new RankFile(other.RankAndFile)) /* Don't copy other's board pointer */
         {
             
@@ -138,32 +116,15 @@ namespace Chess.Game
         {
             clearCurrentPiece();
         }
+        
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
 
-        public object Clone()
+        public virtual Square Clone()
         {
             return new Square(this);
-        }
-
-        public void InitializeGraphicalElements()
-        {
-            var spriteTexture = new Texture(Config.BoardSpriteFilePath);
-            Sprite = new Sprite(spriteTexture);
-            Sprite.Scale = calculateScalingFromBoardResolution(Size);
-            
-            if (Piece.HasValue)
-            {
-                Piece.Object.InitializeGraphicalElements();
-            }
-        }
-
-        public void Initialize2DCoordinates(Vec2<uint> coordinates)
-        {
-            this.Coordinates2D = coordinates;
-
-            if (Piece.HasValue)
-            {
-                Piece.Object.Initialize2DCoordinates();
-            }
         }
 
         protected Color determineColor()
@@ -225,6 +186,111 @@ namespace Chess.Game
             return scaleFactor;
         }
 
+    }
+    
+    namespace Graphical
+    {
+        public class Square : Chess.Game.Square, ChessDrawable
+        {
+            public Optional<Graphical.Piece> GraphicalPiece
+            {
+                get
+                {
+                    if (base.Piece.HasValue)
+                    {
+                        return (Graphical.Piece) base.Piece;
+                    }
+                    else
+                    {
+                        return Optional<Graphical.Piece>.Empty;
+                    }
+                }
+            }
+
+            public Sprite Sprite { get; set; }
+
+            public Size Size
+            {
+                get { return Sprite.Texture.Size; }
+            }
+
+            public Vec2<uint> Coordinates2D
+            {
+                get
+                {
+                    if (Sprite != null)
+                    {
+                        return Sprite.Position;
+                    }
+
+                    return (0, 0);
+                }
+            
+                set { Sprite.Position = value; }
+            }
+            
+            public Square(char file, ushort rank) : 
+                base(file, rank)
+            {
+            }
+
+            public Square(RankFile rankAndFile) : 
+                base(rankAndFile)
+            {
+            }
+
+            public Square(Piece piece, char file, ushort rank) : 
+                base(piece, file, rank)
+            {
+            }
+
+            public Square(Piece piece, RankFile rankAndFile) : 
+                base(piece, rankAndFile)
+            {
+            }
+
+            public Square(char pieceSymbol, char file, ushort rank) : 
+                base(pieceSymbol, file, rank)
+            {
+            }
+
+            public Square(char pieceSymbol, RankFile rankAndFile) : 
+                base(pieceSymbol, rankAndFile)
+            {
+            }
+
+            public Square(Graphical.Square other) : 
+                base(other)
+            {
+            }
+            
+            public override Game.Square Clone()
+            {
+                return new Square(this);
+            }
+            
+            public void InitializeGraphicalElements()
+            {
+                var spriteTexture = new Texture(Config.BoardSpriteFilePath);
+                Sprite       = new Sprite(spriteTexture);
+                Sprite.Scale = calculateScalingFromBoardResolution(Size);
+            
+                if (Piece.HasValue)
+                {
+                    GraphicalPiece.Object.InitializeGraphicalElements();
+                }
+            }
+
+            public void Initialize2DCoordinates(Vec2<uint> coordinates)
+            {
+                this.Coordinates2D = coordinates;
+
+                if (Piece.HasValue)
+                {
+                    GraphicalPiece.Object.Initialize2DCoordinates();
+                }
+            }
+        }
     }
 
 }

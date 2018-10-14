@@ -11,12 +11,10 @@ using Position = Chess.Util.Vec2<uint>;
 
 namespace Chess.Game
 {
-    public abstract class Piece : ICloneable, ChessDrawable
+    public abstract class Piece : ICloneable
     {
         public static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>();
 
-        public static readonly Dictionary<Color, String> defaultImageFiles = new Dictionary<Color, String>();
-   
         protected static ulong IDs = 0;
         
         public ulong ID { get; } = IDs++;
@@ -82,64 +80,42 @@ namespace Chess.Game
 
         public CallBack PieceMovingNotifier;
         
-        protected string spriteImageFilePath;
-
-        public Sprite Sprite { get; set; }
-        
-        public Size Size
-        {
-            get { return Sprite.Texture.Size; }
-        }
-        
-        public Position Coordinates2D
-        {
-            get { return Sprite.Position; }
-            
-            set
-            {
-                if (Sprite != null)
-                {
-                    Sprite.Position = value;
-                }
-            }
-        }
-        
-        public static Piece create(char symbol) {
+        public static Piece Create(char symbol) {
             Piece piece;
-            if (symbol == Pawn.defaultSymbols[white]) {
+            if (symbol == Pawn.DefaultSymbols[white]) {
                 piece = new Pawn(white);
             }
-            else if (symbol == Pawn.defaultSymbols[black]) {
+            else if (symbol == Pawn.DefaultSymbols[black]) {
                 piece = new Pawn(black);
             }
-            else if (symbol == Knight.defaultSymbols[white]) {
+            else if (symbol == Knight.DefaultSymbols[white]) {
                 piece = new Knight(white);
             }
-            else if (symbol == Knight.defaultSymbols[black]) {
+            else if (symbol == Knight.DefaultSymbols[black]) {
                 piece = new Knight(black);
             }
-            else if (symbol == Bishop.defaultSymbols[white]) {
+            else if (symbol == Bishop.DefaultSymbols[white]) {
                 piece = new Bishop(white);
             }
-            else if (symbol == Bishop.defaultSymbols[black]) {
+            else if (symbol == Bishop.DefaultSymbols[black]) {
                 piece = new Bishop(black);
             }
-            else if (symbol == Rook.defaultSymbols[white]) {
+            else if (symbol == Rook.DefaultSymbols[white]) {
                 piece = new Rook(white);
             }
-            else if (symbol == Rook.defaultSymbols[black]) {
+            else if (symbol == Rook.DefaultSymbols[black]) {
                 piece = new Rook(black);
             }
-            else if (symbol == Queen.defaultSymbols[white]) {
+            else if (symbol == Queen.DefaultSymbols[white]) {
                 piece = new Queen(white);
             }
-            else if (symbol == Queen.defaultSymbols[black]) {
+            else if (symbol == Queen.DefaultSymbols[black]) {
                 piece = new Queen(black);
             }
-            else if (symbol == King.defaultSymbols[white]) {
+            else if (symbol == King.DefaultSymbols[white]) {
                 piece = new King(white);
             }
-            else if (symbol == King.defaultSymbols[black]) {
+            else if (symbol == King.DefaultSymbols[black]) {
                 piece = new King(black);
             }
             else {
@@ -148,7 +124,6 @@ namespace Chess.Game
             return piece;
         }
         
-
         /// <summary>
         ///    Creates a new piece by copying the piece passed
         /// </summary>
@@ -157,7 +132,7 @@ namespace Chess.Game
         /// </param>
         /// <returns>A copy of piece</returns>
         /// <exception cref="TypeInitializationException"></exception>
-        public static Piece create(Piece piece)
+        public static Piece Create(Piece piece)
         {
             switch (piece) 
             {
@@ -186,15 +161,14 @@ namespace Chess.Game
             }
         }
         
-        protected Piece(char symbol, Color color, string spriteImageFilePath)
+        protected Piece(char symbol, Color color)
         {
             this.Symbol = symbol;
             this.Color  = color;
-            this.spriteImageFilePath = spriteImageFilePath;
         }
         
         protected Piece(Piece other):
-            this(other.Symbol, other.Color, other.spriteImageFilePath)
+            this(other.Symbol, other.Color)
         {
             /* Don't initialize the actual texture/sprite data. Too
              expensive - we only init it when we need it (lazily) */
@@ -214,22 +188,6 @@ namespace Chess.Game
         }
 
         public abstract Piece Clone();
-
-        public void InitializeGraphicalElements() 
-        {
-            var spriteTexture = new Texture(spriteImageFilePath);
-            Sprite = new Sprite(spriteTexture);
-        }
-
-        public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
-        {
-            update2DPosition();
-        }
-        
-        protected void update2DPosition()
-        {
-            this.Coordinates2D = (Square.Coordinates2D / 2) / 2;
-        }
 
         protected void recordCurrentPosition()
         {
@@ -265,9 +223,8 @@ namespace Chess.Game
             Move(destinationSquare);
         }
 
-        private void updateStateToHandleAssignmentToNewSquare()
+        protected virtual void updateStateToHandleAssignmentToNewSquare()
         {
-            update2DPosition();
             recordCurrentPosition();
         }
 
@@ -293,6 +250,69 @@ namespace Chess.Game
                 distance: MaximumMoveDistance);
 
             return squaresLegalToMove;
+        }
+    }
+
+    namespace Graphical
+    {
+        public abstract class Piece : Game.Piece, ChessDrawable
+        {
+            protected string spriteImageFilePath { get; }
+            
+            protected Graphical.Square GraphicalSquare { get { return (Graphical.Square) base.Square; } }
+
+            public Sprite Sprite { get; set; }
+        
+            public Size Size
+            {
+                get { return Sprite.Texture.Size; }
+            }
+        
+            public Position Coordinates2D
+            {
+                get { return Sprite.Position; }
+            
+                set
+                {
+                    if (Sprite != null)
+                    {
+                        Sprite.Position = value;
+                    }
+                }
+            }
+
+            protected Piece(char symbol, Color color, string spriteImageFilePath) : 
+                base(symbol, color)
+            {
+                this.spriteImageFilePath = spriteImageFilePath;
+            }
+
+            protected Piece(Graphical.Piece other) : 
+                this(other.Symbol, other.Color, other.spriteImageFilePath)
+            {
+            }
+            
+            public void InitializeGraphicalElements() 
+            {
+                var spriteTexture = new Texture(spriteImageFilePath);
+                Sprite = new Sprite(spriteTexture);
+            }
+
+            public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
+            {
+                update2DPosition();
+            }
+            
+            protected override void updateStateToHandleAssignmentToNewSquare()
+            {
+                base.updateStateToHandleAssignmentToNewSquare();
+                update2DPosition();
+            }
+        
+            protected void update2DPosition()
+            {
+                this.Coordinates2D = (GraphicalSquare.Coordinates2D / 2) / 2;
+            }
         }
     }
 }

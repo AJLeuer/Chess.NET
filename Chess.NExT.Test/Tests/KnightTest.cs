@@ -13,7 +13,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldFindAllValidMoveDestinations()
         {
-            Board board = new Board(squares: Board.EmptySquares);
+            Board board = new Board(squares: Board.DefaultEmptySquares);
 
             Square square = board['e', 4];
             
