@@ -29,9 +29,9 @@ namespace Chess.Game
 		{
 			switch (color)
 			{
-				case Color.White white:
+				case Color.White _:
 					return Color.black;
-				case Color.Black black:
+				case Color.Black _:
 					return Color.white;
 				default:
 					throw new InvalidEnumArgumentException();
@@ -98,6 +98,7 @@ namespace Chess.Game
 	    // ReSharper disable once UnusedMember.Local
 	    private const Rank firstRank = 1;
 
+		// ReSharper disable once UnusedMember.Local
 		private const Rank lastRank = 8;
 
 		public static File convertToFile(uint boardPositionX) 

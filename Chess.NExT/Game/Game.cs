@@ -26,7 +26,7 @@ namespace Chess.Game
 
         private Board board;
         
-        public Board Board 
+        public virtual Board Board 
         { 
             get { return board; }
             
@@ -254,9 +254,9 @@ namespace Chess.Game
             {
                 foreach (var square in GraphicalBoard)
                 {
-                    var graphicalSquare = square as Graphical.Square;
+                    var graphicalSquare = (Graphical.Square) square;
                     
-                    var piece = graphicalSquare.GraphicalPiece;
+                    var piece = graphicalSquare.Piece;
                         
                     if (piece.HasValue)
                     {

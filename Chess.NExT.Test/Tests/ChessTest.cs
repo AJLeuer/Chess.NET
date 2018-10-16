@@ -1,5 +1,4 @@
 ﻿using Chess.Game;
-using Chess.Util;
 using FluentAssertions;
 using NUnit.Framework;
 

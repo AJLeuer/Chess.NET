@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Chess.Game;
-using FluentAssertions;
 using NUnit.Framework;
 using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
 using File = System.Char;

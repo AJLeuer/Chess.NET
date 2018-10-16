@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Chess.Game;
 using FluentAssertions;
 using Moq;
@@ -7,6 +8,7 @@ namespace Chess.NExT.Test.Tests
 {
 	public static class MoveTest
 	{
+		[SuppressMessage("ReSharper", "NotAccessedField.Local")]
 		private static BasicGame game;
 		private static Board board;
 		private static Player whitePlayer;
@@ -51,6 +53,9 @@ namespace Chess.NExT.Test.Tests
 			{
 				CallBase = true
 			};
+
+			gameMock.Setup((BasicGame self) => self.Board)
+							.Returns(board);
 			
 			/* Need to provide an implementation of Clone(), since it's an abstract method */
 			whitePlayerMock.Setup((Player self) => self.Clone())

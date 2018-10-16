@@ -13,8 +13,6 @@ namespace Chess.Game
 {
     public abstract class Piece : ICloneable
     {
-        public static readonly Dictionary<Color, Char> defaultSymbols = new Dictionary<Color, Char>();
-
         protected static ulong IDs = 0;
         
         public ulong ID { get; } = IDs++;
@@ -80,45 +78,59 @@ namespace Chess.Game
 
         public CallBack PieceMovingNotifier;
         
-        public static Piece Create(char symbol) {
+        public static Piece Create(char symbol) 
+        {
             Piece piece;
-            if (symbol == Pawn.DefaultSymbols[white]) {
+            if (symbol == Pawn.DefaultSymbols[white]) 
+            {
                 piece = new Pawn(white);
             }
-            else if (symbol == Pawn.DefaultSymbols[black]) {
+            else if (symbol == Pawn.DefaultSymbols[black]) 
+            {
                 piece = new Pawn(black);
             }
-            else if (symbol == Knight.DefaultSymbols[white]) {
+            else if (symbol == Knight.DefaultSymbols[white]) 
+            {
                 piece = new Knight(white);
             }
-            else if (symbol == Knight.DefaultSymbols[black]) {
+            else if (symbol == Knight.DefaultSymbols[black]) 
+            {
                 piece = new Knight(black);
             }
-            else if (symbol == Bishop.DefaultSymbols[white]) {
+            else if (symbol == Bishop.DefaultSymbols[white]) 
+            {
                 piece = new Bishop(white);
             }
-            else if (symbol == Bishop.DefaultSymbols[black]) {
+            else if (symbol == Bishop.DefaultSymbols[black]) 
+            {
                 piece = new Bishop(black);
             }
-            else if (symbol == Rook.DefaultSymbols[white]) {
+            else if (symbol == Rook.DefaultSymbols[white]) 
+            {
                 piece = new Rook(white);
             }
-            else if (symbol == Rook.DefaultSymbols[black]) {
+            else if (symbol == Rook.DefaultSymbols[black]) 
+            {
                 piece = new Rook(black);
             }
-            else if (symbol == Queen.DefaultSymbols[white]) {
+            else if (symbol == Queen.DefaultSymbols[white]) 
+            {
                 piece = new Queen(white);
             }
-            else if (symbol == Queen.DefaultSymbols[black]) {
+            else if (symbol == Queen.DefaultSymbols[black]) 
+            {
                 piece = new Queen(black);
             }
-            else if (symbol == King.DefaultSymbols[white]) {
+            else if (symbol == King.DefaultSymbols[white]) 
+            {
                 piece = new King(white);
             }
-            else if (symbol == King.DefaultSymbols[black]) {
+            else if (symbol == King.DefaultSymbols[black]) 
+            {
                 piece = new King(black);
             }
-            else {
+            else 
+            {
                 piece = null;
             }
             return piece;
@@ -178,7 +190,8 @@ namespace Chess.Game
              they'll have to update our references */
         }
         
-        ~Piece() {
+        ~Piece() 
+        {
             Square = null;
         }
         
@@ -259,7 +272,7 @@ namespace Chess.Game
         {
             protected string spriteImageFilePath { get; }
             
-            protected Graphical.Square GraphicalSquare { get { return (Graphical.Square) base.Square; } }
+            public new Graphical.Square Square { get { return (Graphical.Square) base.Square; } }
 
             public Sprite Sprite { get; set; }
         
@@ -277,6 +290,107 @@ namespace Chess.Game
                     if (Sprite != null)
                     {
                         Sprite.Position = value;
+                    }
+                }
+            }
+            
+            public new static Graphical.Piece Create(char symbol) 
+            {
+                Piece piece;
+                if (symbol == Pawn.DefaultSymbols[white]) 
+                {
+                    piece = new Pawn(white);
+                }
+                else if (symbol == Pawn.DefaultSymbols[black]) 
+                {
+                    piece = new Pawn(black);
+                }
+                else if (symbol == Knight.DefaultSymbols[white])
+                {
+                    piece = new Knight(white);
+                }
+                else if (symbol == Knight.DefaultSymbols[black])
+                {
+                    piece = new Knight(black);
+                }
+                else if (symbol == Bishop.DefaultSymbols[white])
+                {
+                    piece = new Bishop(white);
+                }
+                else if (symbol == Bishop.DefaultSymbols[black])
+                {
+                    piece = new Bishop(black);
+                }
+                else if (symbol == Rook.DefaultSymbols[white]) 
+                {
+                    piece = new Rook(white);
+                }
+                else if (symbol == Rook.DefaultSymbols[black]) 
+                {
+                    piece = new Rook(black);
+                }
+                else if (symbol == Queen.DefaultSymbols[white])
+                {
+                    piece = new Queen(white);
+                }
+                else if (symbol == Queen.DefaultSymbols[black])
+                {
+                    piece = new Queen(black);
+                }
+                else if (symbol == King.DefaultSymbols[white]) 
+                {
+                    piece = new King(white);
+                }
+                else if (symbol == King.DefaultSymbols[black]) 
+                {
+                    piece = new King(black);
+                }
+                else 
+                {
+                    piece = null;
+                }
+                return piece;
+            }
+        
+            /// <summary>
+            ///    Creates a new piece by copying the piece passed
+            /// </summary>
+            /// <param name="piece">
+            ///     The piece to copy
+            /// </param>
+            /// <returns>A copy of piece</returns>
+            /// <exception cref="TypeInitializationException"></exception>
+            public static Graphical.Piece Create(Graphical.Piece piece)
+            {
+                switch (piece) 
+                {
+                    case Pawn pawn:
+                    {
+                        return new Pawn(pawn);
+                    }
+                    case Knight knight: 
+                    {
+                        return new Knight(knight);
+                    }
+                    case Bishop bishop: 
+                    {
+                        return new Bishop(bishop);
+                    }
+                    case Rook rook: 
+                    {
+                        return new Rook(rook);
+                    }
+                    case Queen queen: 
+                    {
+                        return new Queen(queen);
+                    }
+                    case King king: 
+                    {
+                        return new King(king);
+                    }
+                    default: 
+                    {
+                        throw new TypeInitializationException(piece.GetType().Name, new Exception("Unknown subclass of Piece"));
                     }
                 }
             }
@@ -311,7 +425,7 @@ namespace Chess.Game
         
             protected void update2DPosition()
             {
-                this.Coordinates2D = (GraphicalSquare.Coordinates2D / 2) / 2;
+                this.Coordinates2D = (Square.Coordinates2D / 2) / 2;
             }
         }
     }

@@ -35,7 +35,7 @@ namespace Chess.Game
 
         public Board Board { get; set; }
 
-        private Piece piece = null;
+        protected Piece piece = null;
         
         public Optional<Piece> Piece 
         {
@@ -127,15 +127,13 @@ namespace Chess.Game
             return new Square(this);
         }
 
-        protected Color determineColor()
+        protected ref Optional<Color> determineColor()
         {
-            Color color;
-            
             uint coordinateSum = BoardPosition.X + BoardPosition.Y;
             
             color = (coordinateSum % 2) == 0 ? Color.black : Color.white;
 
-            return color;
+            return ref color;
         }
 
         protected void handleLeavingPiece()
@@ -192,7 +190,7 @@ namespace Chess.Game
     {
         public class Square : Chess.Game.Square, ChessDrawable
         {
-            public Optional<Graphical.Piece> GraphicalPiece
+            public new Optional<Graphical.Piece> Piece
             {
                 get
                 {
@@ -250,17 +248,18 @@ namespace Chess.Game
             }
 
             public Square(char pieceSymbol, char file, ushort rank) : 
-                base(pieceSymbol, file, rank)
+                this(Graphical.Piece.Create(pieceSymbol), file, rank)
             {
             }
 
             public Square(char pieceSymbol, RankFile rankAndFile) : 
-                base(pieceSymbol, rankAndFile)
+                this(Graphical.Piece.Create(pieceSymbol), rankAndFile)
             {
             }
 
             public Square(Graphical.Square other) : 
-                base(other)
+                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create((Graphical.Piece)other.piece),
+                      new RankFile(other.RankAndFile)) 
             {
             }
             
@@ -275,9 +274,9 @@ namespace Chess.Game
                 Sprite       = new Sprite(spriteTexture);
                 Sprite.Scale = calculateScalingFromBoardResolution(Size);
             
-                if (Piece.HasValue)
+                if (base.Piece.HasValue)
                 {
-                    GraphicalPiece.Object.InitializeGraphicalElements();
+                    Piece.Object.InitializeGraphicalElements();
                 }
             }
 
@@ -285,9 +284,9 @@ namespace Chess.Game
             {
                 this.Coordinates2D = coordinates;
 
-                if (Piece.HasValue)
+                if (base.Piece.HasValue)
                 {
-                    GraphicalPiece.Object.Initialize2DCoordinates();
+                    Piece.Object.Initialize2DCoordinates();
                 }
             }
         }

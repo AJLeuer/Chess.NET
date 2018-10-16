@@ -66,10 +66,17 @@ namespace Chess.Util
                                                                   paramType)).ToArray();
 
             // just call the constructor.
-            var body = Expression.New(constructorInfo, constructorParameters);
+            if (constructorInfo != null)
+            {
+                var body = Expression.New(constructorInfo, constructorParameters);
 
-            var constructor = Expression.Lambda<ConstructorDelegate>(body, paramExpr);
-            return constructor.Compile();
+                var constructor = Expression.Lambda<ConstructorDelegate>(body, paramExpr);
+                return constructor.Compile();
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
         }
     }
     
