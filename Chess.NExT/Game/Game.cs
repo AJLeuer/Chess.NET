@@ -256,7 +256,7 @@ namespace Chess.Game
                 {
                     var graphicalSquare = (Graphical.Square) square;
                     
-                    var piece = graphicalSquare.Piece;
+                    var piece = graphicalSquare.Piece2D;
                         
                     if (piece.HasValue)
                     {

@@ -35,9 +35,9 @@ namespace Chess.Game
 
         public Board Board { get; set; }
 
-        protected Piece piece = null;
+        private Piece piece = null;
         
-        public Optional<Piece> Piece 
+        public virtual Optional<Piece> Piece 
         {
             get { return piece; }
             set
@@ -190,13 +190,30 @@ namespace Chess.Game
     {
         public class Square : Chess.Game.Square, ChessDrawable
         {
-            public new Optional<Graphical.Piece> Piece
+            
+            public override Optional<Game.Piece> Piece 
+            {
+                get { return base.Piece; }
+                set
+                {
+                    if ((value.HasValue) && (value.Object.GetType().IsInstanceOfType(typeof(Graphical.Piece))))
+                    {
+                        throw new ArgumentException("A Piece belonging to a Graphical Square must be an instance of the subtype Graphical.Piece");
+                    }
+                    else
+                    {
+                        base.Piece = value;
+                    }
+                }
+            }
+            
+            public Optional<Graphical.Piece> Piece2D
             {
                 get
                 {
                     if (base.Piece.HasValue)
                     {
-                        return (Graphical.Piece) base.Piece;
+                        return (Graphical.Piece) Piece.Object;
                     }
                     else
                     {
@@ -258,7 +275,7 @@ namespace Chess.Game
             }
 
             public Square(Graphical.Square other) : 
-                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create((Graphical.Piece)other.piece),
+                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create(other.Piece2D.Object),
                       new RankFile(other.RankAndFile)) 
             {
             }
@@ -276,7 +293,7 @@ namespace Chess.Game
             
                 if (base.Piece.HasValue)
                 {
-                    Piece.Object.InitializeGraphicalElements();
+                    Piece2D.Object.InitializeGraphicalElements();
                 }
             }
 
@@ -286,7 +303,7 @@ namespace Chess.Game
 
                 if (base.Piece.HasValue)
                 {
-                    Piece.Object.Initialize2DCoordinates();
+                    Piece2D.Object.Initialize2DCoordinates();
                 }
             }
         }

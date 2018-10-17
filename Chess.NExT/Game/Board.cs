@@ -364,6 +364,28 @@ namespace Chess.Game
 				{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
 			};
 			
+			public override Game.Square[,] Squares
+			{
+				get { return base.Squares; }
+
+				set
+				{
+					if (value.GetType() != typeof(Graphical.Square[,]))
+					{
+						throw new ArgumentException("A Graphical Board's Squares must be of the Graphical.Square subtype");
+					}
+					else
+					{
+						base.Squares = value;
+					}
+				}
+			}
+			
+			public Graphical.Square[,] Squares2D
+			{
+				get { return (Graphical.Square[,]) Squares; }
+			}
+			
 			public Sprite Sprite { get; set; }
 		
 			public Size Size
@@ -402,9 +424,8 @@ namespace Chess.Game
 				var spriteTexture = new Texture(Config.BoardSpriteFilePath);
 				Sprite = new Sprite(spriteTexture);
 
-				foreach (var baseSquare in Squares)
+				foreach (var square in Squares2D)
 				{
-					var square = (Square) baseSquare;
 					square.InitializeGraphicalElements();
 				}
 			}

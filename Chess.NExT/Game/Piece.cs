@@ -33,7 +33,7 @@ namespace Chess.Game
 
         protected Optional<Square> square;
         
-        public Square Square 
+        public virtual Square Square 
         {
             set
             {
@@ -271,9 +271,25 @@ namespace Chess.Game
         public abstract class Piece : Game.Piece, ChessDrawable
         {
             protected string spriteImageFilePath { get; }
-            
-            public new Graphical.Square Square { get { return (Graphical.Square) base.Square; } }
 
+            public override Game.Square Square
+            {
+                get { return base.Square; }
+                set
+                {
+                    if (value.GetType() != typeof(Graphical.Square))
+                    {
+                        throw new ArgumentException("A Graphical Piece can only be owned by a Graphical Square");
+                    }
+                    else
+                    {
+                        base.Square = value;
+                    }
+                }
+            }
+
+            public Graphical.Square Square2D { get { return (Graphical.Square) Square; } }
+            
             public Sprite Sprite { get; set; }
         
             public Size Size
@@ -405,6 +421,8 @@ namespace Chess.Game
                 this(other.Symbol, other.Color, other.spriteImageFilePath)
             {
             }
+
+            public abstract override Game.Piece Clone();
             
             public void InitializeGraphicalElements() 
             {
@@ -425,7 +443,7 @@ namespace Chess.Game
         
             protected void update2DPosition()
             {
-                this.Coordinates2D = (Square.Coordinates2D / 2) / 2;
+                this.Coordinates2D = (Square2D.Coordinates2D / 2) / 2;
             }
         }
     }
