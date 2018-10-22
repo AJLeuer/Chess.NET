@@ -191,14 +191,14 @@ namespace Chess.Game
         public class Square : Chess.Game.Square, ChessDrawable
         {
             
-            public override Optional<Game.Piece> Piece 
+            public override Optional<Chess.Game.Piece> Piece 
             {
                 get { return base.Piece; }
                 set
                 {
-                    if ((value.HasValue) && (value.Object.GetType().IsInstanceOfType(typeof(Graphical.Piece))))
+                    if ((value.HasValue) && ((value.Object is Graphical.Piece) == false))
                     {
-                        throw new ArgumentException("A Piece belonging to a Graphical Square must be an instance of the subtype Graphical.Piece");
+                        throw new ArgumentException("A Piece belonging to a Graphical Square must be an instance of the subtype Graphical.Piece");   
                     }
                     else
                     {
@@ -280,7 +280,7 @@ namespace Chess.Game
             {
             }
             
-            public override Game.Square Clone()
+            public override Chess.Game.Square Clone()
             {
                 return new Square(this);
             }
@@ -291,7 +291,7 @@ namespace Chess.Game
                 Sprite       = new Sprite(spriteTexture);
                 Sprite.Scale = calculateScalingFromBoardResolution(Size);
             
-                if (base.Piece.HasValue)
+                if (Piece2D.HasValue)
                 {
                     Piece2D.Object.InitializeGraphicalElements();
                 }

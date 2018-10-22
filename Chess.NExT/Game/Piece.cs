@@ -268,16 +268,16 @@ namespace Chess.Game
 
     namespace Graphical
     {
-        public abstract class Piece : Game.Piece, ChessDrawable
+        public abstract class Piece : Chess.Game.Piece, ChessDrawable
         {
             protected string spriteImageFilePath { get; }
 
-            public override Game.Square Square
+            public override Chess.Game.Square Square
             {
                 get { return base.Square; }
                 set
                 {
-                    if (value.GetType() != typeof(Graphical.Square))
+                    if ((value is Graphical.Square) == false)
                     {
                         throw new ArgumentException("A Graphical Piece can only be owned by a Graphical Square");
                     }
@@ -422,7 +422,7 @@ namespace Chess.Game
             {
             }
 
-            public abstract override Game.Piece Clone();
+            public abstract override Chess.Game.Piece Clone();
             
             public void InitializeGraphicalElements() 
             {

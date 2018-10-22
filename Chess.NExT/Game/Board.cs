@@ -95,7 +95,7 @@ namespace Chess.Game
 
 		}
 
-		public Board(Square[,] squares)
+		public Board(SquareGrid squares)
 		{
 			this.Squares = squares;
 		}
@@ -322,6 +322,39 @@ namespace Chess.Game
 		}
 	}
 
+	public class SquareGrid
+	{
+		protected Square[,] squares;
+
+		public SquareGrid(Square[,] squares)
+		{
+			this.squares = squares;
+			
+			for (uint i = 0; i < this.squares.GetLength(0); i++)
+			{
+				for (uint j = 0; j < this.squares.GetLength(1); j++)
+				{
+					Square square = this.squares[i, j];
+
+					if (square.BoardPosition != (i, j))
+					{
+						throw new Exception($"Square at ({i},{j}) was constructed with a position or rank and file that did not match its location in the squares array");
+					}
+				}
+			}
+		}
+
+		public static implicit operator Square[,] (SquareGrid grid)
+		{
+			return grid.squares;
+		}
+		
+		public static implicit operator SquareGrid (Square[,] squares)
+		{
+			return new SquareGrid(squares);
+		}
+	}
+
 	namespace Graphical
 	{
 		public class Board : Chess.Game.Board, ChessDrawable
@@ -364,13 +397,13 @@ namespace Chess.Game
 				{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
 			};
 			
-			public override Game.Square[,] Squares
+			public override Chess.Game.Square[,] Squares
 			{
 				get { return base.Squares; }
 
 				set
 				{
-					if (value.GetType() != typeof(Graphical.Square[,]))
+					if ((value is Graphical.Square[,]) == false)
 					{
 						throw new ArgumentException("A Graphical Board's Squares must be of the Graphical.Square subtype");
 					}
@@ -409,12 +442,12 @@ namespace Chess.Game
 			{
 			}
 
-			public Board(Graphical.Square[,] squares): 
+			public Board(SquareGrid squares): 
 				base(squares)
 			{
 			}
 			
-			public override Game.Board Clone()
+			public override Chess.Game.Board Clone()
 			{
 				return new Graphical.Board(this);
 			}
@@ -453,39 +486,6 @@ namespace Chess.Game
 					squareOrigin.Y =  Coordinates2D.Y;
 				}
 			}
-		}
-	}
-
-	internal class SquareGrid
-	{
-		private Square[,] squares;
-
-		private SquareGrid(Square[,] squares)
-		{
-			this.squares = squares;
-			
-			for (uint i = 0; i < this.squares.GetLength(0); i++)
-			{
-				for (uint j = 0; j < this.squares.GetLength(1); j++)
-				{
-					Square square = this.squares[i, j];
-
-					if (square.BoardPosition != (i, j))
-					{
-						throw new Exception($"Square at ({i},{j}) was constructed with a position or rank and file that did not match its location in the squares array");
-					}
-				}
-			}
-		}
-
-		public static implicit operator Square[,] (SquareGrid grid)
-		{
-			return grid.squares;
-		}
-		
-		public static implicit operator SquareGrid (Square[,] squares)
-		{
-			return new SquareGrid(squares);
 		}
 	}
 

@@ -21,15 +21,8 @@ namespace Chess.Game
         {
             return new AI(this);
         }
-        
-        public override void onTurn()
-        {
-            Move move = DecideNextMove();
 
-            move.Commit();
-        }
-
-        public override Move DecideNextMove()
+        public override Move ComputeNextMove()
         {
             return chooseBestMove();
         }

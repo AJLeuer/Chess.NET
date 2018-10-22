@@ -10,7 +10,7 @@ namespace Chess.NExT
     {
         public static void Main(string[] args)
         {
-            BasicGame game = new ChessGame();
+            BasicGame game = new Game.Graphical.Game();
             
             game.PlayGame();
         }

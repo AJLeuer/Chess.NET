@@ -142,7 +142,6 @@ namespace Chess.Game
                 while (GameActive)
                 {
                     advance();
-                    iterations++;
                 }
             };
             
@@ -157,13 +156,15 @@ namespace Chess.Game
 
         protected abstract void setup();
 
-        public virtual void advance()
+        protected virtual void advance()
         {
             decideMove();
 
             OnGameAdvanced.Invoke();
             
             Thread.Sleep(TimeSpan.FromSeconds(1));
+            
+            iterations++;
         }
 
         protected abstract void decideMove();
@@ -195,36 +196,52 @@ namespace Chess.Game
     
     namespace Graphical
     {
-        public class ChessGame : BasicGame
+        public class Game : BasicGame
         {
             protected Window window = new Window();
+            
+            public override Chess.Game.Board Board
+            {
+                get { return base.Board; }
+                protected set
+                {                    
+                    if ((value is Graphical.Board) == false)
+                    {
+                        throw new ArgumentException("A Graphical.Game's Board must be a Graphical.Board");
+                    }
+                    else
+                    {
+                        base.Board = value;
+                    }
+                }
+            }
+            
+            public Board Board2D { get { return (Graphical.Board) Board; } }
 
-            protected Board GraphicalBoard { get { return (Graphical.Board) base.Board; } }
-
-            public ChessGame() :
+            public Game() :
                 base(new Board())
             {
-                GraphicalBoard.InitializeGraphicalElements();
-                GraphicalBoard.Initialize2DCoordinates((0, 0));
+                Board2D.InitializeGraphicalElements();
+                Board2D.Initialize2DCoordinates((0, 0));
             }
     
-            public ChessGame(BasicGame other) :
+            public Game(BasicGame other) :
                 base(other)
             {
-                GraphicalBoard.InitializeGraphicalElements();
-                GraphicalBoard.Initialize2DCoordinates((0, 0));
+                Board2D.InitializeGraphicalElements();
+                Board2D.Initialize2DCoordinates((0, 0));
             }
     
-            public ChessGame(Game.Board board, Player player0, Player player1) :
+            public Game(Chess.Game.Board board, Player player0, Player player1) :
                 base(board, player0, player1)
             {
-                GraphicalBoard.InitializeGraphicalElements();
-                GraphicalBoard.Initialize2DCoordinates((0, 0));
+                Board2D.InitializeGraphicalElements();
+                Board2D.Initialize2DCoordinates((0, 0));
             }
     
             public override BasicGame Clone()
             {
-                return new ChessGame(this);
+                return new Game(this);
             }
     
             protected override void setup()
@@ -252,7 +269,7 @@ namespace Chess.Game
     
             protected void drawChessBoard()
             {
-                foreach (var square in GraphicalBoard)
+                foreach (var square in Board2D)
                 {
                     var graphicalSquare = (Graphical.Square) square;
                     
@@ -314,7 +331,7 @@ namespace Chess.Game
 
         protected override void setup() {}
         
-        public override void advance()
+        protected override void advance()
         {
             decideMove();
 

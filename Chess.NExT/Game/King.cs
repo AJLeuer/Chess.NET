@@ -120,7 +120,7 @@ namespace Chess.Game
                 }
             }
 
-            public override Game.Piece Clone()
+            public override Chess.Game.Piece Clone()
             {
                 return new King(this);
             }

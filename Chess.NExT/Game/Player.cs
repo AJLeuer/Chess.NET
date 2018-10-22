@@ -13,10 +13,12 @@ namespace Chess.Game
         protected static ulong uniqueIDs = 0;
 
         protected ulong ID { get; } = uniqueIDs++;
-
+        
         public string Name { get; }
     
         public virtual Color Color { get; }
+
+        public uint MovesMade { get; private set; } = 0;
 
         private Board board;
         
@@ -55,16 +57,14 @@ namespace Chess.Game
         }
 
         public abstract Player Clone();
-
-        public abstract void onTurn();
         
-        internal List<Piece> findOwnPiecesOnBoard(Board boardSearched)
+        internal List<Piece> findOwnPiecesOnBoard(Board board)
         {
             var matchingColorPieces = new List<Piece>();
 
-            if (boardSearched != null)
+            if (board != null)
             {
-                foreach (var square in boardSearched.Squares)
+                foreach (var square in board.Squares)
                 {    
                     if (square.isOccupied)
                     {
@@ -90,8 +90,14 @@ namespace Chess.Game
             }
         }
 
-        public abstract Move DecideNextMove();
+        public Move DecideNextMove()
+        {
+            MovesMade++;
+            return ComputeNextMove();
+        }
 
+        public abstract Move ComputeNextMove();
+        
         public List<Move> FindPossibleMoves()
         {
             var moves = new List<Move>();

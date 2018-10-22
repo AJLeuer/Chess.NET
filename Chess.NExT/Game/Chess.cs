@@ -101,14 +101,14 @@ namespace Chess.Game
 		// ReSharper disable once UnusedMember.Local
 		private const Rank lastRank = 8;
 
-		public static File convertToFile(uint boardPositionX) 
+		public static File ConvertToFile(uint boardPositionX) 
 		{
 			var firstFileCharCode = (Int32)firstFile;
 			char c = (char)(boardPositionX + firstFileCharCode);
 			return c;
 		}
  
-		public static Rank convertToRank(uint boardPositionY) 
+		public static Rank ConvertToRank(uint boardPositionY) 
 		{
 			var rank = firstRank + boardPositionY;
 			return (Rank)rank;
@@ -166,7 +166,7 @@ namespace Chess.Game
 	    }
 
 	    public RankFile(Position position) : 
-		    this(convertToFile(position[0]), convertToRank(position[1]))
+		    this(ConvertToFile(position[0]), ConvertToRank(position[1]))
 	    {
 		    
 	    }
@@ -236,12 +236,12 @@ namespace Chess.Game
 			}		
 		} 
 	
-		public AlgebraicNotation algrebraicNotation;		
+		public AlgebraicNotation AlgrebraicNotation;		
 
 		// ReSharper disable once UnusedMember.Local
 		public GameRecordEntry(Piece piece, RankFile destination)
 		{
-			algrebraicNotation = new AlgebraicNotation(piece, destination);
+			AlgrebraicNotation = new AlgebraicNotation(piece, destination);
 		}
 	}
 }

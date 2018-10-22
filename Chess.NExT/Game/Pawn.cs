@@ -272,7 +272,7 @@ namespace Chess.Game
 				}
 			}
 		
-			public override Game.Piece Clone()
+			public override Chess.Game.Piece Clone()
 			{
 				return new Pawn(this);
 			}
@@ -281,11 +281,11 @@ namespace Chess.Game
 			* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
 			* no such Squares, empty
 			*/
-			public override List<Game.Square> FindAllPossibleLegalMoveDestinations()
+			public override List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
 			{
-				List<Game.Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
+				List<Chess.Game.Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
 	
-				Optional<Game.Square> emptySquareToMove = findLegalMoveDestinationForMoveToEmpty();
+				Optional<Chess.Game.Square> emptySquareToMove = findLegalMoveDestinationForMoveToEmpty();
 	
 				if (emptySquareToMove.HasValue)
 				{
@@ -295,15 +295,15 @@ namespace Chess.Game
 				return legalMoveSquares;
 			}
 	
-			protected Optional<Game.Square> findLegalMoveDestinationForMoveToEmpty()
+			protected Optional<Chess.Game.Square> findLegalMoveDestinationForMoveToEmpty()
 			{
 							
-				Predicate<Game.Square> squareCheckerForMovementDirections = (Game.Square squareToCheck) =>
+				Predicate<Chess.Game.Square> squareCheckerForMovementDirections = (Chess.Game.Square squareToCheck) =>
 				{
 					return squareToCheck.isEmpty;
 				};
 				
-				List<Game.Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
+				List<Chess.Game.Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
 					this.BoardPosition, 1, this.legalMovementDirectionToEmptySquares);
 	
 				if (availableSquares.Count > 0)
@@ -312,14 +312,14 @@ namespace Chess.Game
 				}
 				else
 				{
-					return Optional<Game.Square>.Empty;
+					return Optional<Chess.Game.Square>.Empty;
 				}
 			}
 			
-			protected List<Game.Square> findAllPossibleLegalMoveDestinationsForMovesToCapture()
+			protected List<Chess.Game.Square> findAllPossibleLegalMoveDestinationsForMovesToCapture()
 			{
 				
-				Predicate<Game.Square> squareCheckerForCaptureDirections = (Game.Square squareToCheck) =>
+				Predicate<Chess.Game.Square> squareCheckerForCaptureDirections = (Chess.Game.Square squareToCheck) =>
 				{
 					if (squareToCheck.isEmpty)
 					{
@@ -331,7 +331,7 @@ namespace Chess.Game
 					}
 				};
 				
-				List<Game.Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
+				List<Chess.Game.Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
 					this.BoardPosition, 1, this.legalCaptureDirections.ToArray());
 	
 				return captureSquares;
