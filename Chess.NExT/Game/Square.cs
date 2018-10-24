@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
@@ -6,6 +7,7 @@ using SFML.Graphics;
 using File = System.Char;
 using Rank = System.UInt16;
 using Position = Chess.Util.Vec2<uint>;
+using static Chess.Game.Color;
 
 namespace Chess.Game
 {
@@ -168,28 +170,17 @@ namespace Chess.Game
         {
             Piece = Optional<Piece>.Empty;
         }
-
-        protected static Vec2<double> calculateScalingFromBoardResolution(Size unscaledSizeOfSquare)
-        {
-            ushort numberOfSquaresHorizontal = (ushort) Game.Board.DefaultStartingSquares.GetLength(0);
-            ushort numberOfSquaresVertical = (ushort) Game.Board.DefaultStartingSquares.GetLength(1);
-            
-            uint targetWidthForSquare = Chess.Util.Config.BoardResolution.Width / numberOfSquaresHorizontal;
-            uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;
-
-            Size targetSizeForSquare = new Size {Width = targetWidthForSquare, Height = targetHeightForSquare};
-
-            Vec2<double> scaleFactor = targetSizeForSquare / unscaledSizeOfSquare;
-
-            return scaleFactor;
-        }
-
     }
     
     namespace Graphical
     {
         public class Square : Chess.Game.Square, ChessDrawable
         {
+            public static readonly Dictionary<Color, String> DefaultSpriteImageFiles = new Dictionary<Color, String> 
+            {
+                {black, "./Assets/Bitmaps/BlackSquare.png"},
+                {white, "./Assets/Bitmaps/WhiteSquare.png"}
+            };
             
             public override Optional<Chess.Game.Piece> Piece 
             {
@@ -207,7 +198,7 @@ namespace Chess.Game
                 }
             }
             
-            public Optional<Graphical.Piece> Piece2D
+            public Graphical.Piece Piece2D
             {
                 get
                 {
@@ -217,7 +208,7 @@ namespace Chess.Game
                     }
                     else
                     {
-                        return Optional<Graphical.Piece>.Empty;
+                        return null;
                     }
                 }
             }
@@ -287,24 +278,37 @@ namespace Chess.Game
             
             public void InitializeGraphicalElements()
             {
-                var spriteTexture = new Texture(Config.BoardSpriteFilePath);
+                var spriteTexture = new Texture(DefaultSpriteImageFiles[Color]);
                 Sprite       = new Sprite(spriteTexture);
-                Sprite.Scale = calculateScalingFromBoardResolution(Size);
-            
-                if (Piece2D.HasValue)
-                {
-                    Piece2D.Object.InitializeGraphicalElements();
-                }
+                Sprite.Scale = CalculateScalingFromBoardResolution(Size);
+                Piece2D?.InitializeGraphicalElements();
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates)
             {
                 this.Coordinates2D = coordinates;
+                Piece2D?.Initialize2DCoordinates();
+            }
 
-                if (base.Piece.HasValue)
-                {
-                    Piece2D.Object.Initialize2DCoordinates();
-                }
+            public void Draw(RenderTarget renderer)
+            {
+                renderer.Draw(Sprite);
+                Piece2D?.Draw(renderer);
+            }
+            
+            public static Vec2<double> CalculateScalingFromBoardResolution(Size unscaledSizeOfObject)
+            {
+                ushort numberOfSquaresHorizontal = (ushort) Chess.Game.Board.DefaultStartingSquares.GetLength(0);
+                ushort numberOfSquaresVertical   = (ushort) Chess.Game.Board.DefaultStartingSquares.GetLength(1);
+            
+                uint targetWidthForSquare  = Chess.Util.Config.BoardResolution.Width  / numberOfSquaresHorizontal;
+                uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;
+
+                Size targetSizeForSquare = new Size {Width = targetWidthForSquare, Height = targetHeightForSquare};
+
+                Vec2<double> scaleFactor = targetSizeForSquare / unscaledSizeOfObject;
+
+                return scaleFactor;
             }
         }
     }

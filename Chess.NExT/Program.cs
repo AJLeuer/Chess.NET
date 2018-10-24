@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security;
-using Chess.Game;
-using Chess.Game.Graphical;
-using SFML.Window;
+﻿using Chess.Game;
 
 namespace Chess.NExT
 {

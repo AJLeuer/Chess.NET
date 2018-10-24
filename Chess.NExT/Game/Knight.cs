@@ -95,7 +95,7 @@ namespace Chess.Game
                 {white, '♘'}
             };
 
-            public static readonly Dictionary<Color, String> DefaultImageFiles = new Dictionary<Color, String>
+            public static readonly Dictionary<Color, String> DefaultSpriteImageFiles = new Dictionary<Color, String>
             {
                 {black, "./Assets/Bitmaps/BlackKnight.png"},
                 {white, "./Assets/Bitmaps/WhiteKnight.png"}
@@ -140,7 +140,7 @@ namespace Chess.Game
             }
 
             public Knight(Color color) :
-                base(DefaultSymbols[color], color, DefaultImageFiles[color])
+                base(DefaultSymbols[color], color, DefaultSpriteImageFiles[color])
             {
 
             }

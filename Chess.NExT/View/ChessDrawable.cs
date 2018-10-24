@@ -14,5 +14,7 @@ namespace Chess.View
 		void InitializeGraphicalElements();
 
 		void Initialize2DCoordinates(Vec2<uint> coordinates);
+
+		void Draw(RenderTarget renderer);
 	}
 }

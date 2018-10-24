@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using SFML.System;
 
 namespace Chess.Util

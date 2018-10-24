@@ -428,13 +428,19 @@ namespace Chess.Game
             {
                 var spriteTexture = new Texture(spriteImageFilePath);
                 Sprite = new Sprite(spriteTexture);
+                Sprite.Scale = Graphical.Square.CalculateScalingFromBoardResolution(this.Size);
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
             {
                 update2DPosition();
             }
-            
+
+            public void Draw(RenderTarget renderer)
+            {
+                renderer.Draw(Sprite);
+            }
+
             protected override void updateStateToHandleAssignmentToNewSquare()
             {
                 base.updateStateToHandleAssignmentToNewSquare();

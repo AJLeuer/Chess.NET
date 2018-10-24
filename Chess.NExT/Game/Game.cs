@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
-using SFML.Window;
 
-using Chess.Util;
-using Chess.View;
-using SFML.Graphics;
 using static Chess.Util.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -114,16 +109,6 @@ namespace Chess.Game
             this.Player1 = player1 ?? new AI(black, this.Board);
         }
 
-        protected BasicGame(BasicGame other) :
-            /* call copy constructor directly if class doesn't expect to have subclasses,
-            call Clone() method where inheritance is in play and polymorphism is needed */
-            this(other.Board.Clone(), 
-                 (other.Player0 == null) ? null : other.Player0.Clone(),
-                 (other.Player1 == null) ? null : other.Player1.Clone())
-        {
-            
-        }
-
         object ICloneable.Clone()
         {
             return Clone();
@@ -226,7 +211,9 @@ namespace Chess.Game
             }
     
             public Game(BasicGame other) :
-                base(other)
+                base(new Graphical.Board(other.Board),
+                     (other.Player0 == null) ? null : other.Player0.Clone(),
+                     (other.Player1 == null) ? null : other.Player1.Clone())
             {
                 Board2D.InitializeGraphicalElements();
                 Board2D.Initialize2DCoordinates((0, 0));
@@ -253,7 +240,7 @@ namespace Chess.Game
             {
                 window.DispatchEvents();
                 window.Clear();
-                drawChessBoard();
+                display2D();
                 window.Display();
                 Thread.Sleep(TimeSpan.FromMilliseconds(2));
             }
@@ -267,19 +254,9 @@ namespace Chess.Game
                 nextMove.Commit();
             }
     
-            protected void drawChessBoard()
+            protected void display2D()
             {
-                foreach (var square in Board2D)
-                {
-                    var graphicalSquare = (Graphical.Square) square;
-                    
-                    var piece = graphicalSquare.Piece2D;
-                        
-                    if (piece.HasValue)
-                    {
-                        window.Draw(piece.Object.Sprite);
-                    }
-                }
+                Board2D.Draw(window);
             }
     
             private void monitorMouse () 
@@ -303,82 +280,88 @@ namespace Chess.Game
         }
     }
 
-    public class SimulatedGame : BasicGame 
+    namespace Simulation
     {
-
-        public SimulatedGame() :
-            base(new Simulation.Board())
+        public class Game : BasicGame 
         {
+
+            public Game() :
+                base(new Simulation.Board())
+            {
             
-        }
+            }
 
-        public SimulatedGame(BasicGame other) :
-            base(other)
-        {
+            public Game(BasicGame other) :
+                base(new Simulation.Board(other.Board),
+                     (other.Player0 == null) ? null : other.Player0.Clone(),
+                     (other.Player1 == null) ? null : other.Player1.Clone())
+            {
+
+            }
+
+            public Game(Board board, Player player0, Player player1) :
+                base(board, player0, player1)
+            {
             
-        }
+            }
 
-        public SimulatedGame(Board board, Player player0, Player player1) :
-            base(board, player0, player1)
-        {
-            
-        }
+            public override BasicGame Clone()
+            {
+                return new Game(this);
+            }
 
-        public override BasicGame Clone()
-        {
-            return new SimulatedGame(this);
-        }
-
-        protected override void setup() {}
+            protected override void setup() {}
         
-        protected override void advance()
-        {
-            decideMove();
+            protected override void advance()
+            {
+                decideMove();
 
-            OnGameAdvanced.Invoke();
+                OnGameAdvanced.Invoke();
             
-            //and definitely don't sleep
-        }
+                //and definitely don't sleep
+            }
 
-        protected override void decideMove()
-        {
-            Move nextMove = CurrentPlayer.DecideNextMove();
-            nextMove.Commit();
-        }
+            protected override void decideMove()
+            {
+                Move nextMove = CurrentPlayer.DecideNextMove();
+                nextMove.Commit();
+            }
         
-        protected override void display(){}
-    }
+            protected override void display(){}
+        }
     
-    /// <summary>
-    /// A BasicGame used only for testing the outcomes of potential moves
-    /// </summary>
-    public class TemporaryGame : SimulatedGame
-    {
-        public TemporaryGame() :
-            base()
+        /// <summary>
+        /// A BasicGame used only for testing the outcomes of potential moves
+        /// </summary>
+        public class TemporaryGame : Simulation.Game 
         {
+            public TemporaryGame() :
+                base()
+            {
             
-        }
+            }
 
-        public TemporaryGame(BasicGame other) :
-            base(other)
-        {
+            public TemporaryGame(BasicGame other) :
+                base(other)
+            {
             
-        }
+            }
 
-        public TemporaryGame(Board board, Player player0 = null, Player player1 = null) :
-            base(board, player0, player1)
-        {
+            public TemporaryGame(Board board, Player player0 = null, Player player1 = null) :
+                base(board, player0, player1)
+            {
             
-        }
+            }
 
-        public override BasicGame Clone()
-        {
-            return new TemporaryGame(this);
-        }
+            public override BasicGame Clone()
+            {
+                return new TemporaryGame(this);
+            }
         
-        protected override void decideMove() {}
+            protected override void decideMove() {}
+        }
     }
+
     
     public delegate void GameStateAdvancedAction();
 }

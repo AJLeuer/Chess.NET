@@ -382,8 +382,10 @@ namespace Chess.Game
 
 	namespace Graphical
 	{
-		public class Board : Chess.Game.Board, ChessDrawable
+		public class Board : Chess.Game.Board, ChessDrawable, IEnumerable<Graphical.Square>
 		{
+			public static readonly String DefaultSpriteImageFile = "./Assets/Bitmaps/Board.png";
+			
 			public new static readonly Graphical.SquareGrid DefaultStartingSquares = new Graphical.Square[,]
 			{
 				{ new Square('♖', 'a', 1), new Square('♙', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square('♟', 'a', 7), new Square('♜', 'a', 8) },
@@ -493,12 +495,22 @@ namespace Chess.Game
 				return new Graphical.Board(this);
 			}
 			
+			public new IEnumerator<Graphical.Square> GetEnumerator()
+			{
+				return Squares2D.OfType<Graphical.Square>().GetEnumerator();
+			}
+		
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+			
 			public void InitializeGraphicalElements()
 			{
-				var spriteTexture = new Texture(Config.BoardSpriteFilePath);
+				var spriteTexture = new Texture(DefaultSpriteImageFile);
 				Sprite = new Sprite(spriteTexture);
 
-				foreach (var square in Squares2D)
+				foreach (var square in this)
 				{
 					square.InitializeGraphicalElements();
 				}
@@ -525,6 +537,14 @@ namespace Chess.Game
 					// ReSharper disable once PossibleNullReferenceException
 					squareOrigin.X += square.Size.Width;
 					squareOrigin.Y =  Coordinates2D.Y;
+				}
+			}
+
+			public void Draw(RenderTarget renderer)
+			{
+				foreach (var square in Squares2D)
+				{
+					square.Draw(renderer);
 				}
 			}
 		}
@@ -604,7 +624,7 @@ namespace Chess.Game
 			{
 			}
 
-			public override Game.Board Clone()
+			public override Chess.Game.Board Clone()
 			{
 				return new Simulation.Board(this);
 			}
