@@ -5,6 +5,8 @@ using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
 using File = System.Char;
 using Rank = System.UInt16;
 
+using SimulatedBoard = Chess.Game.Simulation.Board;
+
 namespace Chess.NExT.Test.Tests
 {
     public static class KnightTest
@@ -12,7 +14,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldFindAllValidMoveDestinations()
         {
-            Board board = new Board(squares: Board.DefaultEmptySquares);
+            Board board = new SimulatedBoard(squares: Board.DefaultEmptySquares);
 
             Square square = board['e', 4];
             

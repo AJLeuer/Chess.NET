@@ -254,12 +254,12 @@ namespace Chess.Game
             {
             }
 
-            public Square(Piece piece, char file, ushort rank) : 
+            public Square(Chess.Game.Piece piece, char file, ushort rank) : 
                 base(piece, file, rank)
             {
             }
 
-            public Square(Piece piece, RankFile rankAndFile) : 
+            public Square(Chess.Game.Piece piece, RankFile rankAndFile) : 
                 base(piece, rankAndFile)
             {
             }
@@ -274,8 +274,8 @@ namespace Chess.Game
             {
             }
 
-            public Square(Graphical.Square other) : 
-                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create(other.Piece2D.Object),
+            public Square(Chess.Game.Square other) : 
+                this (piece: (other.isEmpty) ? null : other.Piece.Object.Clone(),
                       new RankFile(other.RankAndFile)) 
             {
             }

@@ -58,13 +58,13 @@ namespace Chess.Game
 
         public abstract Player Clone();
         
-        internal List<Piece> findOwnPiecesOnBoard(Board board)
+        internal List<Piece> findOwnPiecesOnBoard(Board anotherBoard)
         {
             var matchingColorPieces = new List<Piece>();
 
-            if (board != null)
+            if (anotherBoard != null)
             {
-                foreach (var square in board.Squares)
+                foreach (var square in anotherBoard.Squares)
                 {    
                     if (square.isOccupied)
                     {

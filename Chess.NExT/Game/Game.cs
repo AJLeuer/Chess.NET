@@ -117,7 +117,7 @@ namespace Chess.Game
         protected BasicGame(BasicGame other) :
             /* call copy constructor directly if class doesn't expect to have subclasses,
             call Clone() method where inheritance is in play and polymorphism is needed */
-            this(new Board(other.Board), 
+            this(other.Board.Clone(), 
                  (other.Player0 == null) ? null : other.Player0.Clone(),
                  (other.Player1 == null) ? null : other.Player1.Clone())
         {
@@ -307,7 +307,7 @@ namespace Chess.Game
     {
 
         public SimulatedGame() :
-            base(new Board())
+            base(new Simulation.Board())
         {
             
         }

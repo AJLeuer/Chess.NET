@@ -2,6 +2,7 @@ using Chess.Game;
 using NUnit.Framework;
 
 using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
+using SimulatedBoard = Chess.Game.Simulation.Board;
 
 namespace Chess.NExT.Test.Tests
 {
@@ -35,7 +36,7 @@ namespace Chess.NExT.Test.Tests
 		[Test]
 		public static void ShouldFindAllValidMoveDestinations()
 		{
-			var board = new Board(squares);
+			var board = new SimulatedBoard(squares);
 			Queen whiteQueen = (Queen) board['d', 3].Piece.Object;
 
 			var moveDestinations = whiteQueen.FindAllPossibleLegalMoveDestinations();
@@ -59,7 +60,7 @@ namespace Chess.NExT.Test.Tests
 		[Test]
 		public static void ShouldRecordMoveHistory()
 		{
-			var board = new Board(squares);
+			var board = new SimulatedBoard(squares);
 			Queen whiteQueen = (Queen) board['d', 3].Piece.Object;
 			
 			whiteQueen.Move(board['e', 3]);

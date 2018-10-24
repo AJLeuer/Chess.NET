@@ -4,6 +4,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
+using SimulatedBoard = Chess.Game.Simulation.Board;
+
 namespace Chess.NExT.Test.Tests
 {
 	public static class MoveTest
@@ -17,7 +19,7 @@ namespace Chess.NExT.Test.Tests
 		[SetUp]
 		public static void Setup()
 		{
-			board = new Board
+			board = new SimulatedBoard
 			{
 				Squares = new Square[,]
 				{

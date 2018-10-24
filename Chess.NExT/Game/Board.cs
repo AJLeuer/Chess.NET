@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Reflection;
 using SFML.Graphics;
 
 using Chess.Util;
@@ -18,7 +15,7 @@ using Rank = System.UInt16;
 
 namespace Chess.Game
 {
-	public class Board : ICloneable, IEnumerable<Square>
+	public abstract class Board : ICloneable, IEnumerable<Square>
 	{
 		public static readonly Square[,] DefaultStartingSquares = new Square[,]
 		{
@@ -62,23 +59,25 @@ namespace Chess.Game
 		
 		protected ulong ID { get; } = IDs++;
 
-		public virtual Position MaxPosition
+		public Position MaxPosition
 		{
 			get { return new Position((uint) Squares.GetLength(0) - 1, (uint) Squares.GetLength(1) - 1); }
 		}
 
-		private SquareGrid squares;
+		private SquareGrid squareGrid;
 
-		public virtual Square[,] Squares
+		protected virtual SquareGrid squares
 		{
-			get { return squares; }
-
+			get { return squareGrid; }
+			
 			set
 			{
-				squares = value;
+				squareGrid = value;
 				takeOwnershipOfSquares();
 			}
 		}
+
+		public abstract Square[,] Squares { get; set; }
 				
 		public BasicGame Game { get; set; }
 
@@ -90,7 +89,7 @@ namespace Chess.Game
 		
 		public Board(Board other):
 			// ReSharper disable once CoVariantArrayConversion
-			this((Square[,]) other.Squares.DeepClone())
+			this(new SquareGrid(other.squares))
 		{
 
 		}
@@ -148,10 +147,7 @@ namespace Chess.Game
 			return Clone();
 		}
 
-		public virtual Board Clone()
-		{
-			return new Board(this);
-		}
+		public abstract Board Clone();
 
 		private void takeOwnershipOfSquares()
 		{
@@ -322,7 +318,7 @@ namespace Chess.Game
 		}
 	}
 
-	public class SquareGrid
+	public class SquareGrid : ICloneable
 	{
 		protected Square[,] squares;
 
@@ -344,6 +340,22 @@ namespace Chess.Game
 			}
 		}
 
+		public SquareGrid(SquareGrid other)
+		{
+			this.squares = new Square[8,8];
+			copyFromSquares(other.squares);
+		}
+		
+		object ICloneable.Clone()
+		{
+			return Clone();
+		}
+
+		public virtual SquareGrid Clone()
+		{
+			return new SquareGrid(this);
+		}
+		
 		public static implicit operator Square[,] (SquareGrid grid)
 		{
 			return grid.squares;
@@ -353,13 +365,26 @@ namespace Chess.Game
 		{
 			return new SquareGrid(squares);
 		}
+
+		protected virtual void copyFromSquares(Square[,] otherSquares)
+		{
+			for (uint i = 0; i < otherSquares.GetLength(0); i++)
+			{
+				for (uint j = 0; j < otherSquares.GetLength(1); j++)
+				{
+					Square otherSquare = otherSquares[i, j];
+					Square square      = new Square(otherSquare);
+					this.squares[i, j] = square;
+				}
+			}
+		}
 	}
 
 	namespace Graphical
 	{
 		public class Board : Chess.Game.Board, ChessDrawable
 		{
-			public new static readonly Graphical.Square[,] DefaultStartingSquares = new Graphical.Square[,]
+			public new static readonly Graphical.SquareGrid DefaultStartingSquares = new Graphical.Square[,]
 			{
 				{ new Square('♖', 'a', 1), new Square('♙', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square('♟', 'a', 7), new Square('♜', 'a', 8) },
 				
@@ -378,7 +403,7 @@ namespace Chess.Game
 				{ new Square('♖', 'h', 1), new Square('♙', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square('♟', 'h', 7), new Square('♜', 'h', 8) }
 			};
 			
-			public new static readonly Graphical.Square[,] DefaultEmptySquares = new Graphical.Square[,]
+			public new static readonly Graphical.SquareGrid DefaultEmptySquares = new Graphical.Square[,]
 			{
 				{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
 				
@@ -396,10 +421,26 @@ namespace Chess.Game
 				
 				{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
 			};
+
+			protected override Chess.Game.SquareGrid squares
+			{
+				get { return base.squares; }
+				set
+				{
+					if ((value is Graphical.SquareGrid) == false)
+					{
+						throw new ArgumentException("A Graphical Board's SquareGrid must be of the Graphical.SquareGrid subtype");
+					}
+					else
+					{
+						base.squares = value;
+					}
+				}
+			}
 			
 			public override Chess.Game.Square[,] Squares
 			{
-				get { return base.Squares; }
+				get { return base.squares; }
 
 				set
 				{
@@ -409,7 +450,7 @@ namespace Chess.Game
 					}
 					else
 					{
-						base.Squares = value;
+						base.squares = value;
 					}
 				}
 			}
@@ -437,8 +478,8 @@ namespace Chess.Game
 			{
 			}
 
-			public Board(Board other): 
-				base(other)
+			public Board(Chess.Game.Board other): 
+				base(new SquareGrid(other.Squares))
 			{
 			}
 
@@ -485,6 +526,87 @@ namespace Chess.Game
 					squareOrigin.X += square.Size.Width;
 					squareOrigin.Y =  Coordinates2D.Y;
 				}
+			}
+		}
+		
+		[SuppressMessage("ReSharper", "CoVariantArrayConversion")]
+		public class SquareGrid : Chess.Game.SquareGrid
+		{
+			public SquareGrid(Graphical.Square[,] squares) : 
+				base(squares: squares)
+			{
+				
+			}
+
+			public SquareGrid(Chess.Game.SquareGrid other):
+				base(other: other)
+			{
+			}
+			
+			public override Chess.Game.SquareGrid Clone()
+			{
+				return new Graphical.SquareGrid(this);
+			}
+			
+			public static implicit operator Graphical.Square[,] (Graphical.SquareGrid grid)
+			{
+				return (Square[,]) grid.squares;
+			}
+		
+			public static implicit operator SquareGrid (Graphical.Square[,] squares)
+			{
+				return new SquareGrid(squares);
+			}
+			
+			protected override void copyFromSquares(Chess.Game.Square[,] otherSquares)
+			{
+				for (uint i = 0; i < otherSquares.GetLength(0); i++)
+				{
+					for (uint j = 0; j < otherSquares.GetLength(1); j++)
+					{
+						Chess.Game.Square otherSquare = otherSquares[i, j];
+						Square square      = new Square(otherSquare);
+						this.squares[i, j] = square;
+					}
+				}
+			}
+			
+
+		}
+	}
+
+	namespace Simulation
+	{
+		public class Board : Chess.Game.Board
+		{
+			public override Square[,] Squares
+			{
+				get { return squares; }
+			
+				set
+				{
+					squares = value;
+				}
+			}
+			
+			public Board():
+				base(DefaultStartingSquares)
+			{
+			}
+
+			public Board(Chess.Game.Board other): 
+				base(other)
+			{
+			}
+
+			public Board(SquareGrid squares): 
+				base(squares)
+			{
+			}
+
+			public override Game.Board Clone()
+			{
+				return new Simulation.Board(this);
 			}
 		}
 	}
