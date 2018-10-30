@@ -265,22 +265,28 @@ namespace Chess.Game
                     {
                         return new Pawn(pawn);
                     }
-                    case IKnight knight: {
+                    case IKnight knight: 
+                    {
                         return new Knight(knight);
                     }
-                    case IBishop bishop: {
+                    case IBishop bishop: 
+                    {
                         return new Bishop(bishop);
                     }
-                    case IRook rook: {
+                    case IRook rook: 
+                    {
                         return new Rook(rook);
                     }
-                    case IQueen queen: {
+                    case IQueen queen: 
+                    {
                         return new Queen(queen);
                     }
-                    case IKing king: {
+                    case IKing king: 
+                    {
                         return new King(king);
                     }
-                    default: {
+                    default: 
+                    {
                         throw new TypeInitializationException(piece.GetType().Name, new Exception("Unknown subclass of Piece"));
                     }
                 }

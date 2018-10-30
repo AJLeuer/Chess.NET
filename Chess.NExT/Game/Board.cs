@@ -194,8 +194,9 @@ namespace Chess.Game
 			if (square.Piece.HasValue)
 			{
 				IPiece potentialMatchingPiece = square.Piece.Object;
-				
-				if ((potentialMatchingPiece.GetType() == piece.GetType()) && (potentialMatchingPiece.Color == piece.Color)) {
+
+				if ((potentialMatchingPiece.GetType().Name == piece.GetType().Name) && (potentialMatchingPiece.Color == piece.Color)) 
+				{
 					return potentialMatchingPiece;
 				}
 			}
