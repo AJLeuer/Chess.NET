@@ -5,69 +5,74 @@ using static Chess.Game.Direction;
 
 namespace Chess.Game
 {
-    public class King : Piece
+    public interface IKing : IPiece {}
+
+    namespace Simulation
     {
-
-        protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
-        {
-            up,
-            down,
-            left,
-            right,
-            upLeft,
-            upRight,
-            downLeft,
-            downRight
-        };
-
-        public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
-        {
-            {black, '♚'},
-            {white, '♔'}
-        };
-
-        public override char ASCIISymbol { get { return 'K'; } }
-
-        public override ushort Value { get { return 40; } }
-
-        public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
-
-        public King(King other) :
-            base(other)
+        public class King : Piece, IKing 
         {
 
-        }
-
-        public King(Color color) :
-            base(DefaultSymbols[color], color)
-        {
-
-        }
-
-        public King(char symbol) :
-            this((symbol == DefaultSymbols[black]) ? black : white)
-        {
-            if (DefaultSymbols.ContainsValue(symbol) == false)
+            protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
             {
-                throw new ArgumentException($"{symbol} is not a valid chess piece");
+                up,
+                down,
+                left,
+                right,
+                upLeft,
+                upRight,
+                downLeft,
+                downRight
+            };
+
+            public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+            {
+                {black, '♚'},
+                {white, '♔'}
+            };
+
+            public override char ASCIISymbol { get { return 'K'; } }
+
+            public override ushort Value { get { return 40; } }
+
+            public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
+
+            public King(IKing other) :
+                base(other)
+            {
+
+            }
+
+            public King(Color color) :
+                base(DefaultSymbols[color], color)
+            {
+
+            }
+
+            public King(char symbol) :
+                this((symbol == DefaultSymbols[black]) ? black : white)
+            {
+                if (DefaultSymbols.ContainsValue(symbol) == false)
+                {
+                    throw new ArgumentException($"{symbol} is not a valid chess piece");
+                }
+            }
+
+            public override IPiece Clone()
+            {
+                return new King(this);
+            }
+
+            public override void Move(RankFile destination)
+            {
+                //todo: add move legality checking
+                base.Move(destination);
             }
         }
-
-        public override Piece Clone()
-        {
-            return new King(this);
-        }
-
-        public override void Move(RankFile destination)
-        {
-            //todo: add move legality checking
-            base.Move(destination);
-        }
     }
-
+    
     namespace Graphical
     {
-        public class King : Piece
+        public class King : Piece, IKing 
         {
             protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
             {
@@ -99,10 +104,10 @@ namespace Chess.Game
 
             public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
 
-            public King(King other) :
+            public King(IKing other) :
                 base(other)
             {
-
+                SpriteImageFilePath = DefaultSpriteImageFiles[this.Color];
             }
 
             public King(Color color) :
@@ -120,7 +125,7 @@ namespace Chess.Game
                 }
             }
 
-            public override Chess.Game.Piece Clone()
+            public override IPiece Clone()
             {
                 return new King(this);
             }

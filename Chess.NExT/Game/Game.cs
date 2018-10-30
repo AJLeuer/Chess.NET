@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
+using Chess.Util;
 using static Chess.Util.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -11,7 +11,7 @@ namespace Chess.Game
 {
     public abstract class BasicGame : ICloneable
     {
-        public static readonly ushort MaximumPossibleMoveDistance = (ushort) Board.DefaultEmptySquares.GetLength(0);
+        public static readonly ushort MaximumPossibleMoveDistance = BoardWidth;
         
         protected static ulong IDs = 0;
 

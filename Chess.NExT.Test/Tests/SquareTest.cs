@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Position = Chess.Util.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
+using Square = Chess.Game.Simulation.Square;
 
 namespace Chess.NExT.Test.Tests
 {

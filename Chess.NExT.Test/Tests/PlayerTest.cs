@@ -5,6 +5,11 @@ using Chess.NExT.Test.Util;
 using Moq;
 using NUnit.Framework;
 
+using Square = Chess.Game.Simulation.Square;
+using Piece = Chess.Game.Simulation.Piece;
+using Knight = Chess.Game.Simulation.Knight;
+using Pawn = Chess.Game.Simulation.Pawn;
+
 namespace Chess.NExT.Test.Tests
 {
     public static class PlayerTest
@@ -45,7 +50,7 @@ namespace Chess.NExT.Test.Tests
                     () => squares); 
             
             Player player = new AI(Color.white, mockBoard);
-            List<Piece> pieces = player.findOwnPiecesOnBoard(mockBoard);
+            List<IPiece> pieces = player.findOwnPiecesOnBoard(mockBoard);
 
             //checks that pawnF2, pawnG2, and knightG1 (and nothing else) are in pieces, but in no particular order
             AdditionalCollectionAssertions.AssertContains(actual: pieces, knightG1, pawnF2, pawnG2);

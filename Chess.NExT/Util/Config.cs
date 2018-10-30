@@ -11,6 +11,9 @@ namespace Chess.Util
 
         public const Button ButtonMain = Button.Left;
 
+        public const ushort BoardWidth = 8;
+        public const ushort BoardHeight = 8;
+
         public static Vec2<uint> MainWindowSize { get; set; } = DisplayData.getScreenResolution();
 
         public static readonly TrueColor WindowBackgroundColor = new TrueColor(0x18, 0x18, 0x18, 0x7F);

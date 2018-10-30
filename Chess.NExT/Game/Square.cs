@@ -11,7 +11,7 @@ using static Chess.Game.Color;
 
 namespace Chess.Game
 {
-    public class Square : ICloneable
+    public abstract class Square : ICloneable 
     {
         public Position BoardPosition { get; protected set; }
         
@@ -37,11 +37,11 @@ namespace Chess.Game
 
         public Board Board { get; set; }
 
-        private Piece piece = null;
+        private IPiece piece = null;
         
-        public virtual Optional<Piece> Piece 
+        public virtual Optional<IPiece> Piece 
         {
-            get { return piece; }
+            get { return new Optional<IPiece>(piece); }
             set
             {
                 if (value.HasValue == false)
@@ -83,33 +83,14 @@ namespace Chess.Game
             
         }
         
-        public Square(Piece piece, File file, Rank rank)
+        public Square(IPiece piece, File file, Rank rank)
         {
             BoardPosition = new RankFile(file, rank);
-            Piece = new Optional<Piece>(piece);
+            Piece = new Optional<IPiece>(piece);
         }
         
-        public Square(Piece piece, RankFile rankAndFile):
+        public Square(IPiece piece, RankFile rankAndFile):
             this(piece, rankAndFile.File, rankAndFile.Rank)
-        {
-            
-        }
-        
-        public Square(char pieceSymbol, File file, Rank rank) :
-            this(Game.Piece.Create(pieceSymbol), file, rank)
-        {
-            
-        }
-        
-        public Square(char pieceSymbol, RankFile rankAndFile) :
-            this(Game.Piece.Create(pieceSymbol), rankAndFile)
-        {
-            
-        }
-        
-        public Square(Square other):
-            this ((other.isEmpty) ? null : Game.Piece.Create(other.piece),
-                   new RankFile(other.RankAndFile)) /* Don't copy other's board pointer */
         {
             
         }
@@ -124,16 +105,13 @@ namespace Chess.Game
             return Clone();
         }
 
-        public virtual Square Clone()
-        {
-            return new Square(this);
-        }
+        public abstract Square Clone();
 
         protected ref Optional<Color> determineColor()
         {
             uint coordinateSum = BoardPosition.X + BoardPosition.Y;
             
-            color = (coordinateSum % 2) == 0 ? Color.black : Color.white;
+            color = (coordinateSum % 2) == 0 ? black : white;
 
             return ref color;
         }
@@ -150,14 +128,14 @@ namespace Chess.Game
             this.Piece.Object.PieceMovingNotifier += this.handleLeavingPiece;
         }
 
-        public void receiveArrivingPiece(Piece arrivingPiece)
+        public void receiveArrivingPiece(IPiece arrivingPiece)
         {
             if (this.isOccupied)
             {
                 captureCurrentPiece();
             }
 
-            this.Piece = arrivingPiece; //calls handleNewPiece()
+            this.Piece = new Optional<IPiece>(arrivingPiece); //calls handleNewPiece()
         }
 
         protected void captureCurrentPiece()
@@ -168,11 +146,63 @@ namespace Chess.Game
 
         protected void clearCurrentPiece()
         {
-            Piece = Optional<Piece>.Empty;
+            Piece = Optional<IPiece>.Empty;
+        }
+    }
+
+    namespace Simulation
+    {
+        public class Square : Chess.Game.Square
+        {
+            public Square(char file, ushort rank) : 
+                base(file, rank)
+            {
+                
+            }
+
+            public Square(RankFile rankAndFile) : 
+                base(rankAndFile)
+            {
+                
+            }
+
+            public Square(Chess.Game.IPiece piece, char file, ushort rank) : 
+                base(piece, file, rank)
+            {
+                
+            }
+
+            public Square(Chess.Game.IPiece piece, RankFile rankAndFile) : 
+                base(piece, rankAndFile)
+            {
+                
+            }
+
+            public Square(char pieceSymbol, char file, ushort rank) : 
+                this(Simulation.Piece.Create(pieceSymbol), file, rank)
+            {
+                
+            }
+
+            public Square(char pieceSymbol, RankFile rankAndFile) : 
+                this(Simulation.Piece.Create(pieceSymbol), rankAndFile)
+            {
+            }
+
+            public Square(Chess.Game.Square other) : 
+                this (piece: (other.isEmpty) ? null : Simulation.Piece.Create(other.Piece.Object),
+                      new RankFile(other.RankAndFile)) 
+            {
+            }
+            
+            public override Chess.Game.Square Clone()
+            {
+                return new Square(this);
+            }
         }
     }
     
-    namespace Graphical
+    namespace Graphical 
     {
         public class Square : Chess.Game.Square, ChessDrawable
         {
@@ -182,7 +212,7 @@ namespace Chess.Game
                 {white, "./Assets/Bitmaps/WhiteSquare.png"}
             };
             
-            public override Optional<Chess.Game.Piece> Piece 
+            public override Optional<Chess.Game.IPiece> Piece 
             {
                 get { return base.Piece; }
                 set
@@ -198,7 +228,7 @@ namespace Chess.Game
                 }
             }
             
-            public Graphical.Piece Piece2D
+            public Graphical.Piece Piece2D 
             {
                 get
                 {
@@ -215,12 +245,12 @@ namespace Chess.Game
 
             public Sprite Sprite { get; set; }
 
-            public Size Size
+            public Size Size 
             {
                 get { return Sprite.Texture.Size; }
             }
 
-            public Vec2<uint> Coordinates2D
+            public Vec2<uint> Coordinates2D 
             {
                 get
                 {
@@ -238,37 +268,44 @@ namespace Chess.Game
             public Square(char file, ushort rank) : 
                 base(file, rank)
             {
+                
             }
 
             public Square(RankFile rankAndFile) : 
                 base(rankAndFile)
             {
+                
             }
 
-            public Square(Chess.Game.Piece piece, char file, ushort rank) : 
+            public Square(Chess.Game.IPiece piece, char file, ushort rank) : 
                 base(piece, file, rank)
             {
+                
             }
 
-            public Square(Chess.Game.Piece piece, RankFile rankAndFile) : 
+            public Square(Chess.Game.IPiece piece, RankFile rankAndFile) : 
                 base(piece, rankAndFile)
             {
+                
             }
 
             public Square(char pieceSymbol, char file, ushort rank) : 
                 this(Graphical.Piece.Create(pieceSymbol), file, rank)
             {
+                
             }
 
             public Square(char pieceSymbol, RankFile rankAndFile) : 
                 this(Graphical.Piece.Create(pieceSymbol), rankAndFile)
             {
+                
             }
 
             public Square(Chess.Game.Square other) : 
-                this (piece: (other.isEmpty) ? null : other.Piece.Object.Clone(),
+                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create(other.Piece.Object),
                       new RankFile(other.RankAndFile)) 
             {
+                
             }
             
             public override Chess.Game.Square Clone()
@@ -298,8 +335,8 @@ namespace Chess.Game
             
             public static Vec2<double> CalculateScalingFromBoardResolution(Size unscaledSizeOfObject)
             {
-                ushort numberOfSquaresHorizontal = (ushort) Chess.Game.Board.DefaultStartingSquares.GetLength(0);
-                ushort numberOfSquaresVertical   = (ushort) Chess.Game.Board.DefaultStartingSquares.GetLength(1);
+                ushort numberOfSquaresHorizontal = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(0);
+                ushort numberOfSquaresVertical   = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(1);
             
                 uint targetWidthForSquare  = Chess.Util.Config.BoardResolution.Width  / numberOfSquaresHorizontal;
                 uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;

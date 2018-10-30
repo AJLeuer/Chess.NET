@@ -6,78 +6,82 @@ using static Chess.Game.Direction;
 
 namespace Chess.Game
 {
-    public class Queen : Piece
+    public interface IQueen : IPiece {}
+
+    namespace Simulation
     {
-        
-        protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
+        public class Queen : Piece, IQueen 
         {
-            up,
-            down,
-            left,
-            right,
-            upLeft,
-            upRight,
-            downLeft,
-            downRight
-        };
-        
-        public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
-        {
-            {black, '♛'}, 
-            {white, '♕'}
-        };
-        
-        public override char ASCIISymbol
-        {
-            get { return 'Q'; }
-        }
-        
-        public override ushort Value
-        {
-            get { return 9; }
-        }
-        
-        public override List<Direction> LegalMovementDirections
-        {
-            get { return DefaultLegalMovementDirections; }
-        }
-        
-        public Queen(Queen other) :
-            base(other)
-        {
-		    
-        }
-	
-        public Queen(Color color) :
-            base(DefaultSymbols[color], color)
-        {
-	
-        }
-	
-        public Queen(char symbol) :
-            this((symbol == DefaultSymbols[black]) ? black : white)
-        {
-            if (DefaultSymbols.ContainsValue(symbol) == false)
+            protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
             {
-                throw new ArgumentException($"{symbol} is not a valid chess piece");
+                up,
+                down,
+                left,
+                right,
+                upLeft,
+                upRight,
+                downLeft,
+                downRight
+            };
+        
+            public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+            {
+                {black, '♛'}, 
+                {white, '♕'}
+            };
+        
+            public override char ASCIISymbol
+            {
+                get { return 'Q'; }
+            }
+        
+            public override ushort Value
+            {
+                get { return 9; }
+            }
+        
+            public override List<Direction> LegalMovementDirections
+            {
+                get { return DefaultLegalMovementDirections; }
+            }
+        
+            public Queen(IQueen other) :
+                base(other)
+            {
+		    
+            }
+	
+            public Queen(Color color) :
+                base(DefaultSymbols[color], color)
+            {
+	
+            }
+	
+            public Queen(char symbol) :
+                this((symbol == DefaultSymbols[black]) ? black : white)
+            {
+                if (DefaultSymbols.ContainsValue(symbol) == false)
+                {
+                    throw new ArgumentException($"{symbol} is not a valid chess piece");
+                }
+            }
+        
+            public override IPiece Clone()
+            {
+                return new Queen(this);
+            }
+
+            public override void Move(RankFile destination) 
+            {
+                //todo add move legality checking
+                base.Move(destination);
             }
         }
-        
-        public override Piece Clone()
-        {
-            return new Queen(this);
-        }
-
-        public override void Move(RankFile destination) 
-        {
-            //todo add move legality checking
-            base.Move(destination);
-        }
     }
-
+    
     namespace Graphical
     {
-        public class Queen : Piece
+        public class Queen : Piece, IQueen 
         {
             protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
             {
@@ -118,10 +122,10 @@ namespace Chess.Game
                 get { return DefaultLegalMovementDirections; }
             }
         
-            public Queen(Queen other) :
+            public Queen(IQueen other) :
                 base(other)
             {
-		    
+                SpriteImageFilePath = DefaultSpriteImageFiles[this.Color];
             }
 	
             public Queen(Color color) :
@@ -139,7 +143,7 @@ namespace Chess.Game
                 }
             }
         
-            public override Chess.Game.Piece Clone()
+            public override IPiece Clone()
             {
                 return new Queen(this);
             }

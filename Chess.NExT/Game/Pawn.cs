@@ -6,241 +6,145 @@ using static Chess.Game.Direction;
 
 namespace Chess.Game
 {
-	public class Pawn : Piece
-    {
-	    
-	    protected static readonly List<Direction> blackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
-	    protected static readonly List<Direction> whiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
-
-	    public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
-	    {
-		    {black, '♟'}, 
-		    {white, '♙'}
-	    };
-	    
-	    public override char ASCIISymbol
-	    {
-		    get { return '​'; } //zero-width space
-	    }
-
-	    public override ushort Value
-	    {
-		    get { return 1; }
-	    }
-
-	    protected Direction legalMovementDirectionToEmptySquares
-	    {
-		    get
-		    {
-			    if (this.Color == black)
-			    {
-				    return down;
-			    }
-			    else /* if (this.color == white) */
-			    {
-				    return up;
-			    }
-		    }
-	    }
-
-	    protected List<Direction> legalCaptureDirections
-	    {
-		    get
-		    {
-			    if (this.Color == black)
-			    {
-				    return blackLegalCaptureDirections;
-			    }
-			    else /* if (this.color == white) */
-			    {
-				    return whiteLegalCaptureDirections;
-			    }
-		    }
-	    }
-
-	    protected Optional<List<Direction>> legalMovementDirections = Optional<List<Direction>>.Empty;
-
-	    public override List<Direction> LegalMovementDirections
-	    {
-		    get
-		    {
-			    if (legalMovementDirections.HasValue == false)
-			    {
-				    List<Direction> directions = new List<Direction> {legalMovementDirectionToEmptySquares};
-				    directions.AddRange(legalCaptureDirections);
-				    legalMovementDirections = directions;
-			    }
-				
-			    return legalMovementDirections.Object;
-		    }
-	    }
+	public interface IPawn : IPiece
+	{
+		Direction LegalMovementDirectionToEmptySquares { get; }
 		
-		public override ushort MaximumMoveDistance { get { return 1; } }
+		List<Direction> LegalCaptureDirections { get; }
+	}
 
-		public Pawn(Pawn other) :
-			base(other)
-	    {
-		    
-	    }
-
-	    public Pawn(Color color) :
-		    base(DefaultSymbols[color], color)
-	    {
+	public static class PawnDefaults
+	{
+		public static readonly List<Direction> BlackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
+		public static readonly List<Direction> WhiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
+		
+		public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+		{
+			{black, '♟'}, 
+			{white, '♙'}
+		};
+		
+		public static char ASCIISymbol = '​'; //zero-width space
+		public const ushort Value = 1;
+		public const ushort MaximumMoveDistance = 1;
+		
+		public static List<Square> findAllPossibleLegalMoveDestinations(this IPawn pawn) 
+		{
+			List<Square> legalMoveSquares = pawn.findAllPossibleLegalMoveDestinationsForMovesToCapture();
 	
-	    }
+			Optional<Square> emptySquareToMove = pawn.findLegalMoveDestinationForMoveToEmpty();
 	
-	    public Pawn(char symbol) :
-		    this((symbol == DefaultSymbols[black]) ? black : white)
-	    {
-		    if (DefaultSymbols.ContainsValue(symbol) == false)
-		    {
-			    throw new ArgumentException($"{symbol} is not a valid chess piece");
-		    }
-	    }
+			if (emptySquareToMove.HasValue)
+			{
+				legalMoveSquares.Add(emptySquareToMove.Object);
+			}
 	
-	    public override Piece Clone()
-	    {
-		    return new Pawn(this);
-	    }
-
-	    /**
-		* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
-		* no such Squares, empty
-		*/
-	    public override List<Square> FindAllPossibleLegalMoveDestinations()
-	    {
-		    List<Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
-
-		    Optional<Square> emptySquareToMove = findLegalMoveDestinationForMoveToEmpty();
-
-		    if (emptySquareToMove.HasValue)
-		    {
-			    legalMoveSquares.Add(emptySquareToMove.Object);
-		    }
-
-		    return legalMoveSquares;
-	    }
-
-	    protected Optional<Square> findLegalMoveDestinationForMoveToEmpty()
-	    {
-		    			
-		    Predicate<Square> squareCheckerForMovementDirections = (Square squareToCheck) =>
-		    {
-			    return squareToCheck.isEmpty;
-		    };
-		    
-		    List<Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
-			    this.BoardPosition, 1, this.legalMovementDirectionToEmptySquares);
-
-		    if (availableSquares.Count > 0)
-		    {
-			    return availableSquares[0];
-		    }
-		    else
-		    {
-			    return Optional<Square>.Empty;
-		    }
-	    }
-	    
-	    protected List<Square> findAllPossibleLegalMoveDestinationsForMovesToCapture()
-	    {
-		    
-		    Predicate<Square> squareCheckerForCaptureDirections = (Square squareToCheck) =>
-		    {
-			    if (squareToCheck.isEmpty)
-			    {
-				    return false;
-			    }
-			    else /* if (squareToCheck.isOccupied) */ 
-			    {
-				    return this.Color.getOpposite() == squareToCheck.Piece.Object.Color;
-			    }
-		    };
-		    
-		    List<Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
-			    this.BoardPosition, 1, this.legalCaptureDirections.ToArray());
-
-		    return captureSquares;
-	    }
-
-	    public override void Move(RankFile destination)  
-	    {
-			//todo add move legality checking
-		    base.Move(destination);
+			return legalMoveSquares;
+		}
+		
+		public static List<Square> findAllPossibleLegalMoveDestinationsForMovesToCapture(this IPawn pawn) 
+		{
+				
+			Predicate<Square> squareCheckerForCaptureDirections = (Square squareToCheck) =>
+			{
+				if (squareToCheck.isEmpty)
+				{
+					return false;
+				}
+				else /* if (squareToCheck.isOccupied) */ 
+				{
+					return pawn.Color.getOpposite() == squareToCheck.Piece.Object.Color;
+				}
+			};
+				
+			List<Square> captureSquares = pawn.Board.SearchForSquares(squareCheckerForCaptureDirections,
+																 pawn.BoardPosition, 1, pawn.LegalCaptureDirections.ToArray());
+	
+			return captureSquares;
+		}
+		
+		public static Optional<Square> findLegalMoveDestinationForMoveToEmpty(this IPawn pawn) 
+		{
+							
+			Predicate<Square> squareCheckerForMovementDirections = (Square squareToCheck) =>
+			{
+				return squareToCheck.isEmpty;
+			};
+				
+			List<Square> availableSquares = pawn.Board.SearchForSquares(squareCheckerForMovementDirections,
+																   pawn.BoardPosition, 1, pawn.LegalMovementDirectionToEmptySquares);
+	
+			if (availableSquares.Count > 0)
+			{
+				return availableSquares[0];
+			}
+			else
+			{
+				return Optional<Square>.Empty;
+			}
 		}
 
-    }
-
-	namespace Graphical
-	{
-		public class Pawn : Piece
+		public static List<Direction> getLegalCaptureDirections(this IPawn pawn) 
 		{
-	    
-			protected static readonly List<Direction> blackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
-			protected static readonly List<Direction> whiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
-	
-			public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+			if (pawn.Color == black)
 			{
-				{black, '♟'}, 
-				{white, '♙'}
-			};
-	
-			public static readonly Dictionary<Color, String> DefaultSpriteImageFiles = new Dictionary<Color, String> 
+				return BlackLegalCaptureDirections;
+			}
+			else /* if (this.color == white) */
 			{
-				{black, "./Assets/Bitmaps/BlackPawn.png"},
-				{white, "./Assets/Bitmaps/WhitePawn.png"}
-			};
-			
+				return WhiteLegalCaptureDirections;
+			}
+		}
+
+		public static Direction getLegalMovementDirectionToEmptySquares(this IPawn pawn)
+		{
+			{
+				if (pawn.Color == black)
+				{
+					return down;
+				}
+				else /* if (this.color == white) */
+				{
+					return up;
+				}
+			}
+		}
+	}
+
+	namespace Simulation
+	{
+		public class Pawn : Piece, IPawn 
+		{
 			public override char ASCIISymbol
 			{
-				get { return '​'; } //zero-width space
+				get { return PawnDefaults.ASCIISymbol; }
 			}
 	
 			public override ushort Value
 			{
-				get { return 1; }
+				get { return PawnDefaults.Value; }
+			}
+
+			public Direction LegalMovementDirectionToEmptySquares
+			{
+				get { return this.getLegalMovementDirectionToEmptySquares(); } 
 			}
 	
-			protected Direction legalMovementDirectionToEmptySquares
+			public List<Direction> LegalCaptureDirections 
 			{
-				get
-				{
-					if (this.Color == black)
-					{
-						return down;
-					}
-					else /* if (this.color == white) */
-					{
-						return up;
-					}
-				}
-			}
-	
-			protected List<Direction> legalCaptureDirections
-			{
-				get
-				{
-					if (this.Color == black)
-					{
-						return blackLegalCaptureDirections;
-					}
-					else /* if (this.color == white) */
-					{
-						return whiteLegalCaptureDirections;
-					}
-				}
+				get { return this.getLegalCaptureDirections(); }
 			}
 	
 			protected Optional<List<Direction>> legalMovementDirections = Optional<List<Direction>>.Empty;
 	
-			public override List<Direction> LegalMovementDirections
+			public override List<Direction> LegalMovementDirections 
 			{
 				get
 				{
 					if (legalMovementDirections.HasValue == false)
 					{
-						List<Direction> directions = new List<Direction> {legalMovementDirectionToEmptySquares};
-						directions.AddRange(legalCaptureDirections);
+						List<Direction> directions = new List<Direction> {LegalMovementDirectionToEmptySquares};
+						directions.AddRange(LegalCaptureDirections);
 						legalMovementDirections = directions;
 					}
 					
@@ -248,30 +152,30 @@ namespace Chess.Game
 				}
 			}
 			
-			public override ushort MaximumMoveDistance { get { return 1; } }
+			public override ushort MaximumMoveDistance { get { return PawnDefaults.MaximumMoveDistance; } }
 	
-			public Pawn(Pawn other) :
+			public Pawn(IPawn other) :
 				base(other)
 			{
 				
 			}
 	
 			public Pawn(Color color) :
-				base(DefaultSymbols[color], color, DefaultSpriteImageFiles[color])
+				base(PawnDefaults.DefaultSymbols[color], color)
 			{
 		
 			}
 		
 			public Pawn(char symbol) :
-				this((symbol == DefaultSymbols[black]) ? black : white)
+				this((symbol == PawnDefaults.DefaultSymbols[black]) ? black : white)
 			{
-				if (DefaultSymbols.ContainsValue(symbol) == false)
+				if (PawnDefaults.DefaultSymbols.ContainsValue(symbol) == false)
 				{
 					throw new ArgumentException($"{symbol} is not a valid chess piece");
 				}
 			}
 		
-			public override Chess.Game.Piece Clone()
+			public override IPiece Clone()
 			{
 				return new Pawn(this);
 			}
@@ -282,58 +186,99 @@ namespace Chess.Game
 			*/
 			public override List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
 			{
-				List<Chess.Game.Square> legalMoveSquares = findAllPossibleLegalMoveDestinationsForMovesToCapture();
-	
-				Optional<Chess.Game.Square> emptySquareToMove = findLegalMoveDestinationForMoveToEmpty();
-	
-				if (emptySquareToMove.HasValue)
-				{
-					legalMoveSquares.Add(emptySquareToMove.Object);
-				}
-	
-				return legalMoveSquares;
+				return this.findAllPossibleLegalMoveDestinations();
+			}
+			
+			public override void Move(RankFile destination)  
+			{
+				//todo add move legality checking
+				base.Move(destination);
+			}
+		}
+	}
+
+	namespace Graphical
+	{
+		public class Pawn : Piece, IPawn 
+		{
+			public static readonly Dictionary<Color, String> DefaultSpriteImageFiles = new Dictionary<Color, String> 
+			{
+				{black, "./Assets/Bitmaps/BlackPawn.png"},
+				{white, "./Assets/Bitmaps/WhitePawn.png"}
+			};
+			
+			public override char ASCIISymbol
+			{
+				get { return PawnDefaults.ASCIISymbol; } //zero-width space
 			}
 	
-			protected Optional<Chess.Game.Square> findLegalMoveDestinationForMoveToEmpty()
+			public override ushort Value
 			{
-							
-				Predicate<Chess.Game.Square> squareCheckerForMovementDirections = (Chess.Game.Square squareToCheck) =>
-				{
-					return squareToCheck.isEmpty;
-				};
-				
-				List<Chess.Game.Square> availableSquares = Board.SearchForSquares(squareCheckerForMovementDirections,
-					this.BoardPosition, 1, this.legalMovementDirectionToEmptySquares);
+				get { return PawnDefaults.Value; }
+			}
 	
-				if (availableSquares.Count > 0)
+			public Direction LegalMovementDirectionToEmptySquares
+			{
+				get { return this.getLegalMovementDirectionToEmptySquares(); }
+			}
+	
+			public List<Direction> LegalCaptureDirections
+			{
+				get { return this.getLegalCaptureDirections(); }
+			}
+	
+			protected Optional<List<Direction>> legalMovementDirections = Optional<List<Direction>>.Empty;
+	
+			public override List<Direction> LegalMovementDirections
+			{
+				get
 				{
-					return availableSquares[0];
-				}
-				else
-				{
-					return Optional<Chess.Game.Square>.Empty;
+					if (legalMovementDirections.HasValue == false)
+					{
+						List<Direction> directions = new List<Direction> {LegalMovementDirectionToEmptySquares};
+						directions.AddRange(LegalCaptureDirections);
+						legalMovementDirections = directions;
+					}
+					
+					return legalMovementDirections.Object;
 				}
 			}
 			
-			protected List<Chess.Game.Square> findAllPossibleLegalMoveDestinationsForMovesToCapture()
-			{
-				
-				Predicate<Chess.Game.Square> squareCheckerForCaptureDirections = (Chess.Game.Square squareToCheck) =>
-				{
-					if (squareToCheck.isEmpty)
-					{
-						return false;
-					}
-					else /* if (squareToCheck.isOccupied) */ 
-					{
-						return this.Color.getOpposite() == squareToCheck.Piece.Object.Color;
-					}
-				};
-				
-				List<Chess.Game.Square> captureSquares = Board.SearchForSquares(squareCheckerForCaptureDirections,
-					this.BoardPosition, 1, this.legalCaptureDirections.ToArray());
+			public override ushort MaximumMoveDistance { get { return PawnDefaults.MaximumMoveDistance; } }
 	
-				return captureSquares;
+			public Pawn(IPawn other) :
+				base(other)
+			{
+				SpriteImageFilePath = DefaultSpriteImageFiles[this.Color];
+			}
+	
+			public Pawn(Color color) :
+				base(PawnDefaults.DefaultSymbols[color], color, DefaultSpriteImageFiles[color])
+			{
+		
+			}
+		
+			public Pawn(char symbol) :
+				this((symbol == PawnDefaults.DefaultSymbols[black]) ? black : white)
+			{
+				if (PawnDefaults.DefaultSymbols.ContainsValue(symbol) == false)
+				{
+					throw new ArgumentException($"{symbol} is not a valid chess piece");
+				}
+			}
+		
+			public override IPiece Clone()
+			{
+				return new Pawn(this);
+			}
+	
+			/**
+			* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
+			* no such Squares, empty
+			*/
+			public override List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
+			{
+				return this.findAllPossibleLegalMoveDestinations();
 			}
 	
 			public override void Move(RankFile destination)  
@@ -341,7 +286,6 @@ namespace Chess.Game
 				//todo add move legality checking
 				base.Move(destination);
 			}
-
 		}	
 	}
 }

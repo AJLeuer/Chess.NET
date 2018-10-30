@@ -4,90 +4,95 @@ using static Chess.Game.Color;
 
 namespace Chess.Game
 {
-    public class Knight : Piece
+    public interface IKnight : IPiece {}
+    
+    namespace Simulation
     {
-        
-        public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
+        public class Knight : Piece, IKnight 
         {
-            {black, '♞'}, 
-            {white, '♘'}
-        };
         
-        public override char ASCIISymbol
-        {
-            get { return 'N'; }
-        }
-        
-        public override ushort Value
-        {
-            get { return 3; }
-        }
-        
-        public override List<Direction> LegalMovementDirections
-        {
-            get
+            public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
             {
-                List<Direction> directions = new List<Direction>();
-
-                for (short h = -1; h <= 1; h += 2)
-                {
-                    for (short v = -2; v <= 2; v += 4)
-                    {
-                        directions.Add(new Direction(h, v));
-                    }
-                }
-
-                for (short h = -2; h <= 2; h += 4)
-                {
-                    for (short v = -1; v <= 1; v += 2)
-                    {
-                        directions.Add(new Direction(h, v));
-                    }
-                }
-
-                return directions;
-            }
-        }
-        
-        public override ushort MaximumMoveDistance { get { return 1; } }
-
-        public Knight(Knight other) :
-            base(other)
-        {
-		    
-        }
-        
-        public Knight(Color color) :
-            base(DefaultSymbols[color], color)
-        {
-	
-        }
-	
-        public Knight(char symbol) :
-            this((symbol == DefaultSymbols[black]) ? black : white)
-        {
-            if (DefaultSymbols.ContainsValue(symbol) == false)
+                {black, '♞'}, 
+                {white, '♘'}
+            };
+            
+            public override char ASCIISymbol
             {
-                throw new ArgumentException($"{symbol} is not a valid chess piece");
+                get { return 'N'; }
             }
-        }
+            
+            public override ushort Value
+            {
+                get { return 3; }
+            }
+            
+            public override List<Direction> LegalMovementDirections 
+            {
+                get
+                {
+                    List<Direction> directions = new List<Direction>();
+    
+                    for (short h = -1; h <= 1; h += 2)
+                    {
+                        for (short v = -2; v <= 2; v += 4)
+                        {
+                            directions.Add(new Direction(h, v));
+                        }
+                    }
+    
+                    for (short h = -2; h <= 2; h += 4)
+                    {
+                        for (short v = -1; v <= 1; v += 2)
+                        {
+                            directions.Add(new Direction(h, v));
+                        }
+                    }
+    
+                    return directions;
+                }
+            }
+            
+            public override ushort MaximumMoveDistance { get { return 1; } }
+    
+            public Knight(IKnight other) :
+                base(other)
+            {
+                
+            }
+            
+            public Knight(Color color) :
+                base(DefaultSymbols[color], color)
+            {
         
-        public override Piece Clone()
-        {
-            return new Knight(this);
-        }
+            }
         
-        public override void Move(RankFile destination) 
-        {
-            //todo add move legality checking
-            base.Move(destination);
-        }
+            public Knight(char symbol) :
+                this((symbol == DefaultSymbols[black]) ? black : white)
+            {
+                if (DefaultSymbols.ContainsValue(symbol) == false)
+                {
+                    throw new ArgumentException($"{symbol} is not a valid chess piece");
+                }
+            }
+            
+            public override IPiece Clone()
+            {
+                return new Knight(this);
+            }
+            
+            public override void Move(RankFile destination) 
+            {
+                //todo add move legality checking
+                base.Move(destination);
+            }
         
+        }
     }
 
     namespace Graphical
     {
-        public class Knight : Piece
+        public class Knight : Piece, IKnight 
         {
             public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
             {
@@ -133,10 +138,10 @@ namespace Chess.Game
 
             public override ushort MaximumMoveDistance { get { return 1; } }
 
-            public Knight(Knight other) :
+            public Knight(IKnight other) :
                 base(other)
             {
-
+                SpriteImageFilePath = DefaultSpriteImageFiles[this.Color];
             }
 
             public Knight(Color color) :
@@ -154,7 +159,7 @@ namespace Chess.Game
                 }
             }
 
-            public override Chess.Game.Piece Clone()
+            public override IPiece Clone()
             {
                 return new Knight(this);
             }

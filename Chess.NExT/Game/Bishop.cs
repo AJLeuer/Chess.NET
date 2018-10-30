@@ -3,71 +3,76 @@ using System.Collections.Generic;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 
-namespace Chess.Game
+namespace Chess.Game 
 {
-    public class Bishop : Piece
+    public interface IBishop : IPiece {}
+
+    namespace Simulation 
     {
-        protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
+        public class Bishop : Piece, IBishop 
+        {
+            protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
         
-        public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
-        {
-            {black, '♝'}, 
-            {white, '♗'}
-        };
-
-        public override char ASCIISymbol
-        {
-            get { return 'B'; }
-        }
-
-        public override ushort Value
-        {
-            get { return 3; }
-        }
-        
-        public override List<Direction> LegalMovementDirections
-        {
-            get { return DefaultLegalMovementDirections; }
-        }
-
-        public Bishop(Bishop other) :
-            base(other)
-        {
-		    
-        }
-	    
-        public Bishop(Color color) :
-            base(DefaultSymbols[color], color)
-        {
-	
-        }
-	
-        public Bishop(char symbol) :
-            this((symbol == DefaultSymbols[black]) ? black : white)
-        {
-            if (DefaultSymbols.ContainsValue(symbol) == false)
+            public static readonly Dictionary<Color, Char> DefaultSymbols = new Dictionary<Color, Char>
             {
-                throw new ArgumentException($"{symbol} is not a valid chess piece");
+                {black, '♝'}, 
+                {white, '♗'}
+            };
+
+            public override char ASCIISymbol
+            {
+                get { return 'B'; }
             }
-        }
+
+            public override ushort Value
+            {
+                get { return 3; }
+            }
         
-        public override Piece Clone()
-        {
-            return new Bishop(this);
-        }
+            public override List<Direction> LegalMovementDirections
+            {
+                get { return DefaultLegalMovementDirections; }
+            }
 
-        public override void Move(RankFile destination) 
-        {
-            //todo add move legality checking
-            base.Move(destination);
-            Console.WriteLine("Warning: add move legality checking");
-        }
+            public Bishop(IBishop other) :
+                base(other)
+            {
+		    
+            }
+	    
+            public Bishop(Color color) :
+                base(DefaultSymbols[color], color)
+            {
+	
+            }
+	
+            public Bishop(char symbol) :
+                this((symbol == DefaultSymbols[black]) ? black : white)
+            {
+                if (DefaultSymbols.ContainsValue(symbol) == false)
+                {
+                    throw new ArgumentException($"{symbol} is not a valid chess piece");
+                }
+            }
+        
+            public override IPiece Clone()
+            {
+                return new Bishop(this);
+            }
 
+            public override void Move(RankFile destination) 
+            {
+                //todo add move legality checking
+                base.Move(destination);
+                Console.WriteLine("Warning: add move legality checking");
+            }
+
+        }
     }
-
-    namespace Graphical
+    
+    namespace Graphical 
     {
-        public class Bishop : Piece
+        public class Bishop : Piece, IBishop 
         {
             protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction> {upLeft, upRight, downLeft, downRight};
         
@@ -98,10 +103,10 @@ namespace Chess.Game
                 get { return DefaultLegalMovementDirections; }
             }
 
-            public Bishop(Bishop other) :
+            public Bishop(IBishop other) :
                 base(other)
             {
-		    
+                SpriteImageFilePath = DefaultSpriteImageFiles[this.Color];
             }
 	    
             public Bishop(Color color) :
@@ -119,7 +124,7 @@ namespace Chess.Game
                 }
             }
         
-            public override Chess.Game.Piece Clone()
+            public override IPiece Clone()
             {
                 return new Bishop(this);
             }

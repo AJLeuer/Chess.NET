@@ -1,13 +1,14 @@
 using System;
-using Chess.Game.Simulation;
+
+using Simulation = Chess.Game.Simulation;
 
 namespace Chess.Game
 {
-    public class Move : IComparable, IComparable<Move>
+    public class Move : IComparable, IComparable<Move> 
     {
         public Player Player { get; }
 		
-        public Piece Piece { get; }
+        public IPiece Piece { get; }
 		
         public Square Destination { get; }
 		
@@ -17,7 +18,7 @@ namespace Chess.Game
 
         private short? value = null;
 
-        public short Value
+        public short Value 
         {
             get
             {
@@ -30,7 +31,7 @@ namespace Chess.Game
             }
         }
 
-        public Move(Player player, Piece piece, Square destination)
+        public Move(Player player, IPiece piece, Square destination)
         {
             this.Player = player;
             this.Piece = piece;
@@ -46,7 +47,7 @@ namespace Chess.Game
             var board = game.Board;
 			
             Player player = game.FindMatchingPlayer(originalMove.Player);
-            Piece piece = board.FindMatchingPiece(originalMove.Piece);
+            IPiece piece = board.FindMatchingPiece(originalMove.Piece);
             Square destination = board.FindMatchingSquare(originalMove.Destination);
             
             return new Move(player, piece, destination);
@@ -103,7 +104,7 @@ namespace Chess.Game
 
         protected static short calculateRelativeValueAfterMove(Move move)
         {
-            var testGame = new TemporaryGame(move.Game);
+            var testGame = new Simulation.TemporaryGame(move.Game);
 			
             Move translatedMove = CreateMatchingMoveForGame(move, testGame);
 

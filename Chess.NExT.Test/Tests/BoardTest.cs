@@ -4,7 +4,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
-using SimulatedBoard = Chess.Game.Simulation.Board;
+using Square = Chess.Game.Simulation.Square;
+using Queen = Chess.Game.Simulation.Queen;
     
 namespace Chess.NExT.Test.Tests
 {
@@ -14,7 +15,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldIdentifyPositionsInsideBoard()
         {
-            var board = new SimulatedBoard(squares: Game.Board.DefaultStartingSquares);
+            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares);
             var onBoard1 = new Vec2<int>(1, 7);
             var onBoard2 = new Vec2<int>(7, 0);
             
@@ -26,14 +27,14 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldIdentifyPositionsOutsideBoard()
         {
-            var board = new SimulatedBoard(squares: Game.Board.DefaultStartingSquares);
+            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares);
             var offBoard1 = new Vec2<int>(-1, 7);
             var offBoard2 = new Vec2<int>(0, 8);
 
             board.IsInsideBounds(offBoard1).Should().Be(false);
             board.IsInsideBounds(offBoard2).Should().Be(false);
         }
-
+        
         [Test]
         public static void ShouldCalculateTotalValueOfPiecesOfGivenColorOnBoard()
         {
@@ -56,7 +57,7 @@ namespace Chess.NExT.Test.Tests
                 { new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
             };
             
-            var board = new SimulatedBoard(squares);
+            var board = new Game.Simulation.Board(squares);
             var blackPlayerMock = new Mock<Player>(Color.black, null);
             var whitePlayerMock = new Mock<Player>(Color.white, null);
 
@@ -81,9 +82,9 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldIdentifyMatchingPieceOnAnotherBoard()
         {
-            Game.Board board = new SimulatedBoard();
+            Game.Board board = new Game.Simulation.Board();
 
-            Game.Board boardCopy = new SimulatedBoard(board);
+            Game.Board boardCopy = new Game.Simulation.Board(board);
 
             Queen queen = (Queen) board['d', 8].Piece.Object;
             Queen duplicateQueen = (Queen) boardCopy['d', 8].Piece.Object;
@@ -94,13 +95,13 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void SquarePositionShouldMatchPositionOnGrid()
         {
-            var board = new SimulatedBoard(Game.Board.DefaultEmptySquares);
+            var board = new Game.Simulation.Board(Game.Simulation.Board.DefaultEmptySquares);
             
             for (uint i = 0; i < board.Squares.GetLength(0); i++)
             {
                 for (uint j = 0; j < board.Squares.GetLength(1); j++)
                 {
-                    Square square = board.Squares[i, j];
+                    Game.Square square = board.Squares[i, j];
                     
                     Assert.AreEqual((i, j), square.BoardPosition);
                 }

@@ -229,7 +229,7 @@ namespace Chess.Game
 			
 			public RankFile destination;
 			
-			public AlgebraicNotation(Piece piece,  RankFile destination)
+			public AlgebraicNotation(IPiece piece,  RankFile destination)
 			{
 				pieceSymbol = piece.Symbol;
 				this.destination = destination;
@@ -239,7 +239,7 @@ namespace Chess.Game
 		public AlgebraicNotation AlgrebraicNotation;		
 
 		// ReSharper disable once UnusedMember.Local
-		public GameRecordEntry(Piece piece, RankFile destination)
+		public GameRecordEntry(IPiece piece, RankFile destination)
 		{
 			AlgrebraicNotation = new AlgebraicNotation(piece, destination);
 		}

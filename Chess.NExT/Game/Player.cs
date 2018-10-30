@@ -32,7 +32,7 @@ namespace Chess.Game
             }
         }
 
-        public List<Piece> pieces { get; private set; }
+        public List<IPiece> pieces { get; private set; }
 
         /* Any other constructors should call this as a delegating constructor */
         public Player(Color color, Board board = null)
@@ -57,9 +57,9 @@ namespace Chess.Game
 
         public abstract Player Clone();
         
-        internal List<Piece> findOwnPiecesOnBoard(Board anotherBoard)
+        internal List<IPiece> findOwnPiecesOnBoard(Board anotherBoard)
         {
-            var matchingColorPieces = new List<Piece>();
+            var matchingColorPieces = new List<IPiece>();
 
             if (anotherBoard != null)
             {
@@ -67,7 +67,7 @@ namespace Chess.Game
                 {    
                     if (square.isOccupied)
                     {
-                        Piece piece = square.Piece.Object;
+                        IPiece piece = square.Piece.Object;
 
                         if (piece.Color == this.Color)
                         {
@@ -127,7 +127,7 @@ namespace Chess.Game
             return moves;
         }
 
-        public List<Move> FindAllPossibleMovesForPiece(Piece piece)
+        public List<Move> FindAllPossibleMovesForPiece(IPiece piece)
         {
             var moves = new List<Move>();
             
@@ -143,7 +143,7 @@ namespace Chess.Game
             return moves;
         }
 
-        public virtual Optional<Move> FindBestMoveForPiece(Piece piece)
+        public virtual Optional<Move> FindBestMoveForPiece(IPiece piece)
         {
             List<Move> moves = FindAllPossibleMovesForPiece(piece);
 
