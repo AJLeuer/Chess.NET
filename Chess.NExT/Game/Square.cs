@@ -247,7 +247,7 @@ namespace Chess.Game
 
             public Size Size 
             {
-                get { return Sprite.Texture.Size; }
+                get { return Sprite.GetActualSize(); }
             }
 
             public Vec2<uint> Coordinates2D 

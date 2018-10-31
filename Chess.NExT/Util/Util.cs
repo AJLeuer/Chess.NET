@@ -167,6 +167,27 @@ namespace Chess.Util
 
             return highestValueSubset;
         }
+
+        public static Size GetActualSize(this SFML.Graphics.Sprite sprite)
+        {
+            uint width = (uint)(sprite.Texture.Size.X * sprite.Scale.X);
+            uint height = (uint)(sprite.Texture.Size.Y * sprite.Scale.Y);
+            
+            return new Size(width, height);
+        }
+        
+        /// <summary>
+        /// Calculates and sets the scaling value that will cause the the Sprite to be rendered at the size given by <paramref name="targetResolution"/>
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <param name="targetResolution"></param>
+        public static void SetResolution(this SFML.Graphics.Sprite sprite, Size targetResolution)
+        {
+            double scalingValueX  = (float)targetResolution.Width / (float)sprite.Texture.Size.X;
+            double scalingValueY = (float)targetResolution.Height / (float)sprite.Texture.Size.Y;
+
+            sprite.Scale = new Vec2<double>(scalingValueX, scalingValueY);
+        }
         
     }
     

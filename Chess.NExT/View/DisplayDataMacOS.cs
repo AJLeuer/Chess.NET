@@ -8,10 +8,10 @@ namespace Chess.View
     public static class DisplayData
     {
 
-        public static Vec2<uint> getScreenResolution()
+        public static Size getScreenResolution()
         {
             VideoMode currentVideoMode = VideoMode.DesktopMode;
-            return new Vec2<uint>(currentVideoMode.Width, currentVideoMode.Height);
+            return new Size(currentVideoMode.Width, currentVideoMode.Height);
         }
 
         public static double getScreenRefreshRate()

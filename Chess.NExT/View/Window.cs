@@ -15,7 +15,7 @@ namespace Chess.View
 
 		protected static VideoMode createDefaultVideoMode()
 		{
-			Vec2<uint> baseWindowSize = new Vec2<uint>(x: MainWindowSize.X, y: MainWindowSize.Y);
+			Vec2<uint> baseWindowSize = MainWindowSize;
 			
 			float dpiScale = DisplayData.getDisplayScalingFactor();
 			

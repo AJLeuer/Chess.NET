@@ -29,9 +29,19 @@ namespace Chess.Util
 			this.value = value;
 		}
 		
+		public static implicit operator Size (Vec2<uint> vector)
+		{
+			return new Size(vector);
+		}
+		
 		public static implicit operator Size (Vector2u sfmlVector)
 		{
 			return new Size(sfmlVector);
+		}
+		
+		public static implicit operator Vec2<uint> (Size size)
+		{
+			return size.value;
 		}
 		
 		public static implicit operator Vector2u (Size size)

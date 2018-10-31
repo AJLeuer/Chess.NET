@@ -404,7 +404,8 @@ namespace Chess.Game
 			{
 				var spriteTexture = new Texture(DefaultSpriteImageFile);
 				Sprite = new Sprite(spriteTexture);
-
+				Sprite.SetResolution(Config.BoardResolution);
+				
 				foreach (var square in this)
 				{
 					square.InitializeGraphicalElements();
