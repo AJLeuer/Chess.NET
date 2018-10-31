@@ -22,6 +22,8 @@ namespace Chess.Util
 
         public static readonly Resolution BoardResolution = new Resolution {Width = 1440, Height = 1440};
 
+        public const float PieceScaleRelativeToSquare = 0.75f;
+
         public const string MainFontFilePath = "./Assets/Fonts/RobotoMono-Regular.ttf";
      
         public const uint defaultTextCharacterSize = 60;

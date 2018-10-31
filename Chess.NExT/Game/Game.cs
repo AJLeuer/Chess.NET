@@ -207,7 +207,7 @@ namespace Chess.Game
                 base(new Board())
             {
                 Board2D.InitializeGraphicalElements();
-                Board2D.Initialize2DCoordinates((0, 0));
+                Board2D.Initialize2DCoordinates(new Vec2<uint>((MainWindowSize.Width / 4), (MainWindowSize.Height / 32)));
             }
     
             public Game(BasicGame other) :
@@ -216,14 +216,14 @@ namespace Chess.Game
                      (other.Player1 == null) ? null : other.Player1.Clone())
             {
                 Board2D.InitializeGraphicalElements();
-                Board2D.Initialize2DCoordinates((0, 0));
+                Board2D.Initialize2DCoordinates(new Vec2<uint>((MainWindowSize.Width / 4), (MainWindowSize.Height / 32)));
             }
     
             public Game(Chess.Game.Board board, Player player0, Player player1) :
                 base(board, player0, player1)
             {
                 Board2D.InitializeGraphicalElements();
-                Board2D.Initialize2DCoordinates((0, 0));
+                Board2D.Initialize2DCoordinates(new Vec2<uint>((MainWindowSize.Width / 4), (MainWindowSize.Height / 32)));
             }
     
             public override BasicGame Clone()

@@ -18,6 +18,11 @@ namespace Chess.Util
 			set { this.value.Y = value; }
 		}
 
+		public uint AverageSideLength
+		{
+			get { return (Width + Height) / 2; }
+		}
+
 		public Size(uint width, uint height) :
 			this(new Vec2<uint>(width, height))
 		{

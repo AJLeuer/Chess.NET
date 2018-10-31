@@ -9,7 +9,9 @@ namespace Chess.View
 		
 		Size Size { get; }
 		
-		Vec2<uint> Coordinates2D { get; set; }
+		Vec2<uint> OriginCoordinates { get; set; }
+		
+		Vec2<uint> CenterCoordinates { get; set; }
 		
 		void InitializeGraphicalElements();
 

@@ -6,6 +6,7 @@ using Chess.View;
 using SFML.Graphics;
 using static Chess.Game.Color;
 using static Chess.Game.BasicGame;
+using static Chess.Util.Config;
 
 using Position = Chess.Util.Vec2<uint>;
 
@@ -398,12 +399,12 @@ namespace Chess.Game
                 }
             }
             
-            public Chess.Game.Board Board
+            public Chess.Game.Board Board 
             {
                 get { return Square.Board; }
             }
     
-            public Position StartingPosition
+            public Position StartingPosition 
             {
                 get
                 {
@@ -420,7 +421,7 @@ namespace Chess.Game
     
             public List<RankFile> PositionHistory { get; } = new List<RankFile>();
     
-            public RankFile BoardPosition
+            public RankFile BoardPosition 
             {
                 get { return Square.BoardPosition; }
             }
@@ -434,12 +435,12 @@ namespace Chess.Game
             
             public Sprite Sprite { get; set; }
         
-            public Size Size
+            public Size Size 
             {
-                get { return Sprite.Texture.Size; }
+                get { return Sprite.GetActualSize(); }
             }
         
-            public Position Coordinates2D 
+            public Position OriginCoordinates 
             {
                 get { return Sprite.Position; }
             
@@ -451,6 +452,30 @@ namespace Chess.Game
                     }
                 }
             }
+            
+            public Vec2<uint> CenterCoordinates 
+            {
+                get
+                {
+                    if (Sprite != null)
+                    {
+                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width  / 2));
+                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2));
+
+                        return new Vec2<uint>(x, y);
+                    }
+
+                    return (0, 0);
+                }
+                set
+                {
+                    uint x = (uint)(value.X - (Sprite.GetActualSize().Width  / 2));
+                    uint y = (uint)(value.Y - (Sprite.GetActualSize().Height / 2));
+                    
+                    Sprite.Position = new Vec2<uint>(x, y);
+                }
+            }
+
             
             public static Graphical.Piece Create(char symbol) 
             {
@@ -604,7 +629,8 @@ namespace Chess.Game
             {
                 var spriteTexture = new Texture(SpriteImageFilePath);
                 Sprite = new Sprite(spriteTexture);
-                Sprite.Scale = Graphical.Square.CalculateScalingFromBoardResolution(this.Size);
+                Sprite.Texture.Smooth = true;
+                Sprite.Scale = calculateScalingFromSquareResolution();
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
@@ -630,8 +656,28 @@ namespace Chess.Game
         
             protected void update2DPosition()
             {
-                this.Coordinates2D = (Square2D.Coordinates2D / 2) / 2;
+                if (Square2D.Sprite != null)
+                {
+                    this.CenterCoordinates = Square2D.CenterCoordinates;
+                }
             }
+            
+            private Vec2<double> calculateScalingFromSquareResolution()
+            {
+                Size unscaledSize = Sprite.Texture.Size;
+                
+                uint largestDimensionLength = (unscaledSize.Height > unscaledSize.Width) ?
+                    unscaledSize.Height : unscaledSize.Width;
+                
+                float targetLengthForLargestDimension  = Square2D.Size.AverageSideLength * PieceScaleRelativeToSquare;
+
+                float requisiteScalingValueForTargetSize = targetLengthForLargestDimension / largestDimensionLength;
+
+                Vec2<double> scaleFactor = new Vec2<double>(requisiteScalingValueForTargetSize, requisiteScalingValueForTargetSize);
+
+                return scaleFactor;
+            }
+
         }
     }
 }

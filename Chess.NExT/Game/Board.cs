@@ -359,13 +359,36 @@ namespace Chess.Game
 		
 			public Size Size 
 			{
-				get { return Sprite.Texture.Size; }
+				get { return Sprite.GetActualSize(); }
 			}
 		
-			public Position Coordinates2D 
+			public Position OriginCoordinates 
 			{
 				get { return Sprite.Position; }
 				set { Sprite.Position = value; }
+			}
+			
+			public Vec2<uint> CenterCoordinates 
+			{
+				get
+				{
+					if (Sprite != null)
+					{
+						uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width  / 2));
+						uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2));
+
+						return new Vec2<uint>(x, y);
+					}
+
+					return (0, 0);
+				}
+				set
+				{
+					uint x = (uint)(value.X - (Sprite.GetActualSize().Width  / 2));
+					uint y = (uint)(value.Y - (Sprite.GetActualSize().Height / 2));
+                    
+					Sprite.Position = new Vec2<uint>(x, y);
+				}
 			}
 
 			public Board():
@@ -414,9 +437,9 @@ namespace Chess.Game
 
 			public void Initialize2DCoordinates(Vec2<uint> coordinates)
 			{
-				this.Coordinates2D = coordinates;
+				this.OriginCoordinates = coordinates;
 
-				Vec2<uint> squareOrigin = Coordinates2D;
+				Vec2<uint> squareOrigin = OriginCoordinates;
 			
 				for (uint i = 0; i < Squares.GetLength(0); i++)
 				{
@@ -432,7 +455,7 @@ namespace Chess.Game
 				
 					// ReSharper disable once PossibleNullReferenceException
 					squareOrigin.X += square.Size.Width;
-					squareOrigin.Y =  Coordinates2D.Y;
+					squareOrigin.Y =  OriginCoordinates.Y;
 				}
 			}
 

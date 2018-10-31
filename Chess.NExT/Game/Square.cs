@@ -250,7 +250,7 @@ namespace Chess.Game
                 get { return Sprite.GetActualSize(); }
             }
 
-            public Vec2<uint> Coordinates2D 
+            public Vec2<uint> OriginCoordinates 
             {
                 get
                 {
@@ -263,6 +263,29 @@ namespace Chess.Game
                 }
             
                 set { Sprite.Position = value; }
+            }
+            
+            public Vec2<uint> CenterCoordinates 
+            {
+                get
+                {
+                    if (Sprite != null)
+                    {
+                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width / 2));
+                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2));
+
+                        return new Vec2<uint>(x, y);
+                    }
+
+                    return (0, 0);
+                }
+                set
+                {
+                    uint x = (uint)(value.X - (Sprite.GetActualSize().Width  / 2));
+                    uint y = (uint)(value.Y - (Sprite.GetActualSize().Height / 2));
+                    
+                    Sprite.Position = new Vec2<uint>(x, y);
+                }
             }
             
             public Square(char file, ushort rank) : 
@@ -317,13 +340,13 @@ namespace Chess.Game
             {
                 var spriteTexture = new Texture(DefaultSpriteImageFiles[Color]);
                 Sprite       = new Sprite(spriteTexture);
-                Sprite.Scale = CalculateScalingFromBoardResolution(Size);
+                Sprite.Scale = calculateScalingFromBoardResolution();
                 Piece2D?.InitializeGraphicalElements();
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates)
             {
-                this.Coordinates2D = coordinates;
+                this.OriginCoordinates = coordinates;
                 Piece2D?.Initialize2DCoordinates();
             }
 
@@ -333,8 +356,10 @@ namespace Chess.Game
                 Piece2D?.Draw(renderer);
             }
             
-            public static Vec2<double> CalculateScalingFromBoardResolution(Size unscaledSizeOfObject)
+            private Vec2<double> calculateScalingFromBoardResolution()
             {
+                Size unscaledSizeOfObject = Sprite.Texture.Size;
+                
                 ushort numberOfSquaresHorizontal = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(0);
                 ushort numberOfSquaresVertical   = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(1);
             
