@@ -122,7 +122,7 @@ namespace Chess.Game
             
             setup();
 
-            ThreadStart gameLoop = () =>
+            ThreadStart gameLoop = () => 
             {
                 while (GameActive)
                 {
@@ -141,18 +141,23 @@ namespace Chess.Game
 
         protected abstract void setup();
 
-        protected virtual void advance()
+        protected void advance()
         {
             decideMove();
 
             OnGameAdvanced.Invoke();
             
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            sleep();
             
             iterations++;
         }
 
         protected abstract void decideMove();
+
+        protected virtual void sleep()
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+        }
         
         /// <summary>
         /// Display or record any output intended for the user, where the type of output is defined by the implementation
@@ -242,7 +247,7 @@ namespace Chess.Game
                 window.Clear();
                 display2D();
                 window.Display();
-                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+                Thread.Sleep(TimeSpan.FromMilliseconds(8));
             }
     
             protected override void decideMove()
@@ -311,20 +316,16 @@ namespace Chess.Game
             }
 
             protected override void setup() {}
-        
-            protected override void advance()
-            {
-                decideMove();
-
-                OnGameAdvanced.Invoke();
-            
-                //and definitely don't sleep
-            }
 
             protected override void decideMove()
             {
                 Move nextMove = CurrentPlayer.DecideNextMove();
                 nextMove.Commit();
+            }
+            
+            protected override void sleep()
+            {
+                //do nothing
             }
         
             protected override void display(){}

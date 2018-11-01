@@ -61,12 +61,12 @@ namespace Chess.Game
             }
         }
 
-        public bool isEmpty
+        public bool IsEmpty 
         {
-            get { return (isOccupied == false); }
+            get { return (IsOccupied == false); }
         }
 
-        public bool isOccupied
+        public bool IsOccupied 
         {
             get { return Piece.HasValue; }
         }
@@ -130,7 +130,7 @@ namespace Chess.Game
 
         public void receiveArrivingPiece(IPiece arrivingPiece)
         {
-            if (this.isOccupied)
+            if (this.IsOccupied)
             {
                 captureCurrentPiece();
             }
@@ -152,7 +152,7 @@ namespace Chess.Game
 
     namespace Simulation
     {
-        public class Square : Chess.Game.Square
+        public class Square : Chess.Game.Square 
         {
             public Square(char file, ushort rank) : 
                 base(file, rank)
@@ -190,7 +190,7 @@ namespace Chess.Game
             }
 
             public Square(Chess.Game.Square other) : 
-                this (piece: (other.isEmpty) ? null : Simulation.Piece.Create(other.Piece.Object),
+                this (piece: (other.IsEmpty) ? null : Simulation.Piece.Create(other.Piece.Object),
                       new RankFile(other.RankAndFile)) 
             {
             }
@@ -204,7 +204,7 @@ namespace Chess.Game
     
     namespace Graphical 
     {
-        public class Square : Chess.Game.Square, ChessDrawable
+        public class Square : Chess.Game.Square, ChessDrawable 
         {
             public static readonly Dictionary<Color, String> DefaultSpriteImageFiles = new Dictionary<Color, String> 
             {
@@ -271,8 +271,8 @@ namespace Chess.Game
                 {
                     if (Sprite != null)
                     {
-                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width / 2));
-                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2));
+                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width / 2f));
+                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2f));
 
                         return new Vec2<uint>(x, y);
                     }
@@ -325,7 +325,7 @@ namespace Chess.Game
             }
 
             public Square(Chess.Game.Square other) : 
-                this (piece: (other.isEmpty) ? null : Graphical.Piece.Create(other.Piece.Object),
+                this (piece: (other.IsEmpty) ? null : Graphical.Piece.Create(other.Piece.Object),
                       new RankFile(other.RankAndFile)) 
             {
                 
@@ -360,8 +360,8 @@ namespace Chess.Game
             {
                 Size unscaledSizeOfObject = Sprite.Texture.Size;
                 
-                ushort numberOfSquaresHorizontal = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(0);
-                ushort numberOfSquaresVertical   = (ushort) Graphical.Board.DefaultStartingSquares.GetLength(1);
+                ushort numberOfSquaresHorizontal = (ushort) Graphical.Board.DefaultStartingSquares().GetLength(0);
+                ushort numberOfSquaresVertical   = (ushort) Graphical.Board.DefaultStartingSquares().GetLength(1);
             
                 uint targetWidthForSquare  = Chess.Util.Config.BoardResolution.Width  / numberOfSquaresHorizontal;
                 uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;

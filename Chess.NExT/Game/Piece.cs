@@ -38,7 +38,7 @@ namespace Chess.Game
 
         List<RankFile> PositionHistory { get; }
 
-        RankFile BoardPosition { get; }
+        RankFile RankAndFile { get; }
 
         CallBack PostCapturedActions { get; set; }
 
@@ -85,7 +85,7 @@ namespace Chess.Game
         {
             Predicate<Chess.Game.Square> squareChecker = (Chess.Game.Square squareToCheck) =>
             {
-                if (squareToCheck.isEmpty)
+                if (squareToCheck.IsEmpty)
                 {
                     return true;
                 }
@@ -98,7 +98,7 @@ namespace Chess.Game
             // ReSharper disable once PossibleInvalidOperationException
             List<Chess.Game.Square> squaresLegalToMove = piece.Board.SearchForSquares(
                 squareMatcher: squareChecker, 
-                startingSquarePosition: piece.BoardPosition, 
+                startingSquarePosition: piece.RankAndFile, 
                 directions: piece.LegalMovementDirections.ToArray(), 
                 distance: piece.MaximumMoveDistance);
     
@@ -112,7 +112,7 @@ namespace Chess.Game
         
         public static void recordCurrentPosition(this IPiece piece)
         {
-            var currentPosition = new RankFile(piece.BoardPosition);
+            var currentPosition = new RankFile(piece.RankAndFile);
             piece.PositionHistory.Add(currentPosition);
         }
     }
@@ -176,14 +176,14 @@ namespace Chess.Game
                     }
                     else
                     {
-                        return BoardPosition;
+                        return RankAndFile;
                     }
                 }
             }
     
             public List<RankFile> PositionHistory { get; } = new List<RankFile>();
     
-            public RankFile BoardPosition
+            public RankFile RankAndFile
             {
                 get { return Square.BoardPosition; }
             }
@@ -414,14 +414,14 @@ namespace Chess.Game
                     }
                     else
                     {
-                        return BoardPosition;
+                        return RankAndFile;
                     }
                 }
             }
     
             public List<RankFile> PositionHistory { get; } = new List<RankFile>();
     
-            public RankFile BoardPosition 
+            public RankFile RankAndFile 
             {
                 get { return Square.BoardPosition; }
             }
@@ -459,8 +459,8 @@ namespace Chess.Game
                 {
                     if (Sprite != null)
                     {
-                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width  / 2));
-                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2));
+                        uint x = (uint)(Sprite.Position.X + (Sprite.GetActualSize().Width  / 2f));
+                        uint y = (uint)(Sprite.Position.Y + (Sprite.GetActualSize().Height / 2f));
 
                         return new Vec2<uint>(x, y);
                     }

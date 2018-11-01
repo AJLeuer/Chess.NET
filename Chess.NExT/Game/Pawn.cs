@@ -47,7 +47,7 @@ namespace Chess.Game
 				
 			Predicate<Square> squareCheckerForCaptureDirections = (Square squareToCheck) =>
 			{
-				if (squareToCheck.isEmpty)
+				if (squareToCheck.IsEmpty)
 				{
 					return false;
 				}
@@ -58,7 +58,7 @@ namespace Chess.Game
 			};
 				
 			List<Square> captureSquares = pawn.Board.SearchForSquares(squareCheckerForCaptureDirections,
-																 pawn.BoardPosition, 1, pawn.LegalCaptureDirections.ToArray());
+																 pawn.RankAndFile, 1, pawn.LegalCaptureDirections.ToArray());
 	
 			return captureSquares;
 		}
@@ -68,11 +68,11 @@ namespace Chess.Game
 							
 			Predicate<Square> squareCheckerForMovementDirections = (Square squareToCheck) =>
 			{
-				return squareToCheck.isEmpty;
+				return squareToCheck.IsEmpty;
 			};
 				
 			List<Square> availableSquares = pawn.Board.SearchForSquares(squareCheckerForMovementDirections,
-																   pawn.BoardPosition, 1, pawn.LegalMovementDirectionToEmptySquares);
+																   pawn.RankAndFile, 1, pawn.LegalMovementDirectionToEmptySquares);
 	
 			if (availableSquares.Count > 0)
 			{

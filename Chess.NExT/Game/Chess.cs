@@ -39,7 +39,7 @@ namespace Chess.Game
 		}
 	}
 	
-	public struct Direction 
+	public class Direction
 	{
 		public enum LateralValue : short
 		{
@@ -53,21 +53,21 @@ namespace Chess.Game
 			up = -1
 		}
 
-		public static readonly Direction up = new Direction(0, -1);
+		public static readonly Direction up = new Direction(0, 1);
 
-		public static readonly Direction down = new Direction(0, 1);
+		public static readonly Direction down = new Direction(0, -1);
 		
 		public static readonly Direction left = new Direction(-1, 0);
 	
 		public static readonly Direction right = new Direction(1, 0);
 	
-		public static readonly Direction upLeft = new Direction(-1, -1);
+		public static readonly Direction upLeft = new Direction(-1, 1);
 	
-		public static readonly Direction upRight = new Direction(1, -1);
+		public static readonly Direction upRight = new Direction(1, 1);
 	
-		public static readonly Direction downLeft = new Direction(-1, 1);
+		public static readonly Direction downLeft = new Direction(-1, -1);
 	
-		public static readonly Direction downRight = new Direction(1, 1);
+		public static readonly Direction downRight = new Direction(1, -1);
 	
 		
 		public readonly Vec2<short> value;

@@ -15,7 +15,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldIdentifyPositionsInsideBoard()
         {
-            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares);
+            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares());
             var onBoard1 = new Vec2<int>(1, 7);
             var onBoard2 = new Vec2<int>(7, 0);
             
@@ -27,7 +27,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldIdentifyPositionsOutsideBoard()
         {
-            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares);
+            var board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultStartingSquares());
             var offBoard1 = new Vec2<int>(-1, 7);
             var offBoard2 = new Vec2<int>(0, 8);
 
@@ -95,7 +95,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void SquarePositionShouldMatchPositionOnGrid()
         {
-            var board = new Game.Simulation.Board(Game.Simulation.Board.DefaultEmptySquares);
+            var board = new Game.Simulation.Board(Game.Simulation.Board.DefaultEmptySquares());
             
             for (uint i = 0; i < board.Squares.GetLength(0); i++)
             {

@@ -42,7 +42,6 @@ namespace Chess.NExT.Test.Tests
 
 			var moveDestinations = whiteQueen.FindAllPossibleLegalMoveDestinations();
 
-			
 			AssertContains(actual: moveDestinations,
 									   
 						   board['d', 2],

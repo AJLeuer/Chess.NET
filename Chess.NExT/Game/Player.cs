@@ -65,7 +65,7 @@ namespace Chess.Game
             {
                 foreach (var square in anotherBoard.Squares)
                 {    
-                    if (square.isOccupied)
+                    if (square.IsOccupied)
                     {
                         IPiece piece = square.Piece.Object;
 
