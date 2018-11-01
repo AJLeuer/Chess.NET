@@ -18,7 +18,7 @@ namespace Chess.Util
         
         public static readonly TrueColor WindowForegroundColor = new TrueColor(0, 196, 240, 0);
         
-        public static Resolution MainWindowSize { get; } = DisplayData.getScreenResolution();
+        public static Resolution MainWindowSize { get; } = DisplayData.getScreenResolution() / 2;
 
         public static readonly Resolution BoardResolution = new Resolution {Width = 1440, Height = 1440};
 
