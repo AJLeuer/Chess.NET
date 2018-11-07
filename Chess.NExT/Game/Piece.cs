@@ -61,27 +61,107 @@ namespace Chess.Game
         void UpdateStateToHandleAssignmentToNewSquare();
     }
 
-    public static class PieceDefaults
+    public abstract class Piece : IPiece
     {
-        public static bool canMove(this IPiece piece) 
+        protected static ulong IDs = 0;
+            
+        public ulong ID { get; } = IDs++;
+    
+        public char Symbol { get; }
+            
+        public abstract char ASCIISymbol { get; }
+    
+        public Color Color { get; }
+    
+        public abstract ushort Value { get; }
+            
+        public abstract List<Direction> LegalMovementDirections { get; }
+            
+        public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
+    
+        public uint MovesMade { get; set; } = 0;
+
+        public abstract Square Square { get; set; }
+        
+        public Chess.Game.Board Board 
         {
-            var moves = piece.FindAllPossibleLegalMoveDestinations();
+            get { return this.Square.Board; }
+        }
+        
+        public Position StartingPosition 
+        {
+            get
+            {
+                if (PositionHistory.Any())
+                {
+                    return this.PositionHistory.First();
+                }
+                else
+                {
+                    return RankAndFile;
+                }
+            }
+        }
+    
+        public List<RankFile> PositionHistory { get; } = new List<RankFile>();
+        
+        public RankFile RankAndFile 
+        {
+            get { return Square.BoardPosition; }
+        }
+            
+        public CallBack PostCapturedActions { get; set; }
+    
+        public CallBack PieceMovingNotifier { get; set; }
+
+        protected Piece(char symbol, Color color)
+        {
+            this.Symbol = symbol;
+            this.Color = color;
+        }
+
+        protected Piece(IPiece other) :
+            this(other.Symbol, other.Color)
+        {
+            
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+
+        public abstract IPiece Clone();
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if there exists at least one Square that this Piece can legally move to, false otherwise</returns>
+        public bool CanMove()
+        {
+            var moves = FindAllPossibleLegalMoveDestinations();
     
             bool canMove = (moves.Count > 0);
     
             return canMove;
         }
         
-        public static void move(this IPiece piece, Chess.Game.Square destination) 
+        public virtual void Move(Chess.Game.Square destination)
         {
-            piece.PieceMovingNotifier?.Invoke();
+            PieceMovingNotifier?.Invoke();
     
-            destination.receiveArrivingPiece(piece);
+            destination.ReceiveArrivingPiece(this);
     
-            piece.MovesMade++;
+            MovesMade++;
         }
         
-        public static List<Chess.Game.Square> findAllPossibleLegalMoveDestinations(this IPiece piece) 
+        public virtual void Move(RankFile destination) 
+        {
+            Chess.Game.Square destinationSquare = Board[destination];
+            Move(destinationSquare);
+        }
+        
+        public virtual List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
         {
             Predicate<Chess.Game.Square> squareChecker = (Chess.Game.Square squareToCheck) =>
             {
@@ -91,57 +171,34 @@ namespace Chess.Game
                 }
                 else /* if (squareToCheck.isOccupied) */ 
                 {
-                    return piece.Color.getOpposite() == squareToCheck.Piece.Object.Color;
+                    return this.Color.GetOpposite() == squareToCheck.Piece.Object.Color;
                 }
             };
                 
             // ReSharper disable once PossibleInvalidOperationException
-            List<Chess.Game.Square> squaresLegalToMove = piece.Board.SearchForSquares(
+            List<Chess.Game.Square> squaresLegalToMove = this.Board.SearchForSquares(
                 squareMatcher: squareChecker, 
-                startingSquarePosition: piece.RankAndFile, 
-                directions: piece.LegalMovementDirections.ToArray(), 
-                distance: piece.MaximumMoveDistance);
+                startingSquarePosition: this.RankAndFile, 
+                directions: this.LegalMovementDirections.ToArray(), 
+                distance: this.MaximumMoveDistance);
     
             return squaresLegalToMove;
         }
         
-        public static void updateStateToHandleAssignmentToNewSquare(this IPiece piece) 
+        public virtual void UpdateStateToHandleAssignmentToNewSquare()
         {
-            piece.recordCurrentPosition();
-        }
-        
-        public static void recordCurrentPosition(this IPiece piece)
-        {
-            var currentPosition = new RankFile(piece.RankAndFile);
-            piece.PositionHistory.Add(currentPosition);
+            var currentPosition = new RankFile(this.RankAndFile);
+            this.PositionHistory.Add(currentPosition);
         }
     }
     
-    namespace Simulation
+    namespace Simulation 
     {
-        public abstract class Piece : IPiece 
-        {
-            protected static ulong IDs = 0;
-            
-            public ulong ID { get; } = IDs++;
-    
-            public char Symbol { get; }
-            
-            public abstract char ASCIISymbol { get; }
-    
-            public Color Color { get; }
-    
-            public abstract ushort Value { get; }
-            
-            public abstract List<Direction> LegalMovementDirections { get; }
-            
-            public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
-    
-            public uint MovesMade { get; set; } = 0;
-    
+        public abstract class Piece : Chess.Game.Piece 
+        {    
             protected Optional<Simulation.Square> square;
             
-            public virtual Chess.Game.Square Square 
+            public override Chess.Game.Square Square 
             {
                 set
                 {
@@ -160,37 +217,6 @@ namespace Chess.Game
                 }
                 get { return square.Object; } 
             }
-            
-            public Chess.Game.Board Board
-            {
-                get { return Square.Board; }
-            }
-    
-            public Position StartingPosition
-            {
-                get
-                {
-                    if (PositionHistory.Any())
-                    {
-                        return this.PositionHistory.First();
-                    }
-                    else
-                    {
-                        return RankAndFile;
-                    }
-                }
-            }
-    
-            public List<RankFile> PositionHistory { get; } = new List<RankFile>();
-    
-            public RankFile RankAndFile
-            {
-                get { return Square.BoardPosition; }
-            }
-    
-            public CallBack PostCapturedActions { get; set; }
-    
-            public CallBack PieceMovingNotifier { get; set; }
             
             public static Simulation.Piece Create(char symbol) 
             {
@@ -293,92 +319,34 @@ namespace Chess.Game
                 }
             }
             
-            protected Piece(char symbol, Color color)
+            protected Piece(char symbol, Color color):
+                base(symbol, color)
             {
-                this.Symbol = symbol;
-                this.Color  = color;
+                
             }
             
             protected Piece(IPiece other):
-                this(other.Symbol, other.Color)
+                base(other.Symbol, other.Color)
             {
-                /* Don't initialize the actual texture/sprite data. Too
-                 expensive - we only init it when we need it (lazily) */
-    
-                /* Don't copy other's square references: we don't know if we're owned
-                 by a new board or still held by the same, and if we are on the new square/board,
-                 they'll have to update our references */
+                
             }
             
             ~Piece() 
             {
                 Square = null;
             }
-            
-            object ICloneable.Clone()
-            {
-                return Clone();
-            }
     
-            public abstract IPiece Clone();
-    
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns>true if there exists at least one Square that this Piece can legally move to, false otherwise</returns>
-            public bool CanMove()
-            {
-                return this.canMove();
-            }
-            
-            public virtual void Move(Chess.Game.Square destination)
-            {
-                this.move(destination);
-            }
-            
-            public virtual void Move(RankFile destination) 
-            {
-                Chess.Game.Square destinationSquare = Board[destination];
-                Move(destinationSquare);
-            }
-    
-            public virtual List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
-            {
-                return this.findAllPossibleLegalMoveDestinations();
-            }
-
-            public void UpdateStateToHandleAssignmentToNewSquare()
-            {
-                this.updateStateToHandleAssignmentToNewSquare();
-            }
+            public abstract override IPiece Clone();
         }
     }
 
     namespace Graphical 
     {
-        public abstract class Piece : IPiece, ChessDrawable 
+        public abstract class Piece : Chess.Game.Piece, ChessDrawable 
         {
-            protected static ulong IDs = 0;
-            
-            public ulong ID { get; } = IDs++;
-    
-            public char Symbol { get; }
-            
-            public abstract char ASCIISymbol { get; }
-    
-            public Color Color { get; }
-    
-            public abstract ushort Value { get; }
-            
-            public abstract List<Direction> LegalMovementDirections { get; }
-            
-            public virtual ushort MaximumMoveDistance { get { return MaximumPossibleMoveDistance; } }
-    
-            public uint MovesMade { get; set; } = 0;
-    
             protected Optional<Graphical.Square> square;
             
-            public Chess.Game.Square Square 
+            public override Chess.Game.Square Square 
             {
                 get { return square.Object; }
                 
@@ -398,37 +366,7 @@ namespace Chess.Game
                     }
                 }
             }
-            
-            public Chess.Game.Board Board 
-            {
-                get { return Square.Board; }
-            }
-    
-            public Position StartingPosition 
-            {
-                get
-                {
-                    if (PositionHistory.Any())
-                    {
-                        return this.PositionHistory.First();
-                    }
-                    else
-                    {
-                        return RankAndFile;
-                    }
-                }
-            }
-    
-            public List<RankFile> PositionHistory { get; } = new List<RankFile>();
-    
-            public RankFile RankAndFile 
-            {
-                get { return Square.BoardPosition; }
-            }
-    
-            public CallBack PostCapturedActions { get; set; }
-    
-            public CallBack PieceMovingNotifier { get; set; }
+
             public string SpriteImageFilePath { get; set; }
 
             public Graphical.Square Square2D { get { return (Graphical.Square) Square; } }
@@ -476,7 +414,6 @@ namespace Chess.Game
                 }
             }
 
-            
             public static Graphical.Piece Create(char symbol) 
             {
                 Piece piece;
@@ -578,52 +515,25 @@ namespace Chess.Game
                 }
             }
 
-            protected Piece(char symbol, Color color, string spriteImageFilePath) 
+            protected Piece(char symbol, Color color, string spriteImageFilePath):
+                base(symbol, color)
             {
-                this.Symbol = symbol;
-                this.Color  = color;
                 this.SpriteImageFilePath = spriteImageFilePath;
             }
             
             protected Piece(IPiece other) : 
-                this(other.Symbol, other.Color, "")
+                base(other.Symbol, other.Color)
             {
-                
+                this.SpriteImageFilePath = "";
             }
             
             protected Piece(Graphical.Piece other) : 
-                this(other.Symbol, other.Color, other.SpriteImageFilePath)
+                base(other.Symbol, other.Color)
             {
-                
-            }
-            
-                        
-            object ICloneable.Clone()
-            {
-                return Clone();
+                this.SpriteImageFilePath = other.SpriteImageFilePath;
             }
     
-            public abstract IPiece Clone();
-            
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns>true if there exists at least one Square that this Piece can legally move to, false otherwise</returns>
-            public bool CanMove()
-            {
-                return this.canMove();
-            }
-            
-            public virtual void Move(Chess.Game.Square destination)
-            {
-                this.move(destination);
-            }
-            
-            public virtual void Move(RankFile destination) 
-            {
-                Chess.Game.Square destinationSquare = Board[destination];
-                Move(destinationSquare);
-            }
+            public abstract override IPiece Clone();
             
             public void InitializeGraphicalElements() 
             {
@@ -642,15 +552,10 @@ namespace Chess.Game
             {
                 renderer.Draw(Sprite);
             }
-            
-            public virtual List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
-            {
-                return this.findAllPossibleLegalMoveDestinations();
-            }
 
-            public void UpdateStateToHandleAssignmentToNewSquare()
+            public override void UpdateStateToHandleAssignmentToNewSquare()
             {
-                this.updateStateToHandleAssignmentToNewSquare();
+                base.UpdateStateToHandleAssignmentToNewSquare();
                 update2DPosition();
             }
         

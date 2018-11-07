@@ -4,6 +4,7 @@ using Chess.Game.Simulation;
 using NUnit.Framework;
 using Board = Chess.Game.Board;
 using Square = Chess.Game.Square;
+using Piece = Chess.Game.Simulation.Piece;
 using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
 
 namespace Chess.NExT.Test.Tests

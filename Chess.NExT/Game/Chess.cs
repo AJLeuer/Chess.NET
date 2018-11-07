@@ -16,6 +16,8 @@ namespace Chess.Game
 	// }
 	public class Color
 	{
+		private Color() {}
+		
 		public static readonly Color white = new White();
 		public static readonly Color black = new Black();
 		
@@ -25,7 +27,7 @@ namespace Chess.Game
     
 	public static class ColorMethods {
 
-		public static Color getOpposite(this Color color)
+		public static Color GetOpposite(this Color color)
 		{
 			switch (color)
 			{

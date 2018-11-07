@@ -220,8 +220,8 @@ namespace Chess.Util
 
         public static double Distance(Vec2<N> point0, Vec2<N> point1)
         {
-            Vec2<double> p0 = point0.ConvertMemberType<Double>();
-            Vec2<double> p1 = point1.ConvertMemberType<Double>();
+            Vec2<double> p0 = point0.ConvertMemberType<double>();
+            Vec2<double> p1 = point1.ConvertMemberType<double>();
 
             return distance(p0, p1);
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Chess.Util;
 using Chess.View;
 using SFML.Graphics;
-
+using SFML.Graphics.Glsl;
 using File = System.Char;
 using Rank = System.UInt16;
 using Position = Chess.Util.Vec2<uint>;
@@ -15,7 +15,7 @@ namespace Chess.Game
     {
         public Position BoardPosition { get; protected set; }
         
-        public RankFile RankAndFile
+        public RankFile RankAndFile 
         {
             get { return BoardPosition; }
         }
@@ -107,7 +107,7 @@ namespace Chess.Game
 
         public abstract Square Clone();
 
-        protected ref Optional<Color> determineColor()
+        protected ref Optional<Color> determineColor() 
         {
             uint coordinateSum = BoardPosition.X + BoardPosition.Y;
             
@@ -128,7 +128,7 @@ namespace Chess.Game
             this.Piece.Object.PieceMovingNotifier += this.handleLeavingPiece;
         }
 
-        public void receiveArrivingPiece(IPiece arrivingPiece)
+        public void ReceiveArrivingPiece(IPiece arrivingPiece) 
         {
             if (this.IsOccupied)
             {
@@ -147,6 +147,11 @@ namespace Chess.Game
         protected void clearCurrentPiece()
         {
             Piece = Optional<IPiece>.Empty;
+        }
+
+        public static double CalculateDistanceBetween(Square firstSquare, Square secondSquare)
+        {
+            return Position.Distance(firstSquare.BoardPosition, secondSquare.BoardPosition);
         }
     }
 

@@ -136,7 +136,7 @@
     <Copy SourceFiles="Libraries\csfml-network-2.dll" DestinationFolder="$(OutDir)" />
     <Copy SourceFiles="Libraries\csfml-system-2.dll" DestinationFolder="$(OutDir)" />
     <Copy SourceFiles="Libraries\csfml-window-2.dll" DestinationFolder="$(OutDir)" />
-    <!--add other dynamic library redirect configs here if needed-->
+    <!--add other dynamic libraries here if needed-->
   </Target>
   <Target Name="CopyCustomDynamicLibraryConfigs" Condition=" '$(OS)' == 'Unix' " AfterTargets="AfterBuild">
     <Copy SourceFiles="Config\sfmlnet-audio-2.dll.config" DestinationFolder="$(OutDir)" />

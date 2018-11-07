@@ -53,7 +53,7 @@ namespace Chess.Game
 				}
 				else /* if (squareToCheck.isOccupied) */ 
 				{
-					return pawn.Color.getOpposite() == squareToCheck.Piece.Object.Color;
+					return pawn.Color.GetOpposite() == squareToCheck.Piece.Object.Color;
 				}
 			};
 				
