@@ -19,7 +19,7 @@ namespace Chess.Game
             return new Human(this);
         }
 
-        public override Move ComputeNextMove()
+        protected override Move decideNextMove()
         {
             //todo: implement
             throw new NotImplementedException();

@@ -9,7 +9,7 @@ namespace Chess.NExT.Test.Tests
 {
 	public static class PieceTest
 	{
-		private static Board board;
+		public static Board board;
 
 		[SetUp]
 		public static void Setup()

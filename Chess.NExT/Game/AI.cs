@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Chess.Util;
+using System.Linq;
 
 namespace Chess.Game
 {
@@ -22,14 +23,14 @@ namespace Chess.Game
             return new AI(this);
         }
 
-        public override Move ComputeNextMove()
+        protected override Move decideNextMove()
         {
             return chooseBestMove();
         }
 
 		protected Move chooseBestMove() 
 		{
-			List<Move> highValueMoveOptions = FindBestMoves();
+			List<Move> highValueMoveOptions = findBestMoves();
 
 			highValueMoveOptions = highValueMoveOptions.ExtractHighestValueSubset();
 	
@@ -37,6 +38,40 @@ namespace Chess.Game
 
 			return move;
 		}
+		
+		protected virtual List<Move> findBestMoves()
+		{
+			var moves = new List<Move>();
+            
+			foreach (var piece in pieces)
+			{
+				Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
+
+				if (bestMoveForPiece.HasValue)
+				{
+					moves.Add(bestMoveForPiece.Object);
+				}
+			}
+
+			return moves;
+		}
+		
+		protected virtual Optional<Move> findBestMoveForPiece(IPiece piece)
+		{
+			List<Move> moves = FindAllPossibleMovesForPiece(piece);
+
+			moves = moves.ExtractHighestValueSubset();
+
+			if (moves.Any())
+			{
+				return moves.SelectElementAtRandom();
+			}
+			else
+			{
+				return new Optional<Move>(null);
+			}
+		}
 	
     }
+    
 }

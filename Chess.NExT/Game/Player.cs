@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Chess.Util;
 using Tree;
 
@@ -8,7 +7,6 @@ namespace Chess.Game
 {
     public abstract class Player : ICloneable
     {
-        
         protected static ulong uniqueIDs = 0;
 
         protected ulong ID { get; } = uniqueIDs++;
@@ -92,10 +90,10 @@ namespace Chess.Game
         public Move DecideNextMove()
         {
             MovesMade++;
-            return ComputeNextMove();
+            return decideNextMove();
         }
 
-        public abstract Move ComputeNextMove();
+        protected abstract Move decideNextMove();
         
         public List<Move> FindPossibleMoves()
         {
@@ -105,23 +103,6 @@ namespace Chess.Game
             {
                 var movesForPiece = FindAllPossibleMovesForPiece(piece);
                 moves.AddRange(movesForPiece);
-            }
-
-            return moves;
-        }
-        
-        public virtual List<Move> FindBestMoves()
-        {
-            var moves = new List<Move>();
-            
-            foreach (var piece in pieces)
-            {
-                Optional<Move> bestMoveForPiece = FindBestMoveForPiece(piece);
-
-                if (bestMoveForPiece.HasValue)
-                {
-                    moves.Add(bestMoveForPiece.Object);
-                }
             }
 
             return moves;
@@ -143,22 +124,6 @@ namespace Chess.Game
             return moves;
         }
 
-        public virtual Optional<Move> FindBestMoveForPiece(IPiece piece)
-        {
-            List<Move> moves = FindAllPossibleMovesForPiece(piece);
-
-            moves = moves.ExtractHighestValueSubset();
-
-            if (moves.Any())
-            {
-                return moves.SelectElementAtRandom();
-            }
-            else
-            {
-                return new Optional<Move>(null);
-            }
-        }
-        
         public Tree<Move> ComputeMoveDecisionTree()
         {
             throw new NotImplementedException();
