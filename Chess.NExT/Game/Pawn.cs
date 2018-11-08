@@ -13,7 +13,7 @@ namespace Chess.Game
 		List<Direction> LegalCaptureDirections { get; }
 	}
 
-	public static class PawnDefaults
+	public static class PawnDefaults 
 	{
 		public static readonly List<Direction> BlackLegalCaptureDirections = new List<Direction> {downLeft, downRight};
 		public static readonly List<Direction> WhiteLegalCaptureDirections = new List<Direction> {upLeft, upRight};
@@ -111,7 +111,7 @@ namespace Chess.Game
 		}
 	}
 
-	namespace Simulation
+	namespace Simulation 
 	{
 		public class Pawn : Piece, IPawn 
 		{
@@ -197,7 +197,7 @@ namespace Chess.Game
 		}
 	}
 
-	namespace Graphical
+	namespace Graphical 
 	{
 		public class Pawn : Piece, IPawn 
 		{

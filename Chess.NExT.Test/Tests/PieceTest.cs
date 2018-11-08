@@ -1,7 +1,7 @@
 using Chess.Game;
 using NUnit.Framework;
 using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
-
+using Board = Chess.Game.Simulation.Board;
 using Square = Chess.Game.Simulation.Square;
 using Queen = Chess.Game.Simulation.Queen;
 
@@ -9,12 +9,12 @@ namespace Chess.NExT.Test.Tests
 {
 	public static class PieceTest
 	{
-		public static Square[,] squares;
-		
+		private static Board board;
+
 		[SetUp]
 		public static void Setup()
 		{
-			squares = new Square[,]
+			var squares = new Square[,]
 			{
 				{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square(' ', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
 				
@@ -32,12 +32,13 @@ namespace Chess.NExT.Test.Tests
 				
 				{ new Square(' ', 'h', 1), new Square(' ', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
 			};
+			
+			board = new Game.Simulation.Board(squares);
 		}
 
 		[Test]
 		public static void ShouldFindAllValidMoveDestinations()
 		{
-			var board = new Game.Simulation.Board(squares);
 			Queen whiteQueen = (Queen) board['d', 3].Piece.Object;
 
 			var moveDestinations = whiteQueen.FindAllPossibleLegalMoveDestinations();
@@ -60,7 +61,6 @@ namespace Chess.NExT.Test.Tests
 		[Test]
 		public static void ShouldRecordMoveHistory()
 		{
-			var board = new Game.Simulation.Board(squares);
 			Queen whiteQueen = (Queen) board['d', 3].Piece.Object;
 			
 			whiteQueen.Move(board['e', 3]);
