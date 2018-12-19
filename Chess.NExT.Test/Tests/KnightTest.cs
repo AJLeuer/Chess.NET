@@ -17,11 +17,9 @@ namespace Chess.NExT.Test.Tests
         {
             Board board = new Game.Simulation.Board(squares: Game.Simulation.Board.DefaultEmptySquares());
 
-            Square square = board['e', 4];
-            
             Piece knight = new Knight(Color.white);
 
-            square.Piece = knight;
+            board['e', 4].Piece = knight;
 
             List<Square> possibleMoves = knight.FindAllPossibleLegalMoveDestinations();
 

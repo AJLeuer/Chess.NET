@@ -12,7 +12,7 @@ namespace Chess.NExT.Test.Tests
 	public static class PawnTest
 	{
 		private static Board board;
-		private static Piece pawn;
+		private static Pawn pawn;
 
 		[SetUp]
 		public static void Setup()
