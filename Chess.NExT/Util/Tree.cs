@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.Remoting.Messaging;
 
 namespace Chess.Util
 {
-	public class TreeNode<T>
+	public class TreeNode<T> : IComparable<TreeNode<T>> where T : IComparable<T>
 	{
 		public T Datum { get; set; }
 		public TreeNode<T> Parent { get; private set; } = null;
@@ -33,6 +35,35 @@ namespace Chess.Util
 			
 			AddChildren(nodes);
 		}
+
+		#region InterfaceImplementation
+		
+		public int CompareTo(TreeNode<T> other)
+		{
+			return this.Datum.CompareTo(other.Datum);
+		}
+
+		public static bool operator < (TreeNode<T> left, TreeNode<T> right)
+		{
+			return left.CompareTo(right) < 0;
+		}
+
+		public static bool operator > (TreeNode<T> left, TreeNode<T> right)
+		{
+			return left.CompareTo(right) > 0;
+		}
+
+		public static bool operator <= (TreeNode<T> left, TreeNode<T> right)
+		{
+			return left.CompareTo(right) <= 0;
+		}
+
+		public static bool operator >= (TreeNode<T> left, TreeNode<T> right)
+		{
+			return left.CompareTo(right) >= 0;
+		}
+		
+		#endregion
 	}
 }
 

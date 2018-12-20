@@ -30,8 +30,8 @@ namespace Chess.Game
         {
 			Simulation.Game simulatedGame = new Simulation.Game(this.Board.Game);
 			AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
-			TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(4);
-            return chooseBestMove();
+			TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(toDepth: 3);
+            return searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
         }
 
 		TreeNode<Move> buildMovePossibilityTree(uint toDepth)
@@ -78,32 +78,51 @@ namespace Chess.Game
 			return moveTree;
 		}
 
-		protected virtual Move chooseBestMove() 
+		private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint toDepth)
 		{
-			List<Move> highValueMoveOptions = findBestMoves();
+			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMove(moveTree, currentDepth: 0, maximumDepth: toDepth);
 
-			highValueMoveOptions = highValueMoveOptions.ExtractHighestValueSubset();
-	
-			Move move = highValueMoveOptions.SelectElementAtRandom();
+			Move startingMove;
+			
+			do
+			{
+				startingMove = bestMoveSequence.Datum;
+				bestMoveSequence = bestMoveSequence.Parent;
+			}
+			while (bestMoveSequence.Parent != null);
 
-			return move;
+			return startingMove;
 		}
 		
-		protected List<Move> findBestMoves()
+		private TreeNode<Move> searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)
 		{
-			var moves = new List<Move>();
-            
-			foreach (var piece in pieces)
+			if (currentDepth == (maximumDepth - 1))
 			{
-				Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
-
-				if (bestMoveForPiece.HasValue)
-				{
-					moves.Add(bestMoveForPiece.Object);
-				}
+				TreeNode<Move> localHighestValue = moveTree.Children.RetrieveHighestValueItem();
+				return localHighestValue;
 			}
+			else
+			{
+				TreeNode<Move> overallHighestValueMove = null;
 
-			return moves;
+				for (int i = 0; i < moveTree.Children.Count; i++)
+				{
+					TreeNode<Move> childMoveNode = moveTree.Children[i];
+				
+					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMove(childMoveNode, (currentDepth + 1), maximumDepth);
+				
+					if (i == 0)
+					{
+						overallHighestValueMove = currentMove;
+					}
+					else if (currentMove > overallHighestValueMove)
+					{
+						overallHighestValueMove = currentMove;
+					}
+				}
+
+				return overallHighestValueMove;
+			}
 		}
 		
 		protected Optional<Move> findBestMoveForPiece(IPiece piece)
@@ -145,10 +164,10 @@ namespace Chess.Game
 		
 		protected override Move decideNextMove()
 		{
-			return chooseBestMove();
+			return chooseBestMoveGreedily();
 		}
 		
-		protected override Move chooseBestMove() 
+		protected Move chooseBestMoveGreedily() 
 		{
 			List<Move> highValueMoveOptions = findBestMoves();
 
@@ -157,6 +176,23 @@ namespace Chess.Game
 			Move move = highValueMoveOptions.SelectElementAtRandom();
 
 			return move;
+		}
+		
+		protected List<Move> findBestMoves()
+		{
+			var moves = new List<Move>();
+            
+			foreach (var piece in pieces)
+			{
+				Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
+
+				if (bestMoveForPiece.HasValue)
+				{
+					moves.Add(bestMoveForPiece.Object);
+				}
+			}
+
+			return moves;
 		}
 	}
     

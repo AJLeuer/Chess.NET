@@ -167,6 +167,12 @@ namespace Chess.Util
 
             return highestValueSubset;
         }
+        
+        public static T RetrieveHighestValueItem<T>(this List<T> list) where T : IComparable<T>
+        {
+            List<T> highestValuedItems = ExtractHighestValueSubset(list);
+            return SelectElementAtRandom(highestValuedItems);
+        }
 
         public static Size GetActualSize(this SFML.Graphics.Sprite sprite)
         {
