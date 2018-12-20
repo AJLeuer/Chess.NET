@@ -58,8 +58,8 @@ namespace Chess.NExT.Test.Tests
             };
             
             var board = new Game.Simulation.Board(squares);
-            var blackPlayerMock = new Mock<Player>(Color.black, null);
-            var whitePlayerMock = new Mock<Player>(Color.white, null);
+            var blackPlayerMock = new Mock<Player>(Color.black);
+            var whitePlayerMock = new Mock<Player>(Color.white);
 
             blackPlayerMock.Setup(
                     (Player self) => self.Color)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Chess.Util;
-using Tree;
 
 namespace Chess.Game
 {
@@ -33,11 +32,10 @@ namespace Chess.Game
         public List<IPiece> pieces { get; private set; }
 
         /* Any other constructors should call this as a delegating constructor */
-        public Player(Color color, Board board = null)
+        public Player(Color color) 
         {
             this.Name = "Player " + ID;
             this.Color = color;
-            this.Board = board;
         }
 
         public Player(Player other) :
@@ -122,11 +120,6 @@ namespace Chess.Game
             }
             
             return moves;
-        }
-
-        public Tree<Move> ComputeMoveDecisionTree()
-        {
-            throw new NotImplementedException();
         }
     }
 }

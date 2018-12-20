@@ -189,6 +189,14 @@ namespace Chess.Util
             sprite.Scale = new Vec2<double>(scalingValueX, scalingValueY);
         }
         
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (T element in source)
+            {
+                action.Invoke(element);
+            }
+        }
+        
     }
     
     public delegate void CallBack();

@@ -49,7 +49,8 @@ namespace Chess.NExT.Test.Tests
                 .Returns(
                     () => squares); 
             
-            Player player = new AI(Color.white, mockBoard);
+            Player player = new AI(Color.white);
+			player.Board = mockBoard;
             List<IPiece> pieces = player.findOwnPiecesOnBoard(mockBoard);
 
             //checks that pawnF2, pawnG2, and knightG1 (and nothing else) are in pieces, but in no particular order

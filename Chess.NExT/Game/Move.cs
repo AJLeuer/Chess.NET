@@ -6,6 +6,10 @@ namespace Chess.Game
 {
     public class Move : IComparable, IComparable<Move> 
     {
+        protected static ulong IDs = 0;
+            
+        public ulong ID { get; } = IDs++;
+        
         public Player Player { get; }
 		
         public IPiece Piece { get; }
@@ -37,12 +41,34 @@ namespace Chess.Game
             this.Piece = piece;
             this.Destination = destination;
         }
+        
+        
+        /// <summary>
+        /// Executes this move
+        /// </summary>
+        public void Commit()
+        {
+            Piece.Move(Destination);
+        }
+        
+        /// <summary>
+        /// Creates a copy of the Game associated with this Move (including the board, all players, and all pieces,
+        /// then commits this move inside the simulation and updates the resulting state of the simulated game
+        /// </summary>
+        /// <returns>A Move object with the associated (Simulated) Game updated to reflect the result of applying this move</returns>
+        public Move CommitInSimulation()
+        {
+            Simulation.Game simGame = new Simulation.Game(this.Game);
+            Move simulatedMove = createMatchingMoveForGame(this, simGame);
+            simulatedMove.Commit();
+            return simulatedMove;
+        }
 
         /// <param name="originalMove"></param>
         /// <param name="game"></param>
         /// <returns>A new <see cref="Chess.Game.Move"/> with Player, Piece, and Destination corresponding to those of <paramref name="originalMove"/>, but
         /// originating within <paramref name="game"/></returns>
-        public static Move CreateMatchingMoveForGame(Move originalMove, BasicGame game)
+        private static Move createMatchingMoveForGame(Move originalMove, BasicGame game)
         {
             var board = game.Board;
 			
@@ -51,6 +77,15 @@ namespace Chess.Game
             Square destination = board.FindMatchingSquare(originalMove.Destination);
             
             return new Move(player, piece, destination);
+        }
+
+        private static Move createSimulatedEquivalentOfMove(Move originalMove)
+        {
+            Simulation.Game simulatedEquivalentGame = new Simulation.Game(originalMove.Game);
+
+            Move simulatedEquivalentMove = createMatchingMoveForGame(originalMove: originalMove, game: simulatedEquivalentGame);
+
+            return simulatedEquivalentMove;
         }
 		
         public static bool operator > (Move move0, Move move1)
@@ -63,7 +98,7 @@ namespace Chess.Game
             return move0.Value < move1.Value;
         }
 
-        public int CompareTo(object @object)
+        public int CompareTo(object @object) 
         {
             if (@object.GetType() == typeof(Move))
             {
@@ -75,7 +110,7 @@ namespace Chess.Game
             }
         }
 		
-        public int CompareTo(Move move)
+        public int CompareTo(Move move) 
         {
             if (this > move)
             {
@@ -106,7 +141,7 @@ namespace Chess.Game
         {
             var testGame = new Simulation.TemporaryGame(move.Game);
 			
-            Move translatedMove = CreateMatchingMoveForGame(move, testGame);
+            Move translatedMove = createMatchingMoveForGame(move, testGame);
 
             translatedMove.Commit();
 			
@@ -114,21 +149,6 @@ namespace Chess.Game
             return testBoard.CalculateRelativeValue(translatedMove.Player);
         }
 
-        /// <summary>
-        /// Executes this move
-        /// </summary>
-        public void Commit()
-        {
-            Piece.Move(Destination);
-        }
-		
-        /// <summary>
-        /// <seealso cref="Move.Commit()"/>
-        /// </summary>
-        public void Invoke()
-        {
-            Commit();
-        }
 
     }
 }

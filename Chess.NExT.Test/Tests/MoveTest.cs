@@ -42,12 +42,12 @@ namespace Chess.NExT.Test.Tests
 				}	
 			};
 			
-			var whitePlayerMock = new Mock<Player>(Color.white, null)
+			var whitePlayerMock = new Mock<Player>(Color.white)
 			{
 				CallBase = true
 			};
 			
-			var whitePlayerCloneMock = new Mock<Player>(Color.white, null)
+			var whitePlayerCloneMock = new Mock<Player>(Color.white)
 			{
 				CallBase = true
 			};

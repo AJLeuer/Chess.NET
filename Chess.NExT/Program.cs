@@ -6,7 +6,8 @@ namespace Chess.NExT
     {
         public static void Main(string[] args)
         {
-            BasicGame game = new Game.Graphical.Game();
+            BasicGame game = 
+                new Game.Simulation.Game(new Chess.Game.Simulation.Board(), new AI(Color.white), new MockAIPlayer(Color.black));
             
             game.PlayGame();
         }

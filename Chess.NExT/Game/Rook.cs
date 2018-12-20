@@ -8,7 +8,7 @@ namespace Chess.Game
 {
     public interface IRook : IPiece {}
 
-    namespace Simulation
+    namespace Simulation 
     {
         public class Rook : Piece, IRook 
         {
@@ -70,7 +70,7 @@ namespace Chess.Game
         }
     }
 
-    namespace Graphical
+    namespace Graphical 
     {
         public class Rook : Piece, IRook 
         {

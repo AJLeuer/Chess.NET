@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -30,7 +30,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
@@ -53,10 +53,6 @@
     </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tree, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Tree.1.0.4\lib\net35\Tree.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065" Condition=" '$(OS)' == 'Unix' ">
       <HintPath>..\..\..\..\..\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\mono\XamMac.dll</HintPath>
     </Reference>
@@ -101,6 +97,7 @@
     <Compile Include="Util\Pair.cs" />
     <Compile Include="Util\Size.cs" />
     <Compile Include="Util\SortedList.cs" />
+    <Compile Include="Util\Tree.cs" />
     <Compile Include="Util\TrueColor.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="Util\Vec2.cs" />

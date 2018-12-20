@@ -66,7 +66,7 @@ namespace Chess.Game
             }
         }
 
-        public Player WhitePlayer
+        public Player WhitePlayer 
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Chess.Game
             }
         }
         
-        public Player BlackPlayer
+        public Player BlackPlayer 
         {
             get
             {
@@ -105,8 +105,8 @@ namespace Chess.Game
         protected BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
             this.Board   = board;
-            this.Player0 = player0 ?? new AI(white, this.Board);
-            this.Player1 = player1 ?? new AI(black, this.Board);
+            this.Player0 = player0 ?? new AI(white);
+            this.Player1 = player1 ?? new AI(black);
         }
 
         object ICloneable.Clone()
@@ -116,7 +116,7 @@ namespace Chess.Game
 
         public abstract BasicGame Clone();
         
-        public void PlayGame ()
+        public void PlayGame() 
         {
             GameActive = true;
             
@@ -152,7 +152,14 @@ namespace Chess.Game
             iterations++;
         }
 
-        protected abstract void decideMove();
+        protected virtual void decideMove()
+        {
+            CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
+    
+            Move nextMove = CurrentPlayer.DecideNextMove();
+    
+            nextMove.Commit();
+        }
 
         protected virtual void sleep()
         {
@@ -209,7 +216,7 @@ namespace Chess.Game
             public Board Board2D { get { return (Graphical.Board) Board; } }
 
             public Game() :
-                base(new Board())
+                base(new Graphical.Board())
             {
                 Board2D.InitializeGraphicalElements();
                 Board2D.Initialize2DCoordinates(new Vec2<uint>((MainWindowSize.Width / 4), (MainWindowSize.Height / 32)));
@@ -248,15 +255,6 @@ namespace Chess.Game
                 display2D();
                 window.Display();
                 Thread.Sleep(TimeSpan.FromMilliseconds(8));
-            }
-    
-            protected override void decideMove()
-            {
-                CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
-    
-                Move nextMove = CurrentPlayer.DecideNextMove();
-    
-                nextMove.Commit();
             }
     
             protected void display2D()
@@ -316,12 +314,6 @@ namespace Chess.Game
             }
 
             protected override void setup() {}
-
-            protected override void decideMove()
-            {
-                Move nextMove = CurrentPlayer.DecideNextMove();
-                nextMove.Commit();
-            }
             
             protected override void sleep()
             {

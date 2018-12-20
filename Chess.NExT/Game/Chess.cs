@@ -172,15 +172,25 @@ namespace Chess.Game
 	    {
 		    
 	    }
+	    
+		public static implicit operator RankFile (ValueTuple<char, uint> tuple)
+		{
+			return new RankFile(tuple.Item1, (ushort) tuple.Item2);
+		}
+		
+		public static implicit operator (char, uint) (RankFile rankAndFile)
+		{
+			return (rankAndFile.file, rankAndFile.Rank);
+		}
 
 		public static implicit operator RankFile(Position position)  
 		{
 			return new RankFile(position);
 		}
 	    
-	    public static implicit operator Position(RankFile boardRankAndFile)  
+	    public static implicit operator Position(RankFile rankAndFile)  
 	    {
-		    return ConvertToBoardPosition(boardRankAndFile);
+		    return ConvertToBoardPosition(rankAndFile);
 	    }
 
 	    public static Boolean operator == (RankFile boardPosition0, RankFile boardPosition1)
@@ -200,6 +210,12 @@ namespace Chess.Game
 		    {
 			    return this.Equals((RankFile) @object);
 		    }
+			else if (@object?.GetType() == typeof(ValueTuple<char, uint>))
+			{
+				ValueTuple<char, uint> tuple = (ValueTuple<char, uint>) @object;
+				RankFile other = tuple;
+				return this.Equals(other);
+			}
 		    else
 		    {
 			    throw new NotImplementedException();

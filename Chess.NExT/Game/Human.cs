@@ -4,8 +4,8 @@ namespace Chess.Game
 {
     public class Human : Player
     {
-        public Human(Color color, Board board) : 
-            base(color, board)
+        public Human(Color color) : 
+            base(color)
         {
         }
 
