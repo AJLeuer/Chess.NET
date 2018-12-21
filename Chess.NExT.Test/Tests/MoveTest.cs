@@ -1,11 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
-using Chess.Game;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
+using Chess.Game;
+using Board = Chess.Game.Board;
 using Square = Chess.Game.Simulation.Square;
 using Knight = Chess.Game.Simulation.Knight;
+using Rook = Chess.Game.Simulation.Rook;
+using Piece = Chess.Game.Piece;
 
 namespace Chess.NExT.Test.Tests
 {
@@ -15,6 +18,7 @@ namespace Chess.NExT.Test.Tests
 		private static BasicGame game;
 		private static Board board;
 		private static Player whitePlayer;
+		private static Player blackPlayer;
 		private static Knight whiteKnight;
 
 		[SetUp]
@@ -42,20 +46,13 @@ namespace Chess.NExT.Test.Tests
 				}	
 			};
 			
-			var whitePlayerMock = new Mock<Player>(Color.white)
-			{
-				CallBase = true
-			};
+			var whitePlayerMock = new Mock<Player>(Color.white) { CallBase = true };
+
+			var blackPlayerMock = new Mock<Player>(Color.black) { CallBase = true };
 			
-			var whitePlayerCloneMock = new Mock<Player>(Color.white)
-			{
-				CallBase = true
-			};
+			var whitePlayerCloneMock = new Mock<Player>(Color.white) { CallBase = true };
 			
-			var gameMock = new Mock<BasicGame>(MockBehavior.Loose, board, whitePlayerMock.Object, null)
-			{
-				CallBase = true
-			};
+			var gameMock = new Mock<BasicGame>(MockBehavior.Loose, board, whitePlayerMock.Object, blackPlayerMock.Object) { CallBase = true };
 
 			gameMock.Setup((BasicGame self) => self.Board)
 							.Returns(board);
@@ -69,6 +66,7 @@ namespace Chess.NExT.Test.Tests
 			
 			game = gameMock.Object;
 			whitePlayer = whitePlayerMock.Object;
+			blackPlayer = blackPlayerMock.Object;
 		}
 
 		[Test]
@@ -79,6 +77,25 @@ namespace Chess.NExT.Test.Tests
 			var move = new Move(whitePlayer, whiteKnight, board['a', 1]);
 
 			move.Value.Should().Be(5);
+		}
+
+		[Test]
+		public static void ShouldCreateMatchingMove()
+		{
+			Player anotherBlackPlayer = new MockAIPlayer(color: Color.black);
+			Piece anotherRook = new Rook(color: Color.black);
+			var startingSquare = new Square(file: 'a', rank: 1);
+			startingSquare.Piece = anotherRook;
+			var destination = new Square(file: 'c', rank: 1);
+			
+			var anotherMove = new Move(anotherBlackPlayer, anotherRook, destination);
+
+			Move move = Move.CreateMatchingMoveForGame(anotherMove, game);
+
+			move.Player.Should().Be(blackPlayer);
+			move.Piece.Should().Be(board['a', 1].Piece.Object);
+			move.Destination.Should().Be(board['c', 1]);
+			move.Board.Should().Equal(board);
 		}
 	}
 }

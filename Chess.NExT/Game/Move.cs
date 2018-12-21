@@ -59,7 +59,7 @@ namespace Chess.Game
         public Move CommitInSimulation()
         {
             Simulation.Game simGame = new Simulation.Game(this.Game);
-            Move simulatedMove = createMatchingMoveForGame(this, simGame);
+            Move simulatedMove = CreateMatchingMoveForGame(this, simGame);
             simulatedMove.Commit();
             return simulatedMove;
         }
@@ -68,7 +68,7 @@ namespace Chess.Game
         /// <param name="game"></param>
         /// <returns>A new <see cref="Chess.Game.Move"/> with Player, Piece, and Destination corresponding to those of <paramref name="originalMove"/>, but
         /// originating within <paramref name="game"/></returns>
-        private static Move createMatchingMoveForGame(Move originalMove, BasicGame game)
+        public static Move CreateMatchingMoveForGame(Move originalMove, BasicGame game)
         {
             var board = game.Board;
 			
@@ -83,7 +83,7 @@ namespace Chess.Game
         {
             Simulation.Game simulatedEquivalentGame = new Simulation.Game(originalMove.Game);
 
-            Move simulatedEquivalentMove = createMatchingMoveForGame(originalMove: originalMove, game: simulatedEquivalentGame);
+            Move simulatedEquivalentMove = CreateMatchingMoveForGame(originalMove: originalMove, game: simulatedEquivalentGame);
 
             return simulatedEquivalentMove;
         }
@@ -141,7 +141,7 @@ namespace Chess.Game
         {
             var testGame = new Simulation.TemporaryGame(move.Game);
 			
-            Move translatedMove = createMatchingMoveForGame(move, testGame);
+            Move translatedMove = CreateMatchingMoveForGame(move, testGame);
 
             translatedMove.Commit();
 			

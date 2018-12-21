@@ -82,16 +82,17 @@ namespace Chess.Game
 		{
 			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMove(moveTree, currentDepth: 0, maximumDepth: toDepth);
 
-			Move startingMove;
+			Move simulatedStartingMove;
 			
 			do
 			{
-				startingMove = bestMoveSequence.Datum;
+				simulatedStartingMove = bestMoveSequence.Datum;
 				bestMoveSequence = bestMoveSequence.Parent;
 			}
 			while (bestMoveSequence.Parent != null);
-
-			return startingMove;
+			
+			
+			return simulatedStartingMove;
 		}
 		
 		private TreeNode<Move> searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)
