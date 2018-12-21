@@ -15,7 +15,7 @@ using Rank = System.UInt16;
 
 namespace Chess.Game
 {
-	public abstract class Board : ICloneable, IEnumerable<Square> 
+	public abstract class Board : GameEntity, ICloneable, IEnumerable<Square> 
 	{
 		protected static ulong IDs = 0;
 		

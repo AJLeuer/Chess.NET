@@ -11,7 +11,7 @@ using static Chess.Game.Color;
 
 namespace Chess.Game
 {
-    public abstract class Square : ICloneable 
+    public abstract class Square : GameEntity, ICloneable 
     {
         public Position BoardPosition { get; protected set; }
         
@@ -34,7 +34,8 @@ namespace Chess.Game
                 return color.Object;
             }
         }
-
+        
+        public BasicGame Game { get { return Board.Game; }}
         public Board Board { get; set; }
 
         private IPiece piece = null;

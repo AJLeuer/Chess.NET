@@ -4,7 +4,7 @@ using Simulation = Chess.Game.Simulation;
 
 namespace Chess.Game
 {
-    public class Move : IComparable, IComparable<Move> 
+    public class Move : GameEntity, IComparable, IComparable<Move> 
     {
         protected static ulong IDs = 0;
             

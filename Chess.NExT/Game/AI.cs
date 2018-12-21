@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
@@ -28,7 +28,7 @@ namespace Chess.Game
 
         protected override Move decideNextMove()
         {
-			Simulation.Game simulatedGame = new Simulation.Game(this.Board.Game);
+			Simulation.Game simulatedGame = new Simulation.Game(this.Game);
 			AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
 			TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(toDepth: 3);
             return searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
@@ -62,7 +62,6 @@ namespace Chess.Game
 					Move opponentMove = simulatedOpponent.DecideNextMove();
 					opponentMove.Commit();
 
-					moveTree.Datum = simulatedMove;
 					possibleMoves = simulatedAIPlayer.FindPossibleMoves();
 				}
 				
@@ -81,18 +80,21 @@ namespace Chess.Game
 		private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint toDepth)
 		{
 			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMove(moveTree, currentDepth: 0, maximumDepth: toDepth);
-
+			TreeNode<Move> sequence = bestMoveSequence;
+			
 			Move simulatedStartingMove;
 			
 			do
 			{
-				simulatedStartingMove = bestMoveSequence.Datum;
-				bestMoveSequence = bestMoveSequence.Parent;
+				simulatedStartingMove = sequence.Datum;
+				sequence = sequence.Parent;
 			}
-			while (bestMoveSequence.Parent != null);
+			while (sequence.Parent != null);
 			
 			
-			return simulatedStartingMove;
+			Move startingMove = Move.CreateMatchingMoveForGame(simulatedStartingMove, this.Game);
+
+			return startingMove;
 		}
 		
 		private TreeNode<Move> searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)

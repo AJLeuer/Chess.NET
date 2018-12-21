@@ -12,7 +12,7 @@ using Position = Chess.Util.Vec2<uint>;
 
 namespace Chess.Game
 {
-    public interface IPiece : ICloneable 
+    public interface IPiece : GameEntity, ICloneable 
     {
         ulong ID { get; }
         
@@ -87,6 +87,8 @@ namespace Chess.Game
         {
             get { return this.Square.Board; }
         }
+        
+        public BasicGame Game { get { return Board.Game; }}
         
         public Position StartingPosition 
         {

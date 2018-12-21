@@ -4,7 +4,7 @@ using Chess.Util;
 
 namespace Chess.Game
 {
-    public abstract class Player : ICloneable
+    public abstract class Player : GameEntity, ICloneable
     {
         protected static ulong uniqueIDs = 0;
 
@@ -15,6 +15,8 @@ namespace Chess.Game
         public virtual Color Color { get; }
 
         public uint MovesMade { get; private set; } = 0;
+        
+        public BasicGame Game { get { return Board.Game; }}
 
         private Board board;
         

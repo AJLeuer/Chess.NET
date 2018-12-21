@@ -9,7 +9,12 @@ using Window = Chess.View.Window;
 
 namespace Chess.Game
 {
-    public abstract class BasicGame : ICloneable
+    public interface GameEntity
+    {
+        BasicGame Game { get; }
+    }
+    
+    public abstract class BasicGame : ICloneable, GameEntity
     {
         public static readonly ushort MaximumPossibleMoveDistance = BoardWidth;
         
@@ -18,6 +23,8 @@ namespace Chess.Game
         protected ulong ID { get; } = IDs++;
         
         protected ulong iterations = 0;
+        
+        public BasicGame Game { get { return this; } }
 
         private Board board;
         
@@ -63,6 +70,16 @@ namespace Chess.Game
             if (playerMember != null)
             {
                 playerMember.Board = Board;
+            }
+
+            ensureUniquePlayerColors();
+        }
+
+        private void ensureUniquePlayerColors()
+        {
+            if (Player0?.Color == Player1?.Color)
+            {
+                throw new Exception("One player of each color");
             }
         }
 
@@ -154,7 +171,7 @@ namespace Chess.Game
 
         protected virtual void decideMove()
         {
-            CurrentPlayer = (iterations % 2) == 0 ? this.Player0 : this.Player1;
+            CurrentPlayer = (iterations % 2) == 0 ? this.WhitePlayer : this.BlackPlayer;
     
             Move nextMove = CurrentPlayer.DecideNextMove();
     
