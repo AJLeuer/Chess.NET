@@ -164,7 +164,7 @@ namespace Chess.Game
 
         protected void advance()
         {
-            decideMove();
+            playTurn();
 
             OnGameAdvanced.Invoke();
             
@@ -173,7 +173,7 @@ namespace Chess.Game
             iterations++;
         }
 
-        protected virtual void decideMove()
+        protected virtual void playTurn()
         {
             CurrentPlayer = (iterations % 2) == 0 ? this.WhitePlayer : this.BlackPlayer;
     
@@ -375,7 +375,7 @@ namespace Chess.Game
                 return new TemporaryGame(this);
             }
         
-            protected override void decideMove() {}
+            protected override void playTurn() {}
         }
     }
 
