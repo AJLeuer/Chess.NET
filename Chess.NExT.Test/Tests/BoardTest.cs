@@ -1,8 +1,9 @@
-using Chess.Game;
-using Chess.Util;
+using NUnit.Framework;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
+
+using Chess.Game;
+using Chess.Util;
 
 using Square = Chess.Game.Simulation.Square;
 using Queen = Chess.Game.Simulation.Queen;
