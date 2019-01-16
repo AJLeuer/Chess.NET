@@ -58,7 +58,7 @@ namespace Chess.Game
 					
 					AI simulatedAIPlayer = (AI) simulatedMove.Game.FindMatchingPlayer(this);
 
-					MockAIPlayer simulatedOpponent = (MockAIPlayer) simulatedMove.Game.FindOpponentPlayer(simulatedAIPlayer);
+					SimpleAI simulatedOpponent = (SimpleAI) simulatedMove.Game.FindOpponentPlayer(simulatedAIPlayer);
 					Move opponentMove = simulatedOpponent.DecideNextMove();
 					opponentMove.Commit();
 
@@ -146,15 +146,22 @@ namespace Chess.Game
 	
     }
 
-	public class MockAIPlayer : AI
+	/// <summary>
+	/// Can serve the same role of computer-controlled opponent as AI, but has none of the sophisticated game-tree
+	/// searching used in the AI class. Move decisions are made via a basic greedy algorithm: SimpleAI conducts a brute-force
+	/// search of possible moves to make in the next turn and chooses the most valuable. It does not look ahead. This
+	/// makes it useful for applications like testing, and serving as a straw-man opponent for an AI player (which
+	/// *does* look ahead) to test potential moves against.
+	/// </summary>
+	public class SimpleAI : AI
 	{
-		public MockAIPlayer(Color color) :
+		public SimpleAI(Color color) :
 			base(color)
 		{
             
 		}
 
-		public MockAIPlayer(Player other) : 
+		public SimpleAI(Player other) : 
 			base(other)
 		{
             
@@ -162,7 +169,7 @@ namespace Chess.Game
 
 		public override Player Clone()
 		{
-			return new MockAIPlayer(this);
+			return new SimpleAI(this);
 		}
 		
 		protected override Move decideNextMove()

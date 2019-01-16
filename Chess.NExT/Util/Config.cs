@@ -7,8 +7,6 @@ namespace Chess.Util
     
     public static class Config
     {
-        public static bool GameActive = false;
-
         public const Button ButtonMain = Button.Left;
 
         public const ushort BoardWidth = 8;

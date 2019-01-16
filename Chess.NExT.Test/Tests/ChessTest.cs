@@ -11,17 +11,17 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void ShouldConvertCoordinatePositionToRankAndFile()
         {
-            Position position = new Position(3, 3);
+            var position = new Position(3, 3);
             
             RankFile boardPosition = position; //invokes conversion operator
 
-            boardPosition.Should().BeEquivalentTo(new RankFile('d', 4));
+            boardPosition.Should().BeEquivalentTo(new RankFile(file: 'd',rank: 4));
         }
         
         [Test]
         public static void ShouldConvertRankAndFileToPosition()
         {
-            RankFile g7 = new RankFile('g', 7);
+            var g7 = new RankFile(file: 'g', rank: 7);
             
             Position position = g7; //invokes conversion operator
 
@@ -31,7 +31,7 @@ namespace Chess.NExT.Test.Tests
         [Test]
         public static void RankAndFileConversionShouldBeReversible()
         {
-            RankFile a8 = new RankFile('a', 8);
+            var a8 = new RankFile(file: 'a', rank: 8);
             
             Position position = a8; //invokes conversion operator
             RankFile reverseConvertedPosition = position; //invokes conversion operator

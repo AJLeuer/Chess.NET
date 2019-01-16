@@ -1,5 +1,4 @@
-﻿using Chess.Game;
-using Chess.Game.Graphical;
+using Chess.Game;
 
 namespace Chess.NExT
 {
@@ -7,10 +6,11 @@ namespace Chess.NExT
     {
         public static void Main(string[] args)
         {
-            BasicGame game = 
-                new Game.Graphical.Game(new Game.Graphical.Board(), new AI(Color.white), new MockAIPlayer(Color.black));
             
-            game.PlayGame();
+            BasicGame game = 
+                new Game.Graphical.Game(new Game.Graphical.Board(), new AI(Color.white), new SimpleAI(Color.black));
+            
+            game.Play();
         }
     }
 }

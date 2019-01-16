@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using Chess.Util;
+
 using static Chess.Util.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -21,6 +23,8 @@ namespace Chess.Game
         protected static ulong IDs = 0;
 
         protected ulong ID { get; } = IDs++;
+        
+        public bool GameActive = false;
         
         protected ulong iterations = 0;
         
@@ -117,7 +121,7 @@ namespace Chess.Game
         
         protected List<GameRecordEntry> gameRecord;
 
-        public GameStateAdvancedAction OnGameAdvanced { get; } = () => { };
+        public GameStateAdvancedAction OnGameAdvanced { get; set; } = () => { };
         
         protected BasicGame(Board board, Player player0 = null, Player player1 = null)
         {
@@ -133,7 +137,7 @@ namespace Chess.Game
 
         public abstract BasicGame Clone();
         
-        public void PlayGame() 
+        public void Play() 
         {
             GameActive = true;
             
@@ -336,8 +340,11 @@ namespace Chess.Game
             {
                 //do nothing
             }
-        
-            protected override void display(){}
+
+            protected override void display()
+            {
+                Thread.Yield();
+            }
         }
     
         /// <summary>

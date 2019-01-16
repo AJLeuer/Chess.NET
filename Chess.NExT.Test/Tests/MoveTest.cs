@@ -82,7 +82,7 @@ namespace Chess.NExT.Test.Tests
 		[Test]
 		public static void ShouldCreateMatchingMove()
 		{
-			Player anotherBlackPlayer = new MockAIPlayer(color: Color.black);
+			Player anotherBlackPlayer = new SimpleAI(color: Color.black);
 			Piece anotherRook = new Rook(color: Color.black);
 			var startingSquare = new Square(file: 'a', rank: 1);
 			startingSquare.Piece = anotherRook;
