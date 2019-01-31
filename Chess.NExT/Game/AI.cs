@@ -37,7 +37,7 @@ namespace Chess.Game
 	        Simulation.Game simulatedGame = new Simulation.Game(this.Game);
 	        AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
 	        TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(currentDepth: 0, maximumDepth: 3);
-	        Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
+	        Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree);
 	        return bestMove;
         }
 
@@ -86,46 +86,38 @@ namespace Chess.Game
 			return moveTree;
 		}
 
-		private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint toDepth)
+		private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree)
 		{
-			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequence(moveTree, currentDepth: 0, maximumDepth: toDepth);
+			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequence(moveTree);
 			Move startingMove = retrieveFirstMoveFromSequence(bestMoveSequence);
 
 			return startingMove;
 		}
 		
-		private TreeNode<Move> searchMovePossibilityTreeForBestMoveSequence(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)
+		private TreeNode<Move> searchMovePossibilityTreeForBestMoveSequence(TreeNode<Move> moveTree)
 		{
-			if (currentDepth == (maximumDepth - 1))
-			{
-				TreeNode<Move> localHighestValue = moveTree.Children.RetrieveHighestValueItem();
-				return localHighestValue;
-			}
-			else
-			{
-				TreeNode<Move> overallHighestValueMove = moveTree; //if this node has no children, then it itself is considered the highest-value move
+			TreeNode<Move> overallHighestValueMove = moveTree; //if this node has no children, then it itself is considered the highest-value move
 
-				for (int i = 0; i < moveTree.Children.Count; i++)
+			for (int i = 0; i < moveTree.Children.Count; i++)
+			{
+				TreeNode<Move> childMoveNode = moveTree.Children[i];
+			
+				TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMoveSequence(childMoveNode);
+
+				if (currentMove != null)
 				{
-					TreeNode<Move> childMoveNode = moveTree.Children[i];
-				
-					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMoveSequence(childMoveNode, (currentDepth + 1), maximumDepth);
-
-					if (currentMove != null)
+					if (i == 0)
 					{
-						if (i == 0)
-						{
-							overallHighestValueMove = currentMove;
-						}
-						else if (currentMove > overallHighestValueMove)
-						{
-							overallHighestValueMove = currentMove;
-						}	
+						overallHighestValueMove = currentMove;
 					}
+					else if (currentMove > overallHighestValueMove)
+					{
+						overallHighestValueMove = currentMove;
+					}	
 				}
-
-				return overallHighestValueMove;
 			}
+
+			return overallHighestValueMove;
 		}
 		
 		private Move retrieveFirstMoveFromSequence(TreeNode<Move> sequence)
