@@ -124,4 +124,10 @@ namespace Chess.Game
             return moves;
         }
     }
+    
+    
+    public class NoRemainingMovesException : Exception
+    {
+        
+    }
 }

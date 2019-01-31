@@ -20,18 +20,18 @@ namespace Chess.Game
 		
         public BasicGame Game { get { return Board.Game; } }
 
-        private short? value = null;
+        private short? outcomeValue = null;
 
-        public short Value 
+        public short OutcomeValue 
         {
             get
             {
-                if (value.HasValue == false)
+                if (outcomeValue.HasValue == false)
                 {
-                    value = calculateValue();
+                    outcomeValue = calculateResultingBoardValue();
                 }
                 // ReSharper disable once PossibleInvalidOperationException
-                return value.Value;
+                return outcomeValue.Value;
             }
         }
 
@@ -90,12 +90,12 @@ namespace Chess.Game
 		
         public static bool operator > (Move move0, Move move1)
         {
-            return move0.Value > move1.Value;
+            return move0.OutcomeValue > move1.OutcomeValue;
         }
 
         public static bool operator < (Move move0, Move move1)
         {
-            return move0.Value < move1.Value;
+            return move0.OutcomeValue < move1.OutcomeValue;
         }
 
         public int CompareTo(object @object) 
@@ -126,29 +126,25 @@ namespace Chess.Game
             }
         }
 
-        protected ref short? calculateValue()
+        protected ref short? calculateResultingBoardValue()
         {
-            short startingValue = Board.CalculateRelativeValue(Player);
-
-            short valueAfterMove = calculateRelativeValueAfterMove(this);
-
-            value = (short)(valueAfterMove - startingValue);
-
-            return ref value;
-        }
-
-        protected static short calculateRelativeValueAfterMove(Move move)
-        {
-            var testGame = new Simulation.TemporaryGame(move.Game);
+            var testGame = new Simulation.TemporaryGame(this.Game);
 			
-            Move translatedMove = CreateMatchingMoveForGame(move, testGame);
+            Move translatedMove = CreateMatchingMoveForGame(this, testGame);
 
             translatedMove.Commit();
 			
             var testBoard = testGame.Board;
-            return testBoard.CalculateRelativeValue(translatedMove.Player);
+
+            (short valueToBlack, short valueToWhite) valueToPlayers = testBoard.CalculateRelativeValueToPlayers();
+
+            short valueToPlayer = (translatedMove.Player.Color == Color.black)
+                ? valueToPlayers.valueToBlack
+                : valueToPlayers.valueToWhite;
+            
+            outcomeValue = valueToPlayer;
+
+            return ref outcomeValue;
         }
-
-
     }
 }

@@ -31,7 +31,8 @@ namespace Chess.Game
 			Simulation.Game simulatedGame = new Simulation.Game(this.Game);
 			AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
 			TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(toDepth: 3);
-            return searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
+			Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
+			return bestMove;
         }
 
 		TreeNode<Move> buildMovePossibilityTree(uint toDepth)
@@ -59,10 +60,17 @@ namespace Chess.Game
 					AI simulatedAIPlayer = (AI) simulatedMove.Game.FindMatchingPlayer(this);
 
 					SimpleAI simulatedOpponent = (SimpleAI) simulatedMove.Game.FindOpponentPlayer(simulatedAIPlayer);
-					Move opponentMove = simulatedOpponent.DecideNextMove();
-					opponentMove.Commit();
 
-					possibleMoves = simulatedAIPlayer.FindPossibleMoves();
+					try
+					{
+						Move opponentMove = simulatedOpponent.DecideNextMove();
+						opponentMove.Commit();
+						possibleMoves = simulatedAIPlayer.FindPossibleMoves();
+					}
+					catch (NoRemainingMovesException)
+					{
+						possibleMoves = new List<Move>{};
+					}
 				}
 				
 				moveTree.AddChildren(possibleMoves.ToArray());
@@ -106,21 +114,24 @@ namespace Chess.Game
 			}
 			else
 			{
-				TreeNode<Move> overallHighestValueMove = null;
+				TreeNode<Move> overallHighestValueMove = moveTree; //if this node has no children, then it itself is considered the highest-value move
 
 				for (int i = 0; i < moveTree.Children.Count; i++)
 				{
 					TreeNode<Move> childMoveNode = moveTree.Children[i];
 				
 					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMove(childMoveNode, (currentDepth + 1), maximumDepth);
-				
-					if (i == 0)
+
+					if (currentMove != null)
 					{
-						overallHighestValueMove = currentMove;
-					}
-					else if (currentMove > overallHighestValueMove)
-					{
-						overallHighestValueMove = currentMove;
+						if (i == 0)
+						{
+							overallHighestValueMove = currentMove;
+						}
+						else if (currentMove > overallHighestValueMove)
+						{
+							overallHighestValueMove = currentMove;
+						}	
 					}
 				}
 
@@ -202,8 +213,12 @@ namespace Chess.Game
 				}
 			}
 
+			if (moves.Count == 0)
+			{
+				throw new NoRemainingMovesException();
+			}
+			
 			return moves;
 		}
 	}
-    
 }

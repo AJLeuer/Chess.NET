@@ -76,8 +76,8 @@ namespace Chess.NExT.Test.Tests
             Player blackPlayer = blackPlayerMock.Object;
             Player whitePlayer = whitePlayerMock.Object;
             
-            board.CalculateRelativeValue(blackPlayer).Should().Be(5);
-            board.CalculateRelativeValue(whitePlayer).Should().Be(-5);
+            board.CalculateRelativeValueToPlayers().valueToBlack.Should().Be(5);
+            board.CalculateRelativeValueToPlayers().valueToWhite.Should().Be(-5);
         }
 
         [Test]

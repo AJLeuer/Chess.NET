@@ -205,25 +205,17 @@ namespace Chess.Game
 
 
 		/// <summary>Calculates the value of the current state of the board from the perspective of Player player</summary>
-		///
-		/// <param name="player">The player from whose perspective the value of the game state is calculated</param>
-		public virtual short CalculateRelativeValue(Player player)
+		public (short valueToBlack, short valueToWhite) CalculateRelativeValueToPlayers()
 		{
-			var (blackSum, whiteSum) = CalculateAbsoluteValueToPlayers();
+			var (blackSum, whiteSum) = CalculatePlayerMaterielValue();
+			
+			short relativeValueToBlack = (short)(blackSum - whiteSum);
+			short relativeValueToWhite = (short)(whiteSum - blackSum);
 
-			if (player.Color == black) 
-			{
-				short result = (short)(blackSum - whiteSum);
-				return result;
-			}
-			else /* if (player.color == white) */ 
-			{
-				short result = (short)(whiteSum - blackSum);
-				return result;
-			}
+			return (relativeValueToBlack, relativeValueToWhite);
 		}
 
-		public (short valueToBlack, short valueToWhite) CalculateAbsoluteValueToPlayers() 
+		public (short valueToBlack, short valueToWhite) CalculatePlayerMaterielValue() 
 		{
 			short valueToBlack = 0;
 			short valueToWhite = 0;

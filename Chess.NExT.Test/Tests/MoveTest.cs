@@ -76,7 +76,7 @@ namespace Chess.NExT.Test.Tests
 			
 			var move = new Move(whitePlayer, whiteKnight, board['a', 1]);
 
-			move.Value.Should().Be(5);
+			move.OutcomeValue.Should().Be(2);
 		}
 
 		[Test]
