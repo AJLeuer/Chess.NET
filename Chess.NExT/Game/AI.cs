@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chess.Util;
 using System.Linq;
-using System.Net;
+
+using static Chess.Util.Util;
 
 namespace Chess.Game
 {
@@ -109,6 +109,10 @@ namespace Chess.Game
 					if (i == 0)
 					{
 						overallHighestValueMove = currentMove;
+					}
+					else if (currentMove == overallHighestValueMove)
+					{
+						overallHighestValueMove = SelectAtRandom(currentMove, overallHighestValueMove);
 					}
 					else if (currentMove > overallHighestValueMove)
 					{

@@ -42,6 +42,27 @@ namespace Chess.Util
 		{
 			return this.Datum.CompareTo(other.Datum);
 		}
+		
+		public static bool operator == (TreeNode<T> left, TreeNode<T> right)
+		{
+			if (ReferenceEquals(left, null))
+			{
+				return ReferenceEquals(right, null);
+			}
+			else if (ReferenceEquals(right, null))
+			{
+				return false;
+			}
+			else
+			{
+				return (dynamic) left.Datum == (dynamic) right.Datum;
+			}
+		}
+		
+		public static bool operator != (TreeNode<T> left, TreeNode<T> right)
+		{
+			return (left == right) == false;
+		}
 
 		public static bool operator < (TreeNode<T> left, TreeNode<T> right)
 		{

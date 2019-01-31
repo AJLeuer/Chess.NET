@@ -11,6 +11,12 @@ namespace Chess.Util
 {
     public static class Util
     {
+                
+        public static T SelectAtRandom<T>(params T[] items) where T : class
+        {
+            return items.SelectElementAtRandom();
+        }
+        
         public static Vector2f ConvertVector<N>(this Vec2<N> vector) where N : 
             struct, 
             IComparable, 
@@ -27,7 +33,6 @@ namespace Chess.Util
             object returnValue = arg;
             return returnValue;
         }
-        
                 
         public static ArrayList< ArrayList<T> > CreateFrom2DArray<T>(T[][] arrays)
         {
