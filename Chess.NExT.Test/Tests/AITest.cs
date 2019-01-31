@@ -41,7 +41,7 @@ namespace Chess.NExT.Test.Tests
         }
         
         [Test]
-        public static void ShouldAvoidWorstOutcome()
+        public static void ShouldChooseMoveThatAvoidsWorstOutcome()
         {
             Queen whiteQueen = (Queen) game.Board['d', 1].Piece.Object;
                 

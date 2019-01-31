@@ -28,20 +28,21 @@ namespace Chess.Game
 
         protected override Move decideNextMove()
         {
-			Simulation.Game simulatedGame = new Simulation.Game(this.Game);
-			AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
-			TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(toDepth: 3);
-			Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
+	        Move bestMove = findBestMove();
 			return bestMove;
         }
 
-		TreeNode<Move> buildMovePossibilityTree(uint toDepth)
-		{
-			return buildMovePossibilityTree(currentDepth: 0, maximumDepth: toDepth);
-		}
+        private Move findBestMove()
+        {
+	        Simulation.Game simulatedGame = new Simulation.Game(this.Game);
+	        AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
+	        TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(currentDepth: 0, maximumDepth: 3);
+	        Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree, toDepth: 3);
+	        return bestMove;
+        }
 
-		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-		TreeNode<Move> buildMovePossibilityTree(uint currentDepth, uint maximumDepth, TreeNode<Move> moveTree = null)
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+		private TreeNode<Move> buildMovePossibilityTree(uint currentDepth, uint maximumDepth, TreeNode<Move> moveTree = null)
 		{
 			if (currentDepth < maximumDepth)
 			{
@@ -87,25 +88,13 @@ namespace Chess.Game
 
 		private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint toDepth)
 		{
-			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMove(moveTree, currentDepth: 0, maximumDepth: toDepth);
-			TreeNode<Move> sequence = bestMoveSequence;
-			
-			Move simulatedStartingMove;
-			
-			do
-			{
-				simulatedStartingMove = sequence.Datum;
-				sequence = sequence.Parent;
-			}
-			while (sequence.Parent != null);
-			
-			
-			Move startingMove = Move.CreateMatchingMoveForGame(simulatedStartingMove, this.Game);
+			TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequence(moveTree, currentDepth: 0, maximumDepth: toDepth);
+			Move startingMove = retrieveFirstMoveFromSequence(bestMoveSequence);
 
 			return startingMove;
 		}
 		
-		private TreeNode<Move> searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)
+		private TreeNode<Move> searchMovePossibilityTreeForBestMoveSequence(TreeNode<Move> moveTree, uint currentDepth, uint maximumDepth)
 		{
 			if (currentDepth == (maximumDepth - 1))
 			{
@@ -120,7 +109,7 @@ namespace Chess.Game
 				{
 					TreeNode<Move> childMoveNode = moveTree.Children[i];
 				
-					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMove(childMoveNode, (currentDepth + 1), maximumDepth);
+					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMoveSequence(childMoveNode, (currentDepth + 1), maximumDepth);
 
 					if (currentMove != null)
 					{
@@ -137,6 +126,21 @@ namespace Chess.Game
 
 				return overallHighestValueMove;
 			}
+		}
+		
+		private Move retrieveFirstMoveFromSequence(TreeNode<Move> sequence)
+		{
+			Move simulatedStartingMove;
+
+			do
+			{
+				simulatedStartingMove = sequence.Datum;
+				sequence = sequence.Parent;
+			} while (sequence.Parent != null);
+
+
+			Move startingMove = Move.CreateMatchingMoveForGame(simulatedStartingMove, this.Game);
+			return startingMove;
 		}
 		
 		protected Optional<Move> findBestMoveForPiece(IPiece piece)
