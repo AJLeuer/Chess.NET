@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Reflection;
 using C5;
 using SFML.System;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     public static class Util
     {

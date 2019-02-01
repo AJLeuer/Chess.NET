@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using SFML.Graphics;
 
-using Chess.Util;
+using Chess.Utility;
 using Chess.View;
+using Chess.Configuration;
 using static Chess.Game.Color;
 
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 

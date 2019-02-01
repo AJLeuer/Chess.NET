@@ -1,7 +1,5 @@
 using System;
 
-using Simulation = Chess.Game.Simulation;
-
 namespace Chess.Game
 {
     public class Move : GameEntity, IComparable, IComparable<Move> 

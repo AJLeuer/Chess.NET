@@ -4,10 +4,9 @@ using Chess.Game.Simulation;
 using NUnit.Framework;
 using Board = Chess.Game.Board;
 using Square = Chess.Game.Square;
-using Piece = Chess.Game.Simulation.Piece;
-using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
+using static Chess.Test.Util.AdditionalCollectionAssertions;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
 	public static class PawnTest
 	{

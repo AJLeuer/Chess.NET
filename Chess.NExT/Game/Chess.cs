@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Chess.Util;
+using Chess.Utility;
 
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 	

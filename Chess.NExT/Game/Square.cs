@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Chess.Util;
+using Chess.Utility;
 using Chess.View;
 using SFML.Graphics;
-using SFML.Graphics.Glsl;
 using File = System.Char;
 using Rank = System.UInt16;
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 using static Chess.Game.Color;
 
 namespace Chess.Game
@@ -369,8 +368,8 @@ namespace Chess.Game
                 ushort numberOfSquaresHorizontal = (ushort) Graphical.Board.DefaultStartingSquares().GetLength(0);
                 ushort numberOfSquaresVertical   = (ushort) Graphical.Board.DefaultStartingSquares().GetLength(1);
             
-                uint targetWidthForSquare  = Chess.Util.Config.BoardResolution.Width  / numberOfSquaresHorizontal;
-                uint targetHeightForSquare = Chess.Util.Config.BoardResolution.Height / numberOfSquaresVertical;
+                uint targetWidthForSquare  = Configuration.Config.BoardResolution.Width  / numberOfSquaresHorizontal;
+                uint targetHeightForSquare = Configuration.Config.BoardResolution.Height / numberOfSquaresVertical;
 
                 Size targetSizeForSquare = new Size {Width = targetWidthForSquare, Height = targetHeightForSquare};
 

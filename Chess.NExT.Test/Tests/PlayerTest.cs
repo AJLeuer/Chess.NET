@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using C5;
 using Chess.Game;
-using Chess.NExT.Test.Util;
+using Chess.Test.Util;
 using Moq;
 using NUnit.Framework;
 
@@ -10,7 +9,7 @@ using Piece = Chess.Game.Simulation.Piece;
 using Knight = Chess.Game.Simulation.Knight;
 using Pawn = Chess.Game.Simulation.Pawn;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
     public static class PlayerTest
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Chess.NExT.Test.Util
+namespace Chess.Test.Util
 {
     public class AdditionalCollectionAssertions : CollectionAssert
     {

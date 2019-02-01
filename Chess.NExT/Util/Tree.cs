@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.Remoting.Messaging;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
 	public class TreeNode<T> : IComparable<TreeNode<T>> where T : IComparable<T>
 	{

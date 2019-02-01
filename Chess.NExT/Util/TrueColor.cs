@@ -1,6 +1,6 @@
 ﻿using SFML.Graphics;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     public struct TrueColor
     {

@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chess.Util;
+using Chess.Utility;
 using Chess.View;
 using SFML.Graphics;
 using static Chess.Game.Color;
 using static Chess.Game.BasicGame;
-using static Chess.Util.Config;
+using static Chess.Configuration.Config;
 
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 
 namespace Chess.Game
 {

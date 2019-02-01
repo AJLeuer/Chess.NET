@@ -1,6 +1,5 @@
-using SFML.Window;
 
-namespace Chess.NExT.Input
+namespace Chess.Input
 {
     public class InputController
     {

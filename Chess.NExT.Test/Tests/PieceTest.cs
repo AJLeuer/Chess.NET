@@ -1,11 +1,11 @@
 using Chess.Game;
 using NUnit.Framework;
-using static Chess.NExT.Test.Util.AdditionalCollectionAssertions;
+using static Chess.Test.Util.AdditionalCollectionAssertions;
 using Board = Chess.Game.Simulation.Board;
 using Square = Chess.Game.Simulation.Square;
 using Queen = Chess.Game.Simulation.Queen;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
 	public static class PieceTest
 	{

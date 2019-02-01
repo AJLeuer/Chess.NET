@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 
-using Chess.Util;
+using Chess.Utility;
 
-using static Chess.Util.Config;
+using static Chess.Configuration.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
 

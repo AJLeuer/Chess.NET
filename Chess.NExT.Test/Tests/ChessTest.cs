@@ -2,9 +2,9 @@
 using FluentAssertions;
 using NUnit.Framework;
 
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
     public static class ChessTest
     {

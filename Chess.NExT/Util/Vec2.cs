@@ -1,7 +1,6 @@
 ﻿using System;
 using SFML.System;
 
-
 namespace System
 {
     public interface IIndexable<N>
@@ -10,7 +9,7 @@ namespace System
     }
 }
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     public struct Vec2<N> : IEquatable<Vec2<N>>, IEquatable<(N,N)>, IIndexable<N> where N:
         struct,

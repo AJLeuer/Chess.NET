@@ -1,7 +1,7 @@
-using Chess.Util;
+using Chess.Utility;
 using SFML.Graphics;
 using SFML.Window;
-using static Chess.Util.Config;
+using static Chess.Configuration.Config;
 
 namespace Chess.View
 {

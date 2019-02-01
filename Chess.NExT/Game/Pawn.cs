@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Chess.Util;
+using Chess.Utility;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 

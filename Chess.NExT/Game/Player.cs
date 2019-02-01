@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Chess.Util;
+using Chess.Utility;
 
 namespace Chess.Game
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     public class SortedList<T> : List<T> where T : IComparable
     {

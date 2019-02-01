@@ -1,10 +1,9 @@
 ﻿using SFML.Window;
 using MonoMac.CoreVideo;
-using Chess.Util;
+using Chess.Utility;
 
 namespace Chess.View
 {
-
     public static class DisplayData
     {
 

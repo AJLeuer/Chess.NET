@@ -1,14 +1,13 @@
 using Chess.Game;
-using Chess.Util;
 using FluentAssertions;
 using NUnit.Framework;
 
-using Position = Chess.Util.Vec2<uint>;
+using Position = Chess.Utility.Vec2<uint>;
 using File = System.Char;
 using Rank = System.UInt16;
 using Square = Chess.Game.Simulation.Square;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
 	public static class SquareTest
 	{

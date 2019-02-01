@@ -1,6 +1,6 @@
 using SFML.System;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
 	public struct Size
 	{

@@ -10,7 +10,7 @@ using Knight = Chess.Game.Simulation.Knight;
 using Rook = Chess.Game.Simulation.Rook;
 using Piece = Chess.Game.Piece;
 
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
 	public static class MoveTest
 	{

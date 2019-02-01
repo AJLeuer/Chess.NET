@@ -1,13 +1,15 @@
-﻿using Chess.View;
-using static SFML.Window.Mouse;
+﻿using SFML.Window;
 
-namespace Chess.Util
+using Chess.Utility;
+using Chess.View;
+
+namespace Chess.Configuration
 {
-    using Resolution = Chess.Util.Size;
+    using Resolution = Utility.Size;
     
     public static class Config
     {
-        public const Button ButtonMain = Button.Left;
+        public const Mouse.Button ButtonMain = Mouse.Button.Left;
 
         public const ushort BoardWidth = 8;
         public const ushort BoardHeight = 8;

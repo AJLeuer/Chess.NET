@@ -3,12 +3,12 @@ using FluentAssertions;
 using Moq;
 
 using Chess.Game;
-using Chess.Util;
+using Chess.Utility;
 
 using Square = Chess.Game.Simulation.Square;
 using Queen = Chess.Game.Simulation.Queen;
     
-namespace Chess.NExT.Test.Tests
+namespace Chess.Test.Tests
 {
     public static class BoardTest
     {

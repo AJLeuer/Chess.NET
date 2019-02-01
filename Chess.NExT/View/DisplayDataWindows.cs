@@ -1,9 +1,8 @@
-using Chess.Util;
+using Chess.Utility;
 using SFML.Window;
 
 namespace Chess.View
 {
-    
     public static class DisplayData 
     {
 
@@ -19,11 +18,9 @@ namespace Chess.View
             return 165;
         }
 
-        /**
-         * The display scaling factor.
-         * For example, if the system is running in Retina mode,
-         * this value will be 2.0
-         */
+        /// <returns>The display scaling factor.
+        /// For example, if the system is running in Retina mode,
+        /// this value will be 2.0</returns>
         public static float getDisplayScalingFactor() 
         {
             //todo: implement without hard-coded values

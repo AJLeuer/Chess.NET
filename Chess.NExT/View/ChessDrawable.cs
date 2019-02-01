@@ -1,4 +1,4 @@
-using Chess.Util;
+using Chess.Utility;
 using SFML.Graphics;
 
 namespace Chess.View

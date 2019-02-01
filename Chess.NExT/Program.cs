@@ -1,6 +1,6 @@
 using Chess.Game;
 
-namespace Chess.NExT
+namespace Chess
 {
     internal static class Program
     {

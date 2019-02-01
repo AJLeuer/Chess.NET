@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     public class Pair<T> : IList<T>, ITuple
     {

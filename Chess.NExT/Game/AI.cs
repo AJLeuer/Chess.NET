@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chess.Util;
+using Chess.Utility;
 using System.Linq;
-
-using static Chess.Util.Util;
+using System.Threading;
+using static Chess.Utility.Util;
 
 namespace Chess.Game
 {

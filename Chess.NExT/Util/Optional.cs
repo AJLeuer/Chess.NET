@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chess.Util
+namespace Chess.Utility
 {
     /**
      * Optional container class, similar to one provided in Java
