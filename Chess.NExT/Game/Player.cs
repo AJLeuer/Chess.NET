@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Chess.Utility;
+using NodaTime;
 
 namespace Chess.Game
 {
@@ -15,6 +16,9 @@ namespace Chess.Game
         public virtual Color Color { get; }
 
         public uint MovesMade { get; private set; } = 0;
+
+        private Timer playerMoveTimer = new Timer();
+        public List<Duration> TimeSpentDecidingEachMove { get; private set; } = new List<Duration>();
         
         public BasicGame Game { get { return Board.Game; }}
 
@@ -90,7 +94,10 @@ namespace Chess.Game
         public Move DecideNextMove()
         {
             MovesMade++;
-            return decideNextMove();
+            playerMoveTimer.Start();
+            Move nextMove = decideNextMove();
+            TimeSpentDecidingEachMove.Add(playerMoveTimer.Stop());
+            return nextMove;
         }
 
         protected abstract Move decideNextMove();
