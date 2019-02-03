@@ -4,6 +4,7 @@ using System.Threading;
 
 using Chess.Utility;
 
+using AI = Chess.Game.Real.AI;
 using static Chess.Configuration.Config;
 using static Chess.Game.Color;
 using Window = Chess.View.Window;
@@ -252,7 +253,7 @@ namespace Chess.Game
                 Board2D.Initialize2DCoordinates(new Vec2<uint>((MainWindowSize.Width / 4), (MainWindowSize.Height / 32)));
             }
     
-            public Game(Chess.Game.Board board, Player player0, Player player1) :
+            public Game(Chess.Game.Board board, Chess.Game.Player player0, Chess.Game.Player player1) :
                 base(board, player0, player1)
             {
                 Board2D.InitializeGraphicalElements();
@@ -323,7 +324,7 @@ namespace Chess.Game
 
             }
 
-            public Game(Board board, Player player0, Player player1) :
+            public Game(Board board, Chess.Game.Player player0, Chess.Game.Player player1) :
                 base(board, player0, player1)
             {
             

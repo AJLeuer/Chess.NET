@@ -4,6 +4,7 @@ using Chess.Test.Util;
 using Moq;
 using NUnit.Framework;
 
+using AI = Chess.Game.Real.AI;
 using Square = Chess.Game.Simulation.Square;
 using Piece = Chess.Game.Simulation.Piece;
 using Knight = Chess.Game.Simulation.Knight;

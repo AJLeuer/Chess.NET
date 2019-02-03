@@ -2,6 +2,8 @@ using Chess.Game;
 using FluentAssertions;
 using NUnit.Framework;
 
+using SimpleAI = Chess.Game.Simulation.SimpleAI;
+using AI = Chess.Game.Real.AI;
 using Board = Chess.Game.Simulation.Board;
 using Square = Chess.Game.Simulation.Square;
 using Queen = Chess.Game.Simulation.Queen;

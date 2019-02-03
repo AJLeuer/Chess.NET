@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 
 using Chess.Game;
+using SimpleAI = Chess.Game.Simulation.SimpleAI;
 using Board = Chess.Game.Board;
 using Square = Chess.Game.Simulation.Square;
 using Knight = Chess.Game.Simulation.Knight;

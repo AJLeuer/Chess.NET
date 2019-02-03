@@ -2,27 +2,30 @@
 
 namespace Chess.Game
 {
-    public class Human : Player
+    namespace Real
     {
-        public Human(Color color) : 
-            base(color)
+        public class Human : Player
         {
-        }
+            public Human(Color color) : 
+                base(color)
+            {
+            }
 
-        public Human(Player other) : 
-            base(other)
-        {
-        }
+            public Human(Player other) : 
+                base(other)
+            {
+            }
 
-        public override Player Clone()
-        {
-            return new Human(this);
-        }
+            public override Chess.Game.Player Clone()
+            {
+                return new Human(this);
+            }
 
-        protected override Move decideNextMove()
-        {
-            //todo: implement
-            throw new NotImplementedException();
+            protected override Move decideNextMove()
+            {
+                //todo: implement
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Chess.Utility;
+using System.Linq;
 using NodaTime;
+
+using Chess.Utility;
 
 namespace Chess.Game
 {
-    public abstract class Player : GameEntity, ICloneable
+    public abstract class Player : GameEntity, ICloneable 
     {
         protected static ulong uniqueIDs = 0;
 
@@ -15,10 +17,7 @@ namespace Chess.Game
     
         public virtual Color Color { get; }
 
-        public uint MovesMade { get; private set; } = 0;
-
-        private Timer playerMoveTimer = new Timer();
-        public List<Duration> TimeSpentDecidingEachMove { get; private set; } = new List<Duration>();
+        public uint MovesMade { get; protected set; } = 0;
         
         public BasicGame Game { get { return Board.Game; }}
 
@@ -91,14 +90,7 @@ namespace Chess.Game
             }
         }
 
-        public Move DecideNextMove()
-        {
-            MovesMade++;
-            playerMoveTimer.Start();
-            Move nextMove = decideNextMove();
-            TimeSpentDecidingEachMove.Add(playerMoveTimer.Stop());
-            return nextMove;
-        }
+        public abstract Move DecideNextMove();
 
         protected abstract Move decideNextMove();
         
@@ -130,8 +122,82 @@ namespace Chess.Game
             
             return moves;
         }
+        
+        protected Optional<Move> findBestMoveForPiece(IPiece piece)
+        {
+            List<Move> moves = FindAllPossibleMovesForPiece(piece);
+	
+            moves = moves.ExtractHighestValueSubset();
+	
+            if (moves.Any())
+            {
+                return moves.SelectElementAtRandom();
+            }
+            else
+            {
+                return new Optional<Move>(null);
+            }
+        }
+
     }
     
+    namespace Real 
+    {
+        public abstract class Player : Chess.Game.Player
+        {
+            protected readonly Timer playerMoveTimer = new Timer();
+            public List<Duration> TimeSpentDecidingEachMove { get; private set; } = new List<Duration>();
+            
+            public Duration AverageTimeToDecideMove
+            {
+                get { return TimeSpentDecidingEachMove.ComputeAverage(); }
+            }
+            
+            protected Player(Color color) : 
+                base(color)
+            {
+            }
+
+            protected Player(Chess.Game.Player other) : 
+                base(other)
+            {
+            }
+            
+            public override Move DecideNextMove()
+            {
+                MovesMade++;
+                playerMoveTimer.Start();
+                Move nextMove = decideNextMove();
+                TimeSpentDecidingEachMove.Add(playerMoveTimer.Stop());
+                return nextMove;
+            }
+
+        }
+	}
+
+    namespace Simulation 
+    {
+        public abstract class Player : Chess.Game.Player
+        {
+            protected Player(Color color) : 
+                base(color)
+            {
+            }
+
+            protected Player(Chess.Game.Player other) : 
+                base(other)
+            {
+            }
+            
+            public override Move DecideNextMove()
+            {
+                MovesMade++;
+                Move nextMove = decideNextMove();
+                return nextMove;
+            }
+
+        }
+    }
     
     public class NoRemainingMovesException : Exception
     {

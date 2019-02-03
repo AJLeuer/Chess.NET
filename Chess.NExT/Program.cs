@@ -1,5 +1,8 @@
 using Chess.Game;
 
+using AI = Chess.Game.Real.AI;
+using SimpleAI = Chess.Game.Simulation.SimpleAI;
+
 namespace Chess
 {
     internal static class Program

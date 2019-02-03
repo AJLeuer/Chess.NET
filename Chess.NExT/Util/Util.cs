@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using C5;
+using NodaTime;
 using SFML.System;
 
 namespace Chess.Utility
@@ -133,6 +134,36 @@ namespace Chess.Utility
             return cloneArray;
         }
 
+        public static void AddRange<T>(this System.Collections.Generic.ICollection<T> collection, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                collection.Add(item);
+            }
+        }
+        
+        public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
+        {
+            foreach (T element in items)
+            {
+                action.Invoke(element);
+            }
+        }
+
+        public static N ComputeAverage<N>(this IEnumerable<N> numericValues) where N : new()
+        {
+            var sum = new N();
+
+            foreach (N value in numericValues)
+            {
+                sum += (dynamic) value;
+            }
+
+            N average = (dynamic) sum / (dynamic) numericValues.Count();
+
+            return average;
+        }
+
         public static T SelectElementAtRandom<T>(this System.Collections.Generic.IList<T> container) where T : class
         {
             if (container.Count == 0)
@@ -203,16 +234,7 @@ namespace Chess.Utility
             double scalingValueY = (float)targetResolution.Height / (float)sprite.Texture.Size.Y;
 
             sprite.Scale = new Vec2<double>(scalingValueX, scalingValueY);
-        }
-        
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
-        {
-            foreach (T element in source)
-            {
-                action.Invoke(element);
-            }
-        }
-        
+        }        
     }
     
     public delegate void CallBack();

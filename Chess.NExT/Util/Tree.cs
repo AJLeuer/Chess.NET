@@ -7,7 +7,7 @@ namespace Chess.Utility
 	{
 		public T Datum { get; set; }
 		public TreeNode<T> Parent { get; private set; } = null;
-		public List<TreeNode<T>> Children { get; } = new List<TreeNode<T>>();
+		public SynchronizedCollection<TreeNode<T>> Children { get; } = new SynchronizedCollection<TreeNode<T>>();
 		
 		public TreeNode(T datum)
 		{
