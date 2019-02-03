@@ -8,6 +8,15 @@ namespace Chess.Utility
 		public T Datum { get; set; }
 		public TreeNode<T> Parent { get; private set; } = null;
 		public SynchronizedCollection<TreeNode<T>> Children { get; } = new SynchronizedCollection<TreeNode<T>>();
+
+//		public ulong Count
+//		{
+//			get
+//			{
+//				if 
+//			}	
+//		}
+		
 		
 		public TreeNode(T datum)
 		{

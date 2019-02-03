@@ -194,7 +194,7 @@ namespace Chess.Utility
 
             T best = list[0];
             
-            foreach (var item in list)
+            foreach (var item in list) 
             {
                 if (item.CompareTo(best) == 0)
                 {

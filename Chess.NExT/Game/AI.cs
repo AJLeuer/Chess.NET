@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chess.Utility;
 using System.Threading;
-
+using System.Threading.Tasks;
 using static Chess.Utility.Util;
 
 namespace Chess.Game
@@ -34,79 +35,93 @@ namespace Chess.Game
 				return bestMove;
 	        }
 	
-	        private Move findBestMove()
+	        private Move findBestMove() 
 	        {
 		        Simulation.Game simulatedGame = new Simulation.Game(this.Game);
 		        AI simPlayer = (AI) simulatedGame.FindMatchingPlayer(this);
-		        TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTree(currentDepth: 0, maximumDepth: 3);
+		        TreeNode<Move> movePossibilityTree = simPlayer.buildMovePossibilityTreeInParallel(maximumDepth: 3);
 		        Move bestMove = searchMovePossibilityTreeForBestMove(movePossibilityTree);
 		        return bestMove;
 	        }
 	
-	        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-			private TreeNode<Move> buildMovePossibilityTree(uint currentDepth, uint maximumDepth, TreeNode<Move> moveTree = null)
+			private void buildMovePossibilityTree(uint currentDepth, uint maximumDepth, TreeNode<Move> moveTree = null)
 			{
 				if (currentDepth < maximumDepth)
 				{
-					List<Move> possibleMoves = null;
-					
-					if (currentDepth == 0)
-					{
-						moveTree = new TreeNode<Move>(null);
-						possibleMoves = FindPossibleMoves();
-					}
-					else if (currentDepth > 0)
-					{
-						Move simulatedMove = moveTree.Datum;
-						simulatedMove = simulatedMove.CommitInSimulation();
-						
-						AI simulatedAIPlayer = (AI) simulatedMove.Game.FindMatchingPlayer(this);
-	
-						var simulatedOpponent = (Simulation.SimpleAI) simulatedMove.Game.FindOpponentPlayer(simulatedAIPlayer);
-	
-						try
-						{
-							Move opponentMove = simulatedOpponent.DecideNextMove();
-							opponentMove.Commit();
-							possibleMoves = simulatedAIPlayer.FindPossibleMoves();
-						}
-						catch (NoRemainingMovesException)
-						{
-							possibleMoves = new List<Move>{};
-						}
-					}
-					
-					moveTree.AddChildren(possibleMoves.ToArray());
+					findPossibleMovesByDepth(currentDepth, ref moveTree);
 					currentDepth++;
 					
-					foreach (var childMoveNode in moveTree.Children)
+					foreach (var childMoveNode in moveTree.Children) 
 					{
-						if (currentDepth == 1)
-						{
-							buildMovePossibilityTreeInParallel(currentDepth, maximumDepth, childMoveNode);
-						}
-						else
-						{
-							buildMovePossibilityTree(currentDepth, maximumDepth, childMoveNode);	
-						}
+						buildMovePossibilityTree(currentDepth, maximumDepth, childMoveNode);	
 					}
 				}
+			}
+			
+			private TreeNode<Move> buildMovePossibilityTreeInParallel(uint maximumDepth)
+			{
+				TreeNode<Move> moveTree = null;
 				
+				findPossibleMovesByDepth(currentDepth: 0, ref moveTree);
+
+				var moveTreeBuilders = new List<Task>();
+				
+				foreach (var childMoveNode in moveTree.Children) 
+				{
+					Action moveTreeBuilder = () =>
+					{
+						this.buildMovePossibilityTree(currentDepth: 1, maximumDepth: maximumDepth, moveTree: childMoveNode);
+					};
+					
+					moveTreeBuilders.Add(Task.Run(moveTreeBuilder));
+				}
+
+				Task.WaitAll(moveTreeBuilders.ToArray());
+
 				return moveTree;
 			}
-	
-			private void buildMovePossibilityTreeInParallel(uint currentDepth, uint maximumDepth, TreeNode<Move> moveTree)
+			
+			private void findPossibleMovesByDepth(uint currentDepth, ref TreeNode<Move> moveTree)
 			{
-				ThreadStart buildMoveTree = () =>
-				{
-					this.buildMovePossibilityTree(currentDepth, maximumDepth, moveTree);
-				};
-	
-				var moveTreeBuilderThread = new Thread(buildMoveTree);
+				List<Move> possibleMoves;
 				
-				moveTreeBuilderThread.Start();
+				if (currentDepth == 0)
+				{
+					moveTree = new TreeNode<Move>(null);
+					possibleMoves = FindPossibleMoves();
+				}
+				else /* if (currentDepth > 0) */
+				{
+					possibleMoves = findPossibleMovesInSimulation(moveTree);
+				}
+
+				moveTree.AddChildren(possibleMoves.ToArray());
 			}
-	
+
+			private List<Move> findPossibleMovesInSimulation(TreeNode<Move> moveTree)
+			{
+				List<Move> possibleMoves;
+				Move simulatedMove = moveTree.Datum;
+				simulatedMove = simulatedMove.CommitInSimulation();
+
+				AI simulatedAIPlayer = (AI) simulatedMove.Game.FindMatchingPlayer(this);
+
+				var simulatedOpponent = (Simulation.SimpleAI) simulatedMove.Game.FindOpponentPlayer(simulatedAIPlayer);
+
+				try
+				{
+					Move opponentMove = simulatedOpponent.DecideNextMove();
+					opponentMove.Commit();
+					possibleMoves = simulatedAIPlayer.FindPossibleMoves();
+				}
+				catch (NoRemainingMovesException)
+				{
+					possibleMoves = new List<Move>();
+				}
+
+				return possibleMoves;
+			}
+
 			private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree)
 			{
 				TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequence(moveTree);

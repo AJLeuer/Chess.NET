@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -172,6 +172,13 @@ namespace Chess.Game
             sleep();
             
             iterations++;
+            
+            /* Debug */
+            if (Player1.pieces.Count <= 1)
+            {
+                int i = 0;
+            }
+            /* Debug */
         }
 
         protected virtual void playTurn()
