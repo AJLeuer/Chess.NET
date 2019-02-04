@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using NUnit.Framework;
 using Chess.Game;
 using Chess.Game.Simulation;
-using NUnit.Framework;
+using static Chess.Test.Util.AdditionalCollectionAssertions;
+
 using Board = Chess.Game.Board;
 using Square = Chess.Game.Square;
-using static Chess.Test.Util.AdditionalCollectionAssertions;
 
 namespace Chess.Test.Tests
 {

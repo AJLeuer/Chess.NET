@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Chess.Game;
 using NUnit.Framework;
+using Chess.Game;
 using static Chess.Test.Util.AdditionalCollectionAssertions;
+
 using File = System.Char;
 using Rank = System.UInt16;
-
 using Piece = Chess.Game.Simulation.Piece;
 using Knight = Chess.Game.Simulation.Knight;
 

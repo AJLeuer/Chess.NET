@@ -41,7 +41,7 @@ namespace Chess.View
 			text = new Text
 			{
 				Font = defaultFont,
-				CharacterSize = defaultTextCharacterSize
+				CharacterSize = DefaultTextCharacterSize
 			};
 			this.backgroundColor = backgroundColor;
 			this.SetVisible(true);

@@ -174,13 +174,6 @@ namespace Chess.Game
             sleep();
             
             iterations++;
-            
-            /* Debug */
-            if (Player1.pieces.Count <= 1)
-            {
-                int i = 0;
-            }
-            /* Debug */
         }
 
         protected virtual void playTurn()
@@ -228,7 +221,7 @@ namespace Chess.Game
         {
             protected Window window = new Window();
             
-            public override Chess.Game.Board Board
+            public override Chess.Game.Board Board 
             {
                 get { return base.Board; }
                 protected set
@@ -285,7 +278,7 @@ namespace Chess.Game
                 window.Clear();
                 display2D();
                 window.Display();
-                Thread.Sleep(TimeSpan.FromMilliseconds(8));
+                Thread.Sleep(TimeSpan.FromMilliseconds(DefaultDisplayRefreshInterval));
             }
     
             protected void display2D()

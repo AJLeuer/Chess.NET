@@ -53,13 +53,8 @@ namespace Chess.Utility
 		}
 
 		#region InterfaceImplementation
-		
-		public int CompareTo(TreeNode<T> other)
-		{
-			return this.Datum.CompareTo(other.Datum);
-		}
-		
-		public static bool operator == (TreeNode<T> left, TreeNode<T> right)
+
+		public static bool operator == (TreeNode<T> left, TreeNode<T> right) 
 		{
 			if (ReferenceEquals(left, null))
 			{
@@ -71,10 +66,10 @@ namespace Chess.Utility
 			}
 			else
 			{
-				return (dynamic) left.Datum == (dynamic) right.Datum;
+				return left.ID == right.ID;
 			}
 		}
-		
+
 		public static bool operator != (TreeNode<T> left, TreeNode<T> right)
 		{
 			return (left == right) == false;
@@ -98,6 +93,29 @@ namespace Chess.Utility
 		public static bool operator >= (TreeNode<T> left, TreeNode<T> right)
 		{
 			return left.CompareTo(right) >= 0;
+		}
+		
+		protected bool Equals(TreeNode<T> other)
+		{
+			return this == other;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((TreeNode<T>) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return ID.GetHashCode();
+		}
+
+		public int CompareTo(TreeNode<T> other)
+		{
+			return this.Datum.CompareTo(other.Datum);
 		}
 
 		public IEnumerator<TreeNode<T>> GetEnumerator()

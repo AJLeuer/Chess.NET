@@ -17,12 +17,14 @@ namespace Chess.Configuration
         
         public static Resolution MainWindowSize { get; } = DisplayData.getScreenResolution() / 2;
 
-        public static readonly Resolution BoardResolution = new Resolution {Width = 1440, Height = 1440};
+        public static readonly Resolution BoardResolution = new Resolution {Width = 1280, Height = 1280};
+
+        public const ushort DefaultDisplayRefreshInterval = 8;
 
         public const float PieceScaleRelativeToSquare = 0.75f;
 
         public const string MainFontFilePath = "./Assets/Fonts/RobotoMono-Regular.ttf";
      
-        public const uint defaultTextCharacterSize = 60;
+        public const uint DefaultTextCharacterSize = 60;
     }
 }

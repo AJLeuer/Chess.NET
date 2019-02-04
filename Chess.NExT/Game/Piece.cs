@@ -541,8 +541,9 @@ namespace Chess.Game
             {
                 var spriteTexture = new Texture(SpriteImageFilePath);
                 Sprite = new Sprite(spriteTexture);
-                Sprite.Texture.Smooth = true;
                 Sprite.Scale = calculateScalingFromSquareResolution();
+                bool mipMapGeneratedSuccessfully = Sprite.Texture.GenerateMipmap();
+                Sprite.Texture.Smooth = true;
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates = default)
