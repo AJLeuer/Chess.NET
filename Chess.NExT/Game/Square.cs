@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using SFML.Graphics;
+
 using Chess.Utility;
 using Chess.View;
-using SFML.Graphics;
+
+using static Chess.Game.Color;
+using static Chess.Game.Constants;
+
 using File = System.Char;
 using Rank = System.UInt16;
 using Position = Chess.Utility.Vec2<uint>;
-using static Chess.Game.Color;
 
 namespace Chess.Game
 {
@@ -152,6 +156,16 @@ namespace Chess.Game
         public static double CalculateDistanceBetween(Square firstSquare, Square secondSquare)
         {
             return Position.Distance(firstSquare.BoardPosition, secondSquare.BoardPosition);
+        }
+
+        public bool IsOnWhiteBackRank()
+        {
+            return this.RankAndFile.Rank == WhiteBackRank;            
+        }
+        
+        public bool IsOnBlackBackRank()
+        {
+            return this.RankAndFile.Rank == BlackBackRank;
         }
     }
 

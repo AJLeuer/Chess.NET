@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using C5;
-using NodaTime;
 using SFML.System;
 
 namespace Chess.Utility
@@ -82,6 +81,31 @@ namespace Chess.Utility
             else
             {
                 throw new NullReferenceException();
+            }
+        }
+        
+        /* Code credit stackoverflow user Lasse Vågsæther Karlsen: https://stackoverflow.com/questions/2742276/how-do-i-check-if-a-type-is-a-subtype-or-the-type-of-an-object*/
+        public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
+        {
+            if (potentialDescendant == potentialBase)
+            {
+                return true;
+            }
+            else if (potentialDescendant.IsSubclassOf(potentialBase))
+            {
+                return true;
+            }
+            else if (potentialDescendant.IsAssignableFrom(potentialBase))
+            {
+                return true;
+            }
+            else if (potentialDescendant.GetInterfaces().Contains(potentialBase))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }
@@ -234,7 +258,17 @@ namespace Chess.Utility
             double scalingValueY = (float)targetResolution.Height / (float)sprite.Texture.Size.Y;
 
             sprite.Scale = new Vec2<double>(scalingValueX, scalingValueY);
-        }        
+        }
+
+        public static bool IsOfType(this object @object, Type type)
+        {
+            return Util.IsSameOrSubclass(potentialBase: type, potentialDescendant: @object.GetType());
+        }
+        
+        public static bool IsOfType<T>(this object @object)
+        {
+            return Util.IsSameOrSubclass(potentialBase: typeof(T), potentialDescendant: @object.GetType());
+        }
     }
     
     public delegate void CallBack();

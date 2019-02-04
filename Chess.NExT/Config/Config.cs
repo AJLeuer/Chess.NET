@@ -11,9 +11,6 @@ namespace Chess.Configuration
     {
         public const Mouse.Button ButtonMain = Mouse.Button.Left;
 
-        public const ushort BoardWidth = 8;
-        public const ushort BoardHeight = 8;
-
         public static readonly TrueColor WindowBackgroundColor = new TrueColor(0x18, 0x18, 0x18, 0x7F);
         
         public static readonly TrueColor WindowForegroundColor = new TrueColor(0, 196, 240, 0);

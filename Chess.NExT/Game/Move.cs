@@ -1,13 +1,35 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chess.Game.Simulation;
+using Chess.Utility;
+using static Chess.Utility.Util;
+using Pawn = Chess.Game.Graphical.Pawn;
 
 namespace Chess.Game
 {
     public class Move : GameEntity, IComparable, IComparable<Move> 
     {
+        public enum MoveType
+        {
+            Generic,
+            Capture,
+            EnPassant,
+            Castle,
+            PawnPromotion,
+            Check,
+            Checkmate
+        }
+        
         protected static ulong IDs = 0;
             
         public ulong ID { get; } = IDs++;
-        
+
+        public ISet<MoveType> Type
+        {
+            get { return DetermineTypes(this); }
+        }
+
         public Player Player { get; }
 		
         public IPiece Piece { get; }
@@ -40,7 +62,6 @@ namespace Chess.Game
             this.Destination = destination;
         }
         
-        
         /// <summary>
         /// Executes this move
         /// </summary>
@@ -56,10 +77,18 @@ namespace Chess.Game
         /// <returns>A Move object with the associated (Simulated) Game updated to reflect the result of applying this move</returns>
         public Move CommitInSimulation()
         {
-            Simulation.Game simGame = new Simulation.Game(this.Game);
-            Move simulatedMove = CreateMatchingMoveForGame(this, simGame);
+            Move simulatedMove = createSimulatedEquivalentOfMove(this);
             simulatedMove.Commit();
             return simulatedMove;
+        }
+        
+        private static Move createSimulatedEquivalentOfMove(Move originalMove)
+        {
+            Simulation.Game simulatedEquivalentGame = new Simulation.Game(originalMove.Game);
+
+            Move simulatedEquivalentMove = CreateMatchingMoveForGame(originalMove: originalMove, game: simulatedEquivalentGame);
+
+            return simulatedEquivalentMove;
         }
 
         /// <param name="originalMove"></param>
@@ -75,15 +104,6 @@ namespace Chess.Game
             Square destination = board.FindMatchingSquare(originalMove.Destination);
             
             return new Move(player, piece, destination);
-        }
-
-        private static Move createSimulatedEquivalentOfMove(Move originalMove)
-        {
-            Simulation.Game simulatedEquivalentGame = new Simulation.Game(originalMove.Game);
-
-            Move simulatedEquivalentMove = CreateMatchingMoveForGame(originalMove: originalMove, game: simulatedEquivalentGame);
-
-            return simulatedEquivalentMove;
         }
 		
         public static bool operator > (Move move0, Move move1)
@@ -143,6 +163,84 @@ namespace Chess.Game
             outcomeValue = valueToPlayer;
 
             return ref outcomeValue;
+        }
+
+        private ISet<MoveType> DetermineTypes(Move move)
+        {
+            var types = new HashSet<MoveType>();
+            
+            if (move.IsOfCaptureType())
+            {
+                types.Add(MoveType.Capture);
+            }
+            
+            if (move.IsAPawnPromotion())
+            {
+                types.Add(MoveType.PawnPromotion);
+            }
+
+            if (move.CausesCheck())
+            {
+                types.Add(MoveType.Check);
+            }
+
+            if (types.Any() == false)
+            {
+                types.Add(MoveType.Generic);
+            }
+
+            return types;
+        }
+        
+        public bool IsOfCaptureType()
+        {
+            return this.Destination.IsOccupied;
+        }
+        
+        public bool IsAPawnPromotion()
+        {
+            if (this.Piece.IsOfType<IPawn>())
+            {
+                Pawn pawn = this.Piece as Pawn;
+
+                switch (pawn?.Color) 
+                {
+                    case Color.White _:
+                        if (this.Destination.IsOnBlackBackRank())
+                        {
+                            return true;
+                        }
+
+                        break;
+                    case Color.Black _:
+                        if (this.Destination.IsOnBlackBackRank())
+                        {
+                            return true;
+                        }
+
+                        break;
+                }
+            }
+            return false;
+        }
+        
+        public bool CausesCheck()
+        {
+            Move simulation = CommitInSimulation();
+            List<Square> possibleMoveDestinationsAfterCommittingThisMove = simulation.Piece.FindAllPossibleLegalMoveDestinations();
+
+            foreach (Square square in possibleMoveDestinationsAfterCommittingThisMove)
+            {
+                if (square.IsOccupied)
+                {
+                    if (square.Piece.Object.IsOfType<IKing>())
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

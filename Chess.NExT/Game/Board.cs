@@ -8,6 +8,7 @@ using Chess.Utility;
 using Chess.View;
 using Chess.Configuration;
 using static Chess.Game.Color;
+using static Chess.Game.Constants;
 
 using Position = Chess.Utility.Vec2<uint>;
 using File = System.Char;
@@ -259,7 +260,7 @@ namespace Chess.Game
 
 		protected static SquareType[,] copySquares<SquareType>(Square[,] squares) where SquareType : Square
 		{
-			SquareType[,] copiedSquares = new SquareType[Config.BoardWidth, Config.BoardHeight];
+			SquareType[,] copiedSquares = new SquareType[BoardWidth, BoardHeight];
 			
 			for (uint i = 0; i < squares.GetLength(0); i++)
 			{

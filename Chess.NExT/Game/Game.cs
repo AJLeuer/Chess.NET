@@ -4,9 +4,11 @@ using System.Threading;
 
 using Chess.Utility;
 
-using AI = Chess.Game.Real.AI;
 using static Chess.Configuration.Config;
+using static Chess.Game.Constants;
 using static Chess.Game.Color;
+ 
+using AI = Chess.Game.Real.AI;
 using Window = Chess.View.Window;
 
 
@@ -19,8 +21,8 @@ namespace Chess.Game
     
     public abstract class BasicGame : ICloneable, GameEntity
     {
-        public static readonly ushort MaximumPossibleMoveDistance = BoardWidth;
-        
+        public const ushort MaximumPossibleMoveDistance = BoardWidth;
+
         protected static ulong IDs = 0;
 
         protected ulong ID { get; } = IDs++;

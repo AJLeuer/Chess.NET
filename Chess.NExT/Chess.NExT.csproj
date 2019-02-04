@@ -86,6 +86,7 @@
     <Compile Include="Game\Bishop.cs" />
     <Compile Include="Game\Board.cs" />
     <Compile Include="Game\Chess.cs" />
+    <Compile Include="Game\Constants.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Human.cs" />
     <Compile Include="Game\King.cs" />

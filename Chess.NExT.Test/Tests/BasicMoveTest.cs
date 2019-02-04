@@ -13,7 +13,7 @@ using Piece = Chess.Game.Piece;
 
 namespace Chess.Test.Tests
 {
-	public static class MoveTest
+	public static class BasicMoveTest
 	{
 		[SuppressMessage("ReSharper", "NotAccessedField.Local")]
 		private static BasicGame game;
@@ -99,4 +99,82 @@ namespace Chess.Test.Tests
 			move.Board.Should().Equal(board);
 		}
 	}
+	
+	public static class MoveTypeDeterminationTest
+	{
+		[SuppressMessage("ReSharper", "NotAccessedField.Local")]
+		private static BasicGame game;
+		private static Board board;
+		private static Player whitePlayer;
+		private static Player blackPlayer;
+
+		[SetUp]
+		public static void Setup()
+		{
+			board = new Game.Simulation.Board
+			{
+				Squares = new Square[,]
+				{
+					{ new Square(' ', 'a', 1), new Square(' ', 'a', 2), new Square('♙', 'a', 3), new Square(' ', 'a', 4), new Square(' ', 'a', 5), new Square(' ', 'a', 6), new Square(' ', 'a', 7), new Square(' ', 'a', 8) },
+					
+					{ new Square(' ', 'b', 1), new Square(' ', 'b', 2), new Square(' ', 'b', 3), new Square(' ', 'b', 4), new Square('♞', 'b', 5), new Square(' ', 'b', 6), new Square(' ', 'b', 7), new Square(' ', 'b', 8) },
+					
+					{ new Square(' ', 'c', 1), new Square(' ', 'c', 2), new Square(' ', 'c', 3), new Square(' ', 'c', 4), new Square(' ', 'c', 5), new Square(' ', 'c', 6), new Square(' ', 'c', 7), new Square(' ', 'c', 8) },
+					
+					{ new Square('♔', 'd', 1), new Square(' ', 'd', 2), new Square(' ', 'd', 3), new Square(' ', 'd', 4), new Square(' ', 'd', 5), new Square(' ', 'd', 6), new Square(' ', 'd', 7), new Square(' ', 'd', 8) },
+					
+					{ new Square(' ', 'e', 1), new Square(' ', 'e', 2), new Square(' ', 'e', 3), new Square(' ', 'e', 4), new Square(' ', 'e', 5), new Square(' ', 'e', 6), new Square(' ', 'e', 7), new Square(' ', 'e', 8) },
+					
+					{ new Square(' ', 'f', 1), new Square(' ', 'f', 2), new Square(' ', 'f', 3), new Square(' ', 'f', 4), new Square(' ', 'f', 5), new Square(' ', 'f', 6), new Square(' ', 'f', 7), new Square(' ', 'f', 8) },
+					
+					{ new Square(' ', 'g', 1), new Square(' ', 'g', 2), new Square(' ', 'g', 3), new Square(' ', 'g', 4), new Square(' ', 'g', 5), new Square(' ', 'g', 6), new Square(' ', 'g', 7), new Square(' ', 'g', 8) },
+					
+					{ new Square(' ', 'h', 1), new Square('♟', 'h', 2), new Square(' ', 'h', 3), new Square(' ', 'h', 4), new Square(' ', 'h', 5), new Square(' ', 'h', 6), new Square(' ', 'h', 7), new Square(' ', 'h', 8) }
+				}	
+			};
+			
+			var whitePlayerMock = new Mock<Player>(Color.white) { CallBase = true };
+
+			var blackPlayerMock = new Mock<Player>(Color.black) { CallBase = true };
+			
+			var blackPlayerCloneMock = new Mock<Player>(Color.black) { CallBase = true };
+			
+			var gameMock = new Mock<BasicGame>(MockBehavior.Loose, board, whitePlayerMock.Object, blackPlayerMock.Object) { CallBase = true };
+
+			gameMock.Setup((BasicGame self) => self.Board)
+							.Returns(board);
+			
+			/* Need to provide an implementation of Clone(), since it's an abstract method */
+			blackPlayerMock.Setup((Player self) => self.Clone())
+						   .Returns(() => { return blackPlayerCloneMock.Object; });
+			
+			blackPlayerMock.Setup((Player self) => self.Color)
+						   .CallBase();
+			
+			game = gameMock.Object;
+			whitePlayer = whitePlayerMock.Object;
+			blackPlayer = blackPlayerMock.Object;
+		}
+
+		[Test]
+		public static void ShouldDetectWhenMoveWillResultInPieceBeingCaptured()
+		{
+			Knight blackKnight = (Knight) board['b', 5].Piece.Object;
+
+			var move = new Move(blackPlayer, blackKnight, board['a', 3]);
+
+			move.Type.Should().Contain(Move.MoveType.Capture);
+		}
+
+		[Test]
+		public static void ShouldDetectWhenMoveWillResultInCheck()
+		{
+			Knight blackKnight = (Knight) board['b', 5].Piece.Object;
+
+			var move = new Move(blackPlayer, blackKnight, board['c', 3]);
+
+			move.Type.Should().Contain(Move.MoveType.Check);
+		}
+	}
+
 }

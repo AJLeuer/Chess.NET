@@ -75,7 +75,7 @@
     <Compile Include="Tests\BoardTest.cs" />
     <Compile Include="Tests\ChessTest.cs" />
     <Compile Include="Tests\KnightTest.cs" />
-    <Compile Include="Tests\MoveTest.cs" />
+    <Compile Include="Tests\BasicMoveTest.cs" />
     <Compile Include="Tests\PawnTest.cs" />
     <Compile Include="Tests\PieceTest.cs" />
     <Compile Include="Tests\PlayerTest.cs" />
