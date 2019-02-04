@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Chess.Utility;
-using System.Threading;
 using System.Threading.Tasks;
+	
 using static Chess.Utility.Util;
 
 namespace Chess.Game
@@ -124,33 +124,54 @@ namespace Chess.Game
 
 			private Move searchMovePossibilityTreeForBestMove(TreeNode<Move> moveTree)
 			{
-				TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequence(moveTree);
+				TreeNode<Move> bestMoveSequence = searchMovePossibilityTreeForBestMoveSequenceInParallel(moveTree);
 				Move startingMove = retrieveFirstMoveFromSequence(bestMoveSequence);
 	
 				return startingMove;
+			}
+
+			private static TreeNode<Move> searchMovePossibilityTreeForBestMoveSequenceInParallel(TreeNode<Move> moveTree)
+			{
+				var moveTreeSearchers = new List<Task<TreeNode<Move>>>();
+				
+				foreach (var node in moveTree.Children) 
+				{
+					Func<TreeNode<Move>> searchForBestMove = () =>
+					{
+						return searchMovePossibilityTreeForBestMoveSequence(node);
+					};
+
+					Task<TreeNode<Move>> moveTreeSearcher = Task.Run(searchForBestMove);
+					
+					moveTreeSearchers.Add(moveTreeSearcher);
+				}
+
+				Task<TreeNode<Move>[]> moveTreeSearchersTask = Task.WhenAll(moveTreeSearchers.ToArray());
+				TreeNode<Move>[] bestMoveSequenceCandidates = moveTreeSearchersTask.Result; //blocks until all tasks are complete
+				return bestMoveSequenceCandidates.ToList().RetrieveHighestValueItem();
 			}
 			
 			private static TreeNode<Move> searchMovePossibilityTreeForBestMoveSequence(TreeNode<Move> moveTree)
 			{
 				TreeNode<Move> overallHighestValueMove = moveTree; //if this node has no children, then it itself is considered the highest-value move
 	
-				for (int i = 0; i < moveTree.Children.Count; i++)
+				for (int i = 0; i < moveTree.Children.Count; i++) 
 				{
 					TreeNode<Move> childMoveNode = moveTree.Children[i];
 				
 					TreeNode<Move> currentMove = searchMovePossibilityTreeForBestMoveSequence(childMoveNode);
 	
-					if (currentMove != null)
+					if (currentMove != null) 
 					{
 						if (i == 0)
 						{
 							overallHighestValueMove = currentMove;
 						}
-						else if (currentMove == overallHighestValueMove)
+						else if (currentMove == overallHighestValueMove) 
 						{
 							overallHighestValueMove = SelectAtRandom(currentMove, overallHighestValueMove);
 						}
-						else if (currentMove > overallHighestValueMove)
+						else if (currentMove > overallHighestValueMove) 
 						{
 							overallHighestValueMove = currentMove;
 						}	
