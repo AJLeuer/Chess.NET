@@ -13,3 +13,4 @@ A chess game with an AI player and 2D graphics built on top of SFML.NET.
 *	Look into some way to graphically highlight when pieces move (where the moved from, where to)
 *	Investigate why the King didn't capture the Pawn in this game state: `6B1/p2p4/P2K4/8/2P4p/8/P3PP1P/R1B3R1 w - - 0 1`
 *	King's possible moves can't include any that would put it in check
+*	Remove ugly 'I's from piece interface names

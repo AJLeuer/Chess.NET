@@ -33,6 +33,8 @@ namespace Chess.Game
         Square Square { get; set; }
 
         Board Board { get; }
+        
+        Player Player { get; set; }
 
         Position StartingPosition { get; }
 
@@ -52,16 +54,20 @@ namespace Chess.Game
         */
         bool CanMove();
 
+        bool CanMoveTo(Square destination);
+
         void Move(Square destination);
 
         void Move(RankFile destination);
 
         List<Square> FindAllPossibleLegalMoveDestinations();
 
+        List<Move> FindAllPossibleLegalMoves();
+
         void UpdateStateToHandleAssignmentToNewSquare();
     }
 
-    public abstract class Piece : IPiece
+    public abstract class Piece : IPiece 
     {
         protected static ulong IDs = 0;
             
@@ -87,6 +93,8 @@ namespace Chess.Game
         {
             get { return this.Square.Board; }
         }
+        
+        public Player Player { get; set; }
         
         public BasicGame Game { get { return Board.Game; }}
         
@@ -147,6 +155,15 @@ namespace Chess.Game
     
             return canMove;
         }
+
+        public bool CanMoveTo(Square destination)
+        {
+            var moves = FindAllPossibleLegalMoveDestinations();
+
+            bool canMove = moves.Contains(destination);
+    
+            return canMove;
+        }
         
         public virtual void Move(Chess.Game.Square destination)
         {
@@ -185,6 +202,20 @@ namespace Chess.Game
                 distance: this.MaximumMoveDistance);
     
             return squaresLegalToMove;
+        }
+        
+        public List<Move> FindAllPossibleLegalMoves()
+        {
+            List<Square> squaresLegalToMove = FindAllPossibleLegalMoveDestinations();
+            var legalMoves = new List<Move>();
+
+            foreach (var square in squaresLegalToMove)
+            {
+                Move legalMove = new Move(this.Player, this, square);
+                legalMoves.Add(legalMove);
+            }
+
+            return legalMoves;
         }
         
         public virtual void UpdateStateToHandleAssignmentToNewSquare()

@@ -7,6 +7,42 @@ namespace Chess.Game
 {
     public interface IKing : IPiece {}
 
+    public static class KingExtensions
+    {
+        public static bool DetermineIfCheckMateExists(this IKing king)
+        {
+            List<Move> movesAvailableToKing = king.FindAllPossibleLegalMoves();
+
+            bool atLeastOneSafeMoveExists = false;
+            
+            foreach (var move in movesAvailableToKing)
+            {
+                var gameState = move.CommitInSimulation();
+                IKing kingAfterMove = (IKing) gameState.Piece;
+                var opponentPieces = gameState.Game.FindOpponentPlayer(gameState.Piece.Player).Pieces;
+
+                bool atLeastOneOpponentPieceAbleToMoveToKingsPosition = false;
+                
+                foreach (var opponentPiece in opponentPieces)
+                {
+                    if (opponentPiece.CanMoveTo(kingAfterMove.Square))
+                    {
+                        atLeastOneOpponentPieceAbleToMoveToKingsPosition = true;
+                        break;
+                    }
+                }
+
+                if (atLeastOneOpponentPieceAbleToMoveToKingsPosition == false)
+                {
+                    atLeastOneSafeMoveExists = true;
+                    break;
+                }
+            }
+
+            return (atLeastOneSafeMoveExists == false);
+        }
+    }
+    
     namespace Simulation
     {
         public class King : Piece, IKing 

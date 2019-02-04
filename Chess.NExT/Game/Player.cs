@@ -29,12 +29,12 @@ namespace Chess.Game
             set
             {
                 this.board = value;
-                this.pieces = findOwnPiecesOnBoard(board);
+                this.Pieces = findOwnPiecesOnBoard(board);
                 initializePieces();
             }
         }
 
-        public List<IPiece> pieces { get; private set; }
+        public List<IPiece> Pieces { get; private set; }
 
         /* Any other constructors should call this as a delegating constructor */
         public Player(Color color) 
@@ -83,10 +83,11 @@ namespace Chess.Game
 
         protected void initializePieces()
         {
-            foreach (var piece in pieces)
+            foreach (var piece in Pieces)
             {
-                CallBack removePiece = () => pieces.Remove(piece);
+                CallBack removePiece = () => Pieces.Remove(piece);
                 piece.PostCapturedActions += removePiece;
+                piece.Player = this;
             }
         }
 
@@ -98,7 +99,7 @@ namespace Chess.Game
         {
             var moves = new List<Move>();
             
-            foreach (var piece in pieces)
+            foreach (var piece in Pieces)
             {
                 var movesForPiece = FindAllPossibleMovesForPiece(piece);
                 moves.AddRange(movesForPiece);

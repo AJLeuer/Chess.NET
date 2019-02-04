@@ -246,7 +246,7 @@ namespace Chess.Game
 		    {
 			    var moves = new List<Move>();
             
-			    foreach (var piece in pieces)
+			    foreach (var piece in Pieces)
 			    {
 				    Optional<Move> bestMoveForPiece = findBestMoveForPiece(piece);
 

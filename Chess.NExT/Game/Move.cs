@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Chess.Game.Simulation;
 using Chess.Utility;
-using static Chess.Utility.Util;
 using Pawn = Chess.Game.Graphical.Pawn;
 
 namespace Chess.Game
@@ -179,9 +178,14 @@ namespace Chess.Game
                 types.Add(MoveType.PawnPromotion);
             }
 
-            if (move.CausesCheck())
+            if (move.CausesCheck().resultsInCheck)
             {
                 types.Add(MoveType.Check);
+            }
+
+            if (move.CausesCheckmate())
+            {
+                types.Add(MoveType.Checkmate);
             }
 
             if (types.Any() == false)
@@ -224,7 +228,7 @@ namespace Chess.Game
             return false;
         }
         
-        public bool CausesCheck()
+        public (bool resultsInCheck, Optional<IKing> kingPutInCheck) CausesCheck()
         {
             Move simulation = CommitInSimulation();
             List<Square> possibleMoveDestinationsAfterCommittingThisMove = simulation.Piece.FindAllPossibleLegalMoveDestinations();
@@ -235,12 +239,31 @@ namespace Chess.Game
                 {
                     if (square.Piece.Object.IsOfType<IKing>())
                     {
-                        return true;
+                        var kingUnderCheckInSimulation = (IKing) square.Piece.Object;
+                        var kingInRealGame = (IKing) this.Board.FindMatchingPiece(kingUnderCheckInSimulation);
+                        return (true, new Optional<IKing>(kingInRealGame));
                     }
                 }
             }
 
-            return false;
+            return (false, Optional<IKing>.Empty);
+        }
+
+        public bool CausesCheckmate()
+        {
+            var causesCheck = this.CausesCheck();
+            
+            if (causesCheck.resultsInCheck)
+            {
+                Move simulation = CommitInSimulation();
+                var checkedKing = (IKing) simulation.Board.FindMatchingPiece(causesCheck.kingPutInCheck.Object);
+                bool checkMate = checkedKing.DetermineIfCheckMateExists();
+                return checkMate;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
