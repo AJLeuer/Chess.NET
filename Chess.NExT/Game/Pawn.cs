@@ -28,11 +28,11 @@ namespace Chess.Game
 		public const ushort Value = 1;
 		public const ushort MaximumMoveDistance = 1;
 		
-		public static List<Square> findAllPossibleLegalMoveDestinations(this IPawn pawn) 
+		public static List<Move> findAllPossibleLegalMoves(this IPawn pawn) 
 		{
-			List<Square> legalMoveSquares = pawn.findAllPossibleLegalMoveDestinationsForMovesToCapture();
+			List<Move> legalMoveSquares = pawn.findAllPossibleLegalCaptureMoves();
 	
-			Optional<Square> emptySquareToMove = pawn.findLegalMoveDestinationForMoveToEmpty();
+			Optional<Move> emptySquareToMove = pawn.findLegalMovesToEmpty();
 	
 			if (emptySquareToMove.HasValue)
 			{
@@ -42,7 +42,7 @@ namespace Chess.Game
 			return legalMoveSquares;
 		}
 		
-		public static List<Square> findAllPossibleLegalMoveDestinationsForMovesToCapture(this IPawn pawn) 
+		public static List<Move> findAllPossibleLegalCaptureMoves(this IPawn pawn) 
 		{
 				
 			Predicate<Square> squareCheckerForCaptureDirections = (Square squareToCheck) =>
@@ -59,11 +59,19 @@ namespace Chess.Game
 				
 			List<Square> captureSquares = pawn.Board.SearchForSquares(squareCheckerForCaptureDirections,
 																 pawn.RankAndFile, 1, pawn.LegalCaptureDirections.ToArray());
-	
-			return captureSquares;
+
+			var captureMoves = new List<Move>();
+
+			foreach (var square in captureSquares)
+			{
+				var move = new Move(pawn.Player, pawn, square);
+				captureMoves.Add(move);
+			}
+			
+			return captureMoves;
 		}
 		
-		public static Optional<Square> findLegalMoveDestinationForMoveToEmpty(this IPawn pawn) 
+		public static Optional<Move> findLegalMovesToEmpty(this IPawn pawn) 
 		{
 							
 			Predicate<Square> squareCheckerForMovementDirections = (Square squareToCheck) =>
@@ -76,11 +84,12 @@ namespace Chess.Game
 	
 			if (availableSquares.Count > 0)
 			{
-				return availableSquares[0];
+				var move = new Move(pawn.Player, pawn, availableSquares[0]);
+				return move;
 			}
 			else
 			{
-				return Optional<Square>.Empty;
+				return Optional<Move>.Empty;
 			}
 		}
 
@@ -179,16 +188,12 @@ namespace Chess.Game
 			{
 				return new Pawn(this);
 			}
-	
-			/**
-			* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
-			* no such Squares, empty
-			*/
-			public override List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
-			{
-				return this.findAllPossibleLegalMoveDestinations();
-			}
 			
+			public override List<Move> FindAllPossibleLegalMoves()
+			{
+				return this.findAllPossibleLegalMoves();
+			}
+
 			public override void Move(RankFile destination)  
 			{
 				//todo add move legality checking
@@ -271,16 +276,12 @@ namespace Chess.Game
 			{
 				return new Pawn(this);
 			}
-	
-			/**
-			* @return a List that is either filled with the Squares this Pawn can legally move to, or, if there are
-			* no such Squares, empty
-			*/
-			public override List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
+
+			public override List<Move> FindAllPossibleLegalMoves()
 			{
-				return this.findAllPossibleLegalMoveDestinations();
+				return this.findAllPossibleLegalMoves();
 			}
-	
+
 			public override void Move(RankFile destination)  
 			{
 				//todo add move legality checking

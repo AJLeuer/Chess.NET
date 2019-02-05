@@ -180,7 +180,21 @@ namespace Chess.Game
             Move(destinationSquare);
         }
         
-        public virtual List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
+        public List<Chess.Game.Square> FindAllPossibleLegalMoveDestinations()
+        {
+            List<Move> legalMoves = FindAllPossibleLegalMoves();
+            
+            var destinations = new List<Square>();
+
+            foreach (var move in legalMoves)
+            {
+                destinations.Add(move.Destination);
+            }
+
+            return destinations;
+        }
+        
+        public virtual List<Move> FindAllPossibleLegalMoves()
         {
             Predicate<Chess.Game.Square> squareChecker = (Chess.Game.Square squareToCheck) =>
             {
@@ -200,21 +214,15 @@ namespace Chess.Game
                 startingSquarePosition: this.RankAndFile, 
                 directions: this.LegalMovementDirections.ToArray(), 
                 distance: this.MaximumMoveDistance);
-    
-            return squaresLegalToMove;
-        }
-        
-        public List<Move> FindAllPossibleLegalMoves()
-        {
-            List<Square> squaresLegalToMove = FindAllPossibleLegalMoveDestinations();
+            
             var legalMoves = new List<Move>();
 
             foreach (var square in squaresLegalToMove)
             {
-                Move legalMove = new Move(this.Player, this, square);
-                legalMoves.Add(legalMove);
+                var move = new Move(this.Player, this, square);
+                legalMoves.Add(move);
             }
-
+        
             return legalMoves;
         }
         
