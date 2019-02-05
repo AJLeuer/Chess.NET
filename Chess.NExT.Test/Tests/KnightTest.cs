@@ -23,14 +23,14 @@ namespace Chess.Test.Tests
 
             List<Square> possibleMoves = knight.FindAllPossibleLegalMoveDestinations();
 
-            AssertContains(actual: possibleMoves,  board['f', 2],
-                                                   board['d', 2],
-                                                   board['c', 3],
-                                                   board['c', 5],
-                                                   board['d', 6],
-                                                   board['f', 6],
-                                                   board['g', 5],
-                                                   board['g', 3]);
+            AssertContains(actual: possibleMoves,board['f', 2],
+                                                                  board['d', 2],
+                                                                  board['c', 3],
+                                                                  board['c', 5],
+                                                                  board['d', 6],
+                                                                  board['f', 6],
+                                                                  board['g', 5],
+                                                                  board['g', 3]);
         }
         
     }

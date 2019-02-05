@@ -22,6 +22,15 @@ namespace Chess.Test.Tests
             board['e', 4].Piece = king;
 
             List<Square> possibleMoves = king.FindAllPossibleLegalMoveDestinations();
+            
+            AssertContains(actual: possibleMoves,  board['d', 5],
+                                                                    board['e', 5],
+                                                                    board['f', 5],
+                                                                    board['f', 4],
+                                                                    board['f', 3],
+                                                                    board['e', 3],
+                                                                    board['d', 3],
+                                                                    board['d', 4]);
         }
 
         [Test]

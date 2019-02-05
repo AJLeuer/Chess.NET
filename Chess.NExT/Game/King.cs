@@ -7,8 +7,10 @@ namespace Chess.Game
 {
     public interface IKing : IPiece {}
 
-    public static class KingExtensions
+    public static class KingDefaults
     {
+        public const ushort MaximumMoveDistance = 1;
+
         public static bool DetermineIfCheckMateExists(this IKing king)
         {
             List<Move> movesAvailableToKing = king.FindAllPossibleLegalMoves();
@@ -71,6 +73,8 @@ namespace Chess.Game
             public override ushort Value { get { return 40; } }
 
             public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
+            
+            public override ushort MaximumMoveDistance { get { return KingDefaults.MaximumMoveDistance; } }
 
             public King(IKing other) :
                 base(other)
@@ -139,6 +143,8 @@ namespace Chess.Game
             public override ushort Value { get { return 40; } }
 
             public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
+            
+            public override ushort MaximumMoveDistance { get { return KingDefaults.MaximumMoveDistance; } }
 
             public King(IKing other) :
                 base(other)
