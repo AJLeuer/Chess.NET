@@ -258,7 +258,7 @@ namespace Chess.Game
 			}
 		}
 
-		protected static SquareType[,] copySquares<SquareType>(Square[,] squares) where SquareType : Square
+		protected static SquareType[,] copySquares<SquareType>(Square[,] squares) where SquareType : Square 
 		{
 			SquareType[,] copiedSquares = new SquareType[BoardWidth, BoardHeight];
 			

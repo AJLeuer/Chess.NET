@@ -59,14 +59,6 @@ namespace Chess.Game
             {
                 return new Bishop(this);
             }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
-                Console.WriteLine("Warning: add move legality checking");
-            }
-
         }
     }
     
@@ -127,13 +119,6 @@ namespace Chess.Game
             public override IPiece Clone()
             {
                 return new Bishop(this);
-            }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
-                Console.WriteLine("Warning: add move legality checking");
             }
         }
     }

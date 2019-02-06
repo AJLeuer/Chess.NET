@@ -61,12 +61,6 @@ namespace Chess.Game
             {
                 return new Rook(this);
             }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
-            }
         }
     }
 
@@ -127,12 +121,6 @@ namespace Chess.Game
             public override IPiece Clone()
             {
                 return new Rook(this);
-            }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
             }
         }
     }

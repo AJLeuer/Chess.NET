@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Chess.Game.Color;
 using static Chess.Game.Direction;
 
@@ -10,39 +11,6 @@ namespace Chess.Game
     public static class KingDefaults
     {
         public const ushort MaximumMoveDistance = 1;
-
-        public static bool DetermineIfCheckMateExists(this IKing king)
-        {
-            List<Move> movesAvailableToKing = king.FindAllPossibleLegalMoves();
-
-            bool atLeastOneSafeMoveExists = false;
-            
-            foreach (var move in movesAvailableToKing)
-            {
-                var gameState = move.CommitInSimulation();
-                IKing kingAfterMove = (IKing) gameState.Piece;
-                var opponentPieces = gameState.Game.FindOpponentPlayer(gameState.Piece.Player).Pieces;
-
-                bool atLeastOneOpponentPieceAbleToMoveToKingsPosition = false;
-                
-                foreach (var opponentPiece in opponentPieces)
-                {
-                    if (opponentPiece.CanMoveTo(kingAfterMove.Square))
-                    {
-                        atLeastOneOpponentPieceAbleToMoveToKingsPosition = true;
-                        break;
-                    }
-                }
-
-                if (atLeastOneOpponentPieceAbleToMoveToKingsPosition == false)
-                {
-                    atLeastOneSafeMoveExists = true;
-                    break;
-                }
-            }
-
-            return (atLeastOneSafeMoveExists == false);
-        }
     }
     
     namespace Simulation
@@ -102,17 +70,62 @@ namespace Chess.Game
                 return new King(this);
             }
 
-            public override void Move(RankFile destination)
+            public override List<Move> FindAllPossibleLegalMoves()
             {
-                //todo: add move legality checking
-                base.Move(destination);
+                List<Move> movesPotentiallyAvailable = base.FindAllPossibleLegalMoves();
+                var safeMoves = new List<Move>();
+
+                foreach (var move in movesPotentiallyAvailable)
+                {
+                    var gameState = move.CommitInSimulation();
+                    IKing kingAfterMove = (IKing) gameState.Piece;
+                    var opponentPieces = gameState.Game.FindOpponentPlayer(gameState.Piece.Player).Pieces;
+
+                    bool destinationIsSafe = true;
+
+                    foreach (var piece in opponentPieces)
+                    {
+                        var opponentPiece = (Piece) piece;
+                        //In this extreme edge case and highly unusual scenario, we will need to call the base implementation
+                        //of CanMoveTo() in order to avoid the infinite recursion that would result from a King needing to know if another King can
+                        //potentially move to a certain square before *it* can know whether it itself can legally move there
+                        if (opponentPiece.canMoveTo(kingAfterMove.Square))
+                        {
+                            destinationIsSafe = false;
+                            break;
+                        }
+                    }
+
+                    if (destinationIsSafe)
+                    {
+                        safeMoves.Add(move);
+                    }
+                }
+
+                return safeMoves;
+            }
+            
+            public override bool canMoveTo(Chess.Game.Square destination)
+            {
+                var moves = base.FindAllPossibleLegalMoves();
+
+                IEnumerable<Move> matchingAllowedMove = moves.Where((Move move) => { return move.Destination == destination; });
+
+                if (matchingAllowedMove.Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }
     
     namespace Graphical
     {
-        public class King : Piece, IKing 
+        public class King : Piece, IKing
         {
             protected static readonly List<Direction> DefaultLegalMovementDirections = new List<Direction>
             {
@@ -138,13 +151,25 @@ namespace Chess.Game
                 {white, "./Assets/Bitmaps/WhiteKing.png"}
             };
 
-            public override char ASCIISymbol { get { return 'K'; } }
+            public override char ASCIISymbol
+            {
+                get { return 'K'; }
+            }
 
-            public override ushort Value { get { return 40; } }
+            public override ushort Value
+            {
+                get { return 40; }
+            }
 
-            public override List<Direction> LegalMovementDirections { get { return DefaultLegalMovementDirections; } }
-            
-            public override ushort MaximumMoveDistance { get { return KingDefaults.MaximumMoveDistance; } }
+            public override List<Direction> LegalMovementDirections
+            {
+                get { return DefaultLegalMovementDirections; }
+            }
+
+            public override ushort MaximumMoveDistance
+            {
+                get { return KingDefaults.MaximumMoveDistance; }
+            }
 
             public King(IKing other) :
                 base(other)
@@ -172,10 +197,55 @@ namespace Chess.Game
                 return new King(this);
             }
 
-            public override void Move(RankFile destination)
+            public override List<Move> FindAllPossibleLegalMoves()
             {
-                //todo: add move legality checking
-                base.Move(destination);
+                List<Move> movesPotentiallyAvailable = base.FindAllPossibleLegalMoves();
+                var safeMoves = new List<Move>();
+
+                foreach (var move in movesPotentiallyAvailable)
+                {
+                    var gameState = move.CommitInSimulation();
+                    IKing kingAfterMove = (IKing) gameState.Piece;
+                    var opponentPieces = gameState.Game.FindOpponentPlayer(gameState.Piece.Player).Pieces;
+
+                    bool destinationIsSafe = true;
+
+                    foreach (var piece in opponentPieces)
+                    {
+                        var opponentPiece = (Chess.Game.Piece) piece;
+                        //In this extreme edge case and highly unusual scenario, we will need to call the base implementation
+                        //of CanMoveTo() in order to avoid the infinite recursion that would result from a King needing to know if another King can
+                        //potentially move to a certain square before *it* can know whether it itself can legally move there
+                        if (opponentPiece.canMoveTo(kingAfterMove.Square))
+                        {
+                            destinationIsSafe = false;
+                            break;
+                        }
+                    }
+
+                    if (destinationIsSafe)
+                    {
+                        safeMoves.Add(move);
+                    }
+                }
+
+                return safeMoves;
+            }
+            
+            public override bool canMoveTo(Chess.Game.Square destination)
+            {
+                var moves = base.FindAllPossibleLegalMoves();
+
+                IEnumerable<Move> matchingAllowedMove = moves.Where((Move move) => { return move.Destination == destination; });
+
+                if (matchingAllowedMove.Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

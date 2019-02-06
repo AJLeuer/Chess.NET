@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -19,7 +19,7 @@ namespace Chess.Game
         BasicGame Game { get; }
     }
     
-    public abstract class BasicGame : ICloneable, GameEntity
+    public abstract class BasicGame : ICloneable, GameEntity 
     {
         public const ushort MaximumPossibleMoveDistance = BoardWidth;
 
@@ -215,7 +215,7 @@ namespace Chess.Game
         }
     }
     
-    namespace Graphical
+    namespace Graphical 
     {
         public class Game : BasicGame
         {

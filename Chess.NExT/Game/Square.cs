@@ -12,7 +12,7 @@ using File = System.Char;
 using Rank = System.UInt16;
 using Position = Chess.Utility.Vec2<uint>;
 
-namespace Chess.Game
+namespace Chess.Game 
 {
     public abstract class Square : GameEntity, ICloneable 
     {
@@ -39,6 +39,7 @@ namespace Chess.Game
         }
         
         public BasicGame Game { get { return Board.Game; }}
+
         public Board Board { get; set; }
 
         private IPiece piece = null;
@@ -56,7 +57,7 @@ namespace Chess.Game
                     }
                     this.piece = null;
                 }
-                else
+                else 
                 {
                     this.piece = value.Object;
                     piece.Square = this;

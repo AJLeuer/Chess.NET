@@ -10,7 +10,7 @@ using static Chess.Configuration.Config;
 
 using Position = Chess.Utility.Vec2<uint>;
 
-namespace Chess.Game
+namespace Chess.Game 
 {
     public interface IPiece : GameEntity, ICloneable 
     {
@@ -65,6 +65,8 @@ namespace Chess.Game
         List<Move> FindAllPossibleLegalMoves();
 
         void UpdateStateToHandleAssignmentToNewSquare();
+
+        (bool InCheck, Optional<IKing> KingPutInCheck) HasOpponentKingInCheck();
     }
 
     public abstract class Piece : IPiece 
@@ -97,7 +99,7 @@ namespace Chess.Game
         public Player Player { get; set; }
         
         public BasicGame Game { get { return Board.Game; }}
-        
+
         public Position StartingPosition 
         {
             get
@@ -149,7 +151,7 @@ namespace Chess.Game
         /// <returns>true if there exists at least one Square that this Piece can legally move to, false otherwise</returns>
         public bool CanMove()
         {
-            var moves = FindAllPossibleLegalMoveDestinations();
+            var moves = FindAllPossibleLegalMoves();
     
             bool canMove = (moves.Count > 0);
     
@@ -161,10 +163,12 @@ namespace Chess.Game
             var moves = FindAllPossibleLegalMoveDestinations();
 
             bool canMove = moves.Contains(destination);
-    
+
             return canMove;
         }
-        
+
+        public abstract bool canMoveTo(Square destination);
+
         public virtual void Move(Chess.Game.Square destination)
         {
             PieceMovingNotifier?.Invoke();
@@ -174,7 +178,7 @@ namespace Chess.Game
             MovesMade++;
         }
         
-        public virtual void Move(RankFile destination) 
+        public void Move(RankFile destination) 
         {
             Chess.Game.Square destinationSquare = Board[destination];
             Move(destinationSquare);
@@ -231,6 +235,32 @@ namespace Chess.Game
             var currentPosition = new RankFile(this.RankAndFile);
             this.PositionHistory.Add(currentPosition);
         }
+
+        public (bool InCheck, Optional<IKing> KingPutInCheck) HasOpponentKingInCheck()
+        {
+            List<Square> possibleMoveDestinations = this.FindAllPossibleLegalMoveDestinations();
+
+            foreach (Square square in possibleMoveDestinations)
+            {
+                if (square.IsOccupied)
+                {
+                    if (square.Piece.Object.IsOfType<IKing>())
+                    {
+                        var kingUnderCheck = (IKing) square.Piece.Object;
+
+                        if (kingUnderCheck.Color == Color.GetOpposite())
+                        {
+                            var kingInRealGame = (IKing) this.Board.FindMatchingPiece(kingUnderCheck);
+                            return (true, new Optional<IKing>(kingInRealGame));
+                        }
+                    }
+                }
+            }
+
+            return (false, Optional<IKing>.Empty);
+        }
+        
+        public void OnBoardStateChanged() {}
     }
     
     namespace Simulation 
@@ -378,6 +408,11 @@ namespace Chess.Game
             }
     
             public abstract override IPiece Clone();
+            
+            public override bool canMoveTo(Chess.Game.Square destination)
+            {
+                return this.CanMoveTo(destination);
+            }
         }
     }
 
@@ -576,6 +611,11 @@ namespace Chess.Game
     
             public abstract override IPiece Clone();
             
+            public override bool canMoveTo(Chess.Game.Square destination)
+            {
+                return this.CanMoveTo(destination);
+            }
+
             public void InitializeGraphicalElements() 
             {
                 var spriteTexture = new Texture(SpriteImageFilePath);
@@ -624,7 +664,6 @@ namespace Chess.Game
 
                 return scaleFactor;
             }
-
         }
     }
 }

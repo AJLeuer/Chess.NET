@@ -193,12 +193,6 @@ namespace Chess.Game
 			{
 				return this.findAllPossibleLegalMoves();
 			}
-
-			public override void Move(RankFile destination)  
-			{
-				//todo add move legality checking
-				base.Move(destination);
-			}
 		}
 	}
 
@@ -280,12 +274,6 @@ namespace Chess.Game
 			public override List<Move> FindAllPossibleLegalMoves()
 			{
 				return this.findAllPossibleLegalMoves();
-			}
-
-			public override void Move(RankFile destination)  
-			{
-				//todo add move legality checking
-				base.Move(destination);
 			}
 		}	
 	}

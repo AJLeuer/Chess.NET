@@ -70,12 +70,6 @@ namespace Chess.Game
             {
                 return new Queen(this);
             }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
-            }
         }
     }
     
@@ -146,12 +140,6 @@ namespace Chess.Game
             public override IPiece Clone()
             {
                 return new Queen(this);
-            }
-
-            public override void Move(RankFile destination) 
-            {
-                //todo add move legality checking
-                base.Move(destination);
             }
         }
     }

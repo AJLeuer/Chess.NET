@@ -17,16 +17,48 @@ namespace Chess.Game
             Castle,
             PawnPromotion,
             Check,
-            Checkmate
+            Checkmate,
+            Stalemate
         }
         
         protected static ulong IDs = 0;
-            
+
         public ulong ID { get; } = IDs++;
 
-        public ISet<MoveType> Type
+        public ISet<MoveType> GetMoveType()
         {
-            get { return DetermineTypes(this); }
+            var types = new HashSet<MoveType>();
+            
+            if (this.IsOfCaptureType())
+            {
+                types.Add(MoveType.Capture);
+            }
+            
+            if (this.IsAPawnPromotion())
+            {
+                types.Add(MoveType.PawnPromotion);
+            }
+
+            if (this.CausesCheck().DoesCauseCheck)
+            {
+                types.Add(MoveType.Check);
+                
+                if (this.CausesMate())
+                {
+                    types.Add(MoveType.Checkmate);
+                }
+            }
+            else if (this.CausesMate())
+            {
+                types.Add(MoveType.Stalemate);
+            }
+
+            if (types.Any() == false)
+            {
+                types.Add(MoveType.Generic);
+            }
+
+            return types;
         }
 
         public Player Player { get; }
@@ -164,38 +196,6 @@ namespace Chess.Game
             return ref outcomeValue;
         }
 
-        private ISet<MoveType> DetermineTypes(Move move)
-        {
-            var types = new HashSet<MoveType>();
-            
-            if (move.IsOfCaptureType())
-            {
-                types.Add(MoveType.Capture);
-            }
-            
-            if (move.IsAPawnPromotion())
-            {
-                types.Add(MoveType.PawnPromotion);
-            }
-
-            if (move.CausesCheck().resultsInCheck)
-            {
-                types.Add(MoveType.Check);
-            }
-
-            if (move.CausesCheckmate())
-            {
-                types.Add(MoveType.Checkmate);
-            }
-
-            if (types.Any() == false)
-            {
-                types.Add(MoveType.Generic);
-            }
-
-            return types;
-        }
-        
         public bool IsOfCaptureType()
         {
             return this.Destination.IsOccupied;
@@ -217,7 +217,7 @@ namespace Chess.Game
 
                         break;
                     case Color.Black _:
-                        if (this.Destination.IsOnBlackBackRank())
+                        if (this.Destination.IsOnWhiteBackRank())
                         {
                             return true;
                         }
@@ -228,42 +228,19 @@ namespace Chess.Game
             return false;
         }
         
-        public (bool resultsInCheck, Optional<IKing> kingPutInCheck) CausesCheck()
+        public (bool DoesCauseCheck, Optional<IKing> KingPutInCheck) CausesCheck()
         {
             Move simulation = CommitInSimulation();
-            List<Square> possibleMoveDestinationsAfterCommittingThisMove = simulation.Piece.FindAllPossibleLegalMoveDestinations();
-
-            foreach (Square square in possibleMoveDestinationsAfterCommittingThisMove)
-            {
-                if (square.IsOccupied)
-                {
-                    if (square.Piece.Object.IsOfType<IKing>())
-                    {
-                        var kingUnderCheckInSimulation = (IKing) square.Piece.Object;
-                        var kingInRealGame = (IKing) this.Board.FindMatchingPiece(kingUnderCheckInSimulation);
-                        return (true, new Optional<IKing>(kingInRealGame));
-                    }
-                }
-            }
-
-            return (false, Optional<IKing>.Empty);
+            return simulation.Piece.HasOpponentKingInCheck();
         }
-
-        public bool CausesCheckmate()
+        
+        private bool CausesMate()
         {
-            var causesCheck = this.CausesCheck();
-            
-            if (causesCheck.resultsInCheck)
-            {
-                Move simulation = CommitInSimulation();
-                var checkedKing = (IKing) simulation.Board.FindMatchingPiece(causesCheck.kingPutInCheck.Object);
-                bool checkMate = checkedKing.DetermineIfCheckMateExists();
-                return checkMate;
-            }
-            else
-            {
-                return false;
-            }
+            Move simulation = CommitInSimulation();
+            Player opponent = simulation.Game.FindOpponentPlayer(this.Player);
+            IKing opponentKing = (IKing) opponent.Pieces.Find((IPiece piece) => { return piece.IsOfType<IKing>(); });
+
+            return opponentKing.CanMove() == false;
         }
     }
 }

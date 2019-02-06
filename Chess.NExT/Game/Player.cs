@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NodaTime;
@@ -80,7 +80,7 @@ namespace Chess.Game
 
             return matchingColorPieces;
         }
-
+        
         protected void initializePieces()
         {
             foreach (var piece in Pieces)
@@ -108,7 +108,7 @@ namespace Chess.Game
             return moves;
         }
 
-        public List<Move> FindAllPossibleMovesForPiece(IPiece piece)
+        public List<Move> FindAllPossibleMovesForPiece(IPiece piece) 
         {
             var moves = new List<Move>();
             
@@ -124,7 +124,7 @@ namespace Chess.Game
             return moves;
         }
         
-        protected Optional<Move> findBestMoveForPiece(IPiece piece)
+        protected Optional<Move> findBestMoveForPiece(IPiece piece) 
         {
             List<Move> moves = FindAllPossibleMovesForPiece(piece);
 	
@@ -190,7 +190,7 @@ namespace Chess.Game
             {
             }
             
-            public override Move DecideNextMove()
+            public override Move DecideNextMove() 
             {
                 MovesMade++;
                 Move nextMove = decideNextMove();
