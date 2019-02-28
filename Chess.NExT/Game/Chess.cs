@@ -172,6 +172,13 @@ namespace Chess.Game
 	    {
 		    
 	    }
+
+		public static RankFile CreateRankFileFromString(String rankFileString)
+		{
+			char file = rankFileString[0];
+			ushort rank = UInt16.Parse(rankFileString[1].ToString()); //rankFileString[1];
+			return new RankFile(file, rank);
+		}
 	    
 		public static implicit operator RankFile (ValueTuple<char, uint> tuple)
 		{

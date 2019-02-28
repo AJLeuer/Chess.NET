@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chess.Game.Simulation;
 using Chess.Utility;
 using Pawn = Chess.Game.Graphical.Pawn;
 
@@ -93,9 +92,15 @@ namespace Chess.Game
             this.Destination = destination;
         }
 
-        public static Move Parse(String textMove)
+        public static Move CreateFromPieceCurrentPositionAndDestination(Player player, RankFile pieceCurrentPosition, RankFile pieceDesiredDestination)
         {
-            throw new NotImplementedException();
+            BasicGame game = player.Game;
+            Chess.Game.Board board = game.Board;
+
+            IPiece piece = board[pieceCurrentPosition].Piece.Object;
+            Square destination = board[pieceDesiredDestination];
+            
+            return new Move(player, piece, destination);
         }
         
         
@@ -142,7 +147,7 @@ namespace Chess.Game
             
             return new Move(player, piece, destination);
         }
-		
+        
         public static bool operator > (Move move0, Move move1)
         {
             return move0.OutcomeValue > move1.OutcomeValue;

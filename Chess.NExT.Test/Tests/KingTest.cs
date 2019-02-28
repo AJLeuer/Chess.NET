@@ -9,7 +9,6 @@ using File = System.Char;
 using Rank = System.UInt16;
 using Piece = Chess.Game.Simulation.Piece;
 using King = Chess.Game.Simulation.King;
-using Square = Chess.Game.Simulation.Square;
 
 namespace Chess.Test.Tests
 {

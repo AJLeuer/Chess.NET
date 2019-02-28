@@ -1,4 +1,3 @@
-
 using Chess.Game;
 
 namespace Chess.Input
