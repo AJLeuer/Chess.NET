@@ -7,7 +7,7 @@ using Pawn = Chess.Game.Graphical.Pawn;
 
 namespace Chess.Game
 {
-    public class Move : GameEntity, IComparable, IComparable<Move> 
+    public class Move : GameEntity, IComparable, IComparable<Move>
     {
         public enum MoveType
         {
@@ -92,6 +92,12 @@ namespace Chess.Game
             this.Piece = piece;
             this.Destination = destination;
         }
+
+        public static Move Parse(String textMove)
+        {
+            throw new NotImplementedException();
+        }
+        
         
         /// <summary>
         /// Executes this move

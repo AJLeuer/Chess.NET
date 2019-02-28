@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using C5;
 using SFML.System;
 
@@ -238,6 +239,31 @@ namespace Chess.Utility
             List<T> highestValuedItems = ExtractHighestValueSubset(list);
             return SelectElementAtRandom(highestValuedItems);
         }
+        
+        public static String CreateCleanedCopy(this String text)
+        {
+            var originalString     = new String(text.ToCharArray());
+            var cleanStringBuilder = new StringBuilder("");
+			
+            var allowedCharacters = new System.Collections.Generic.HashSet<char>
+            {
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',    
+                'a', 'b', 'c', 'd', 'e', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                'A', 'B', 'C', 'D', 'E', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+            };
+
+            foreach (char character in originalString)
+            {
+                if (allowedCharacters.Contains(character))
+                {
+                    cleanStringBuilder.Append(character);
+                }
+            }
+
+            string cleanString = cleanStringBuilder.ToString();
+            return cleanString;
+        }
+
 
         public static Size GetActualSize(this SFML.Graphics.Sprite sprite)
         {

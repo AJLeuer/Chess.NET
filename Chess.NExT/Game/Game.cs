@@ -217,7 +217,7 @@ namespace Chess.Game
     
     namespace Graphical 
     {
-        public class Game : BasicGame
+        public class Game : BasicGame 
         {
             protected Window window = new Window();
             

@@ -1,8 +1,11 @@
 
+using Chess.Game;
+
 namespace Chess.Input
 {
-    public class InputController
+    public interface InputController
     {
-
+        Player Player { set; }
+        Move NextMove { get; }
     }
 }

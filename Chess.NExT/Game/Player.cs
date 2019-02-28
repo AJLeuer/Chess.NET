@@ -95,7 +95,7 @@ namespace Chess.Game
 
         protected abstract Move decideNextMove();
         
-        public List<Move> FindPossibleMoves()
+        public List<Move> FindPossibleMoves() 
         {
             var moves = new List<Move>();
             
