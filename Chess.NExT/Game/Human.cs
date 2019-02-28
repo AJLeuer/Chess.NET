@@ -7,8 +7,18 @@ namespace Chess.Game
     {
         public class Human : Player
         {
-            public InputController InputController { get; set; }
-            
+            private InputController inputController;
+
+            public InputController InputController
+            {
+                private get { return inputController; }
+                set
+                {
+                    inputController = value;
+                    InputController.Player = this;
+                }
+            }
+
             public Human(Color color, InputController inputController) : 
                 base(color)
             {
@@ -31,8 +41,7 @@ namespace Chess.Game
 
             protected override Move decideNextMove()
             {
-                //todo: implement
-                throw new NotImplementedException();
+                return InputController.NextMove;
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Chess.Game
 	            
 	        }
 	
-	        public AI(Player other) : 
+	        public AI(Chess.Game.Player other) : 
 	            base(other)
 	        {
 	            
@@ -215,7 +215,7 @@ namespace Chess.Game
             
 		    }
 
-		    public SimpleAI(Player other) : 
+		    public SimpleAI(Chess.Game.Player other) : 
 			    base(other)
 		    {
             

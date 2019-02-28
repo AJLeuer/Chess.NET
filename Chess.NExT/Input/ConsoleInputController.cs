@@ -6,6 +6,10 @@ namespace Chess.Input
 {
 	public class ConsoleInputController : InputController
 	{
+		public ConsoleInputController()
+		{
+			
+		}
 		public ConsoleInputController(Player player)
 		{
 			this.Player = player;
@@ -20,11 +24,11 @@ namespace Chess.Input
 			{
 				if (Player.MovesMade == 0)
 				{
-					IOInterface.WriteLine(@"Enter your next move by first giving the current rank and file of the piece you wish to move, followed by the rank and file of the square to which you wish to move that piece, e.g. ""C2 C4""");
+					IOInterface.WriteLine(@"Enter your next move by first giving the current rank and file of the piece you wish to move, followed by the rank and file of the square to which you wish to move that piece, e.g. ""C2 C4"":");
 				}
 				else
 				{
-					IOInterface.WriteLine("Enter your next move");
+					IOInterface.WriteLine("Enter your next move:");
 				}
 
 				string playerInputText = IOInterface.ReadLine();

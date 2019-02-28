@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
+using Chess.Game.Real;
 using Chess.Utility;
 
 using static Chess.Configuration.Config;
@@ -323,7 +323,14 @@ namespace Chess.Game
                      (other.Player0 == null) ? null : other.Player0.Clone(),
                      (other.Player1 == null) ? null : other.Player1.Clone())
             {
-
+                if (Player0.IsOfType<Human>())
+                {
+                    Player0 = new SimpleAI(other.Player0);
+                }
+                if (Player1.IsOfType<Human>())
+                {
+                    Player1 = new SimpleAI(other.Player1);
+                }
             }
 
             public Game(Board board, Chess.Game.Player player0, Chess.Game.Player player1) :
