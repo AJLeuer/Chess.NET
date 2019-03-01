@@ -34,7 +34,7 @@ namespace Chess.Game
             }
         }
 
-        public List<IPiece> Pieces { get; private set; }
+        public HashSet<IPiece> Pieces { get; private set; }
 
         /* Any other constructors should call this as a delegating constructor */
         public Player(Color color) 
@@ -58,9 +58,9 @@ namespace Chess.Game
 
         public abstract Player Clone();
         
-        internal List<IPiece> findOwnPiecesOnBoard(Board anotherBoard)
+        internal HashSet<IPiece> findOwnPiecesOnBoard(Board anotherBoard)
         {
-            var matchingColorPieces = new List<IPiece>();
+            var matchingColorPieces = new HashSet<IPiece>();
 
             if (anotherBoard != null)
             {

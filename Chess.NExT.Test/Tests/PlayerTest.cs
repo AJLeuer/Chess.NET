@@ -51,7 +51,7 @@ namespace Chess.Test.Tests
             
             Player player = new AI(Color.white);
 			player.Board = mockBoard;
-            List<IPiece> pieces = player.findOwnPiecesOnBoard(mockBoard);
+			HashSet<IPiece> pieces = player.findOwnPiecesOnBoard(mockBoard);
 
             //checks that pawnF2, pawnG2, and knightG1 (and nothing else) are in pieces, but in no particular order
             AdditionalCollectionAssertions.AssertContains(actual: pieces, knightG1, pawnF2, pawnG2);

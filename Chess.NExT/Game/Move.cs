@@ -6,7 +6,7 @@ using Pawn = Chess.Game.Graphical.Pawn;
 
 namespace Chess.Game
 {
-    public class Move : GameEntity, IComparable, IComparable<Move>
+    public class Move : GameEntity, IComparable, IComparable<Move> 
     {
         public enum MoveType
         {
@@ -91,18 +91,6 @@ namespace Chess.Game
             this.Piece = piece;
             this.Destination = destination;
         }
-
-        public static Move CreateFromPieceCurrentPositionAndDestination(Player player, RankFile pieceCurrentPosition, RankFile pieceDesiredDestination)
-        {
-            BasicGame game = player.Game;
-            Chess.Game.Board board = game.Board;
-
-            IPiece piece = board[pieceCurrentPosition].Piece.Object;
-            Square destination = board[pieceDesiredDestination];
-            
-            return new Move(player, piece, destination);
-        }
-        
         
         /// <summary>
         /// Executes this move
@@ -249,9 +237,14 @@ namespace Chess.Game
         {
             Move simulation = CommitInSimulation();
             Player opponent = simulation.Game.FindOpponentPlayer(this.Player);
-            IKing opponentKing = (IKing) opponent.Pieces.Find((IPiece piece) => { return piece.IsOfType<IKing>(); });
+            IKing opponentKing = (IKing) opponent.Pieces.First((IPiece piece) => { return piece.IsOfType<IKing>(); });
 
             return opponentKing.CanMove() == false;
         }
+    }
+
+    public class InvalidMoveException : Exception
+    {
+        public InvalidMoveException(String message) : base(message: message) {}
     }
 }

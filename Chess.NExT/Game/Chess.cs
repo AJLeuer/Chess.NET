@@ -241,6 +241,11 @@ namespace Chess.Game
 			    return (File.GetHashCode() * 397) ^ Rank.GetHashCode();
 		    }
 	    }
+	    
+		public override string ToString()
+		{
+			return $"{File}{Rank}";
+		}
     }
 
 	[SuppressMessage("ReSharper", "NotAccessedField.Local")]
