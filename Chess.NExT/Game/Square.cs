@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using SFML.Graphics;
 
 using Chess.Utility;
 using Chess.View;
-
+using SFML.Window;
 using static Chess.Game.Color;
 using static Chess.Game.Constants;
 
@@ -265,6 +266,8 @@ namespace Chess.Game
 
             public Sprite Sprite { get; set; }
 
+            private SFML.Graphics.Text rankAndFileText;
+
             public Size Size 
             {
                 get { return Sprite.GetActualSize(); }
@@ -362,18 +365,30 @@ namespace Chess.Game
                 Sprite       = new Sprite(spriteTexture);
                 Sprite.Scale = calculateScalingFromBoardResolution();
                 Piece2D?.InitializeGraphicalElements();
+                
+                #if DisplaySquarePositionInfo
+                initializeRankAndFileDebugTextGraphics();
+                #endif
             }
 
             public void Initialize2DCoordinates(Vec2<uint> coordinates)
             {
                 this.OriginCoordinates = coordinates;
                 Piece2D?.Initialize2DCoordinates();
+                
+                #if DisplaySquarePositionInfo
+                initializeRankAndFileDebugTextPosition();
+                #endif
             }
 
             public void Draw(RenderTarget renderer)
             {
                 renderer.Draw(Sprite);
                 Piece2D?.Draw(renderer);
+                
+                #if DisplaySquarePositionInfo
+                renderer.Draw(rankAndFileText);
+                #endif
             }
             
             private Vec2<double> calculateScalingFromBoardResolution()
@@ -391,6 +406,25 @@ namespace Chess.Game
                 Vec2<double> scaleFactor = targetSizeForSquare / unscaledSizeOfObject;
 
                 return scaleFactor;
+            }
+
+            private void initializeRankAndFileDebugTextGraphics()
+            {
+                var textColor = new SFML.Graphics.Color(red: 0x00, green: 0xD2, blue: 0xED);
+                var textBackgroundColor = new SFML.Graphics.Color(red: 0x56, green: 0x56, blue: 0x56);
+                var textFont = new SFML.Graphics.Font("Assets/Fonts/RobotoMono-Regular.ttf");
+                
+                rankAndFileText = new Text(this.RankAndFile.ToString(), textFont) { FillColor = textColor, OutlineColor = textBackgroundColor, OutlineThickness = 4};
+                rankAndFileText.Style = SFML.Graphics.Text.Styles.Bold;
+            }            
+            
+            private void initializeRankAndFileDebugTextPosition()
+            {
+                float xCoordinate = this.OriginCoordinates.X + (this.Size.Width / 2.5f);
+                float yCoordinate = this.OriginCoordinates.Y + (this.Size.Height * 0.75f);
+                
+                Vec2<float> textPosition = (xCoordinate, yCoordinate);
+                rankAndFileText.Position = textPosition;
             }
         }
     }

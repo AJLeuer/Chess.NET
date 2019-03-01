@@ -244,7 +244,7 @@ namespace Chess.Game
 	    
 		public override string ToString()
 		{
-			return $"{File}{Rank}";
+			return $"{Char.ToUpper(File)}{Rank}";
 		}
     }
 

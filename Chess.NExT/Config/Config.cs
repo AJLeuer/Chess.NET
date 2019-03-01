@@ -17,7 +17,7 @@ namespace Chess.Configuration
         
         public static Resolution MainWindowSize { get; } = DisplayData.getScreenResolution() / 2;
 
-        public static readonly Resolution BoardResolution = new Resolution {Width = 1920, Height = 1920};
+        public static readonly Resolution BoardResolution = new Resolution {Width = 1400, Height = 1400};
 
         public const ushort DefaultDisplayRefreshInterval = 8;
 
